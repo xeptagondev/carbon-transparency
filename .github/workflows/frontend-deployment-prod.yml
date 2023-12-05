@@ -99,3 +99,20 @@ jobs:
             (docker stop carbon-transparency-web-1 > /dev/null &&  docker rm carbon-transparency-web-1 ) 2>/dev/null || true &&
             sudo docker pull 302213478610.dkr.ecr.us-east-1.amazonaws.com/transparency-web:main &&
             docker-compose -f docker-compose-image.yml up -d web '
+      - name: Deploy standalone to Amazon EC2
+        if: github.ref == 'refs/heads/main'
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: transparency-web
+          IMAGE_TAG: main
+          PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY_PRIVATE_SA }}
+          HOSTNAME: ${{secrets.HOST_IP_SA}}
+          USER_NAME: ec2-user
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+            cd repos/carbon-transparency &&
+            sudo $(aws ecr get-login --no-include-email --region us-east-1) &&
+            (docker stop carbon-transparency-web-1 > /dev/null &&  docker rm carbon-transparency-web-1 ) 2>/dev/null || true &&
+            sudo docker pull 302213478610.dkr.ecr.us-east-1.amazonaws.com/transparency-web:main &&
+            docker-compose -f docker-compose-image.yml up -d web '

@@ -132,6 +132,8 @@ export const handler: Handler = async (event) => {
               email: fields[1],
               phoneNo: fields[2],
               website: undefined,
+              ministry:undefined,
+              govDep:undefined,
               address: configService.get("systemCountryName"),
               logo: undefined,
               country: configService.get("systemCountry"),

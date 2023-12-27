@@ -11,7 +11,7 @@ import {
   Body,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { Company } from "@undp/carbon-services-lib";
+import { ApiKeyJwtAuthGuard, Company, OrganisationSyncRequestDto } from "@undp/carbon-services-lib";
 import { QueryDto } from "@undp/carbon-services-lib";
 import { OrganisationSuspendDto } from "@undp/carbon-services-lib";
 import { FindOrganisationQueryDto } from "@undp/carbon-services-lib";
@@ -148,6 +148,15 @@ export class CompanyController {
   async updateCompany(@Body() company: OrganisationUpdateDto, @Request() req) {
     global.baseUrl = `${req.protocol}://${req.get("Host")}`;
     return await this.companyService.update(company, req.abilityCondition);
+  }
+
+  @ApiBearerAuth('api_key')
+  @ApiBearerAuth()
+  @UseGuards(ApiKeyJwtAuthGuard, PoliciesGuardEx(true, Action.Update, Company))
+  @Put("sync")
+  async companySync(@Body() organisationSyncRequest: OrganisationSyncRequestDto, @Request() req) {
+    global.baseUrl = `${req.protocol}://${req.get("Host")}`;
+    return await this.companyService.sync(organisationSyncRequest, req.abilityCondition);
   }
 
   @Post("countries")

@@ -395,12 +395,18 @@ const ProgrammeView = () => {
 
     const info: any = {};
     Object.entries(map).forEach(([k, v]) => {
-      const text = t('view:' + k);
-      if (v instanceof UnitField) {
-        const unitField = v as UnitField;
-        info[text + ` (${unitField.unit})`] = unitField.value;
-      } else {
-        info[text] = v;
+      if (
+        data?.article6trade === true ||
+        data?.article6trade === undefined ||
+        (data?.article6trade === false && k !== 'carbonPriceUSDPerTon')
+      ) {
+        const text = t('view:' + k);
+        if (v instanceof UnitField) {
+          const unitField = v as UnitField;
+          info[text + ` (${unitField.unit})`] = unitField.value;
+        } else {
+          info[text] = v;
+        }
       }
     });
     return info;
@@ -589,26 +595,34 @@ const ProgrammeView = () => {
 
   const generalInfo: any = {};
   Object.entries(getGeneralFields(data, CarbonSystemType.MRV)).forEach(([k, v]) => {
-    const text = t('view:' + k);
-    if (k === 'currentStatus') {
-      generalInfo[text] = (
-        <Tag color={getStageTagTypeMRV(v as ProgrammeStageMRV)}>{getStageEnumVal(v as string)}</Tag>
-      );
-    } else if (k === 'sector') {
-      generalInfo[text] = (
-        <Tag color={v === 'Agriculture' ? 'success' : 'processing'}>{v as string}</Tag>
-      );
-    } else if (k === 'applicationType') {
-      generalInfo[text] = (
-        <span>
-          <RoleIcon icon={<ExperimentOutlined />} bg={DevBGColor} color={DevColor} />
-          <span>{v as string}</span>
-        </span>
-      );
-    } else if (k === 'emissionsReductionExpected' || k === 'emissionsReductionAchieved') {
-      generalInfo[text] = addCommSep(v);
-    } else {
-      generalInfo[text] = v;
+    if (
+      data?.article6trade === true ||
+      data?.article6trade === undefined ||
+      (data?.article6trade === false && k !== 'serialNo')
+    ) {
+      const text = t('view:' + k);
+      if (k === 'currentStatus') {
+        generalInfo[text] = (
+          <Tag color={getStageTagTypeMRV(v as ProgrammeStageMRV)}>
+            {getStageEnumVal(v as string)}
+          </Tag>
+        );
+      } else if (k === 'sector') {
+        generalInfo[text] = (
+          <Tag color={v === 'Agriculture' ? 'success' : 'processing'}>{v as string}</Tag>
+        );
+      } else if (k === 'applicationType') {
+        generalInfo[text] = (
+          <span>
+            <RoleIcon icon={<ExperimentOutlined />} bg={DevBGColor} color={DevColor} />
+            <span>{v as string}</span>
+          </span>
+        );
+      } else if (k === 'emissionsReductionExpected' || k === 'emissionsReductionAchieved') {
+        generalInfo[text] = addCommSep(v);
+      } else {
+        generalInfo[text] = v;
+      }
     }
   });
 

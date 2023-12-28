@@ -797,8 +797,10 @@ const ProgrammeView = () => {
                         ],
                       }}
                       series={[
-                        emissionsReductionAchieved,
-                        emissionsReductionExpected - emissionsReductionAchieved,
+                        Number(emissionsReductionAchieved.toFixed(2)),
+                        Number(
+                          (emissionsReductionExpected - emissionsReductionAchieved).toFixed(2)
+                        ),
                       ]}
                       type="donut"
                       width="100%"

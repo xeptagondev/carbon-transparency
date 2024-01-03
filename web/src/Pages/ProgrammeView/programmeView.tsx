@@ -547,46 +547,46 @@ const ProgrammeView = () => {
   });
   // genCerts(data);
   const actionBtns = [];
-
-  if (userInfoState && data.currentStage !== ProgrammeStageMRV.Rejected) {
-    if (
-      userInfoState?.companyRole === CompanyRole.GOVERNMENT ||
-      (userInfoState?.companyRole === CompanyRole.PROGRAMME_DEVELOPER &&
-        data.companyId.map((e) => Number(e)).includes(userInfoState?.companyId)) ||
-      (userInfoState?.companyRole === CompanyRole.MINISTRY &&
-        ministrySectoralScope.includes(data.sectoralScope) &&
-        userInfoState?.userRole !== Role.ViewOnly)
-    ) {
-      actionBtns.push(
-        <Button
-          type="primary"
-          onClick={() => {
-            navigate('/investmentManagement/addInvestment', { state: { record: data } });
-          }}
-        >
-          {t('view:addInvestment')}
-        </Button>
-      );
-      actionBtns.push(
-        <Tooltip
-          title={'Cannot submit until methodology document is approved.'}
-          color={TooltipColor}
-          key={TooltipColor}
-        >
-          <Button disabled>{t('view:addAction')}</Button>
-        </Tooltip>
-      );
-      if ((data.currentStage as any) !== 'AwaitingAuthorization') {
-        actionBtns.pop();
+  if (userInfoState?.userRole !== 'ViewOnly') {
+    if (userInfoState && data.currentStage !== ProgrammeStageMRV.Rejected) {
+      if (
+        userInfoState?.companyRole === CompanyRole.GOVERNMENT ||
+        (userInfoState?.companyRole === CompanyRole.PROGRAMME_DEVELOPER &&
+          data.companyId.map((e) => Number(e)).includes(userInfoState?.companyId)) ||
+        (userInfoState?.companyRole === CompanyRole.MINISTRY &&
+          ministrySectoralScope.includes(data.sectoralScope) &&
+          userInfoState?.userRole !== Role.ViewOnly)
+      ) {
         actionBtns.push(
-          <Button type="primary" onClick={onClickedAddAction}>
-            {t('view:addAction')}
+          <Button
+            type="primary"
+            onClick={() => {
+              navigate('/investmentManagement/addInvestment', { state: { record: data } });
+            }}
+          >
+            {t('view:addInvestment')}
           </Button>
         );
+        actionBtns.push(
+          <Tooltip
+            title={'Cannot submit until methodology document is approved.'}
+            color={TooltipColor}
+            key={TooltipColor}
+          >
+            <Button disabled>{t('view:addAction')}</Button>
+          </Tooltip>
+        );
+        if ((data.currentStage as any) !== 'AwaitingAuthorization') {
+          actionBtns.pop();
+          actionBtns.push(
+            <Button type="primary" onClick={onClickedAddAction}>
+              {t('view:addAction')}
+            </Button>
+          );
+        }
       }
     }
   }
-
   const generalInfo: any = {};
   Object.entries(getGeneralFields(data, CarbonSystemType.MRV)).forEach(([k, v]) => {
     const text = t('view:' + k);

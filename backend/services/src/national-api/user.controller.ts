@@ -14,7 +14,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
-import { DataExportQueryDto, User } from "@undp/carbon-services-lib";
+import { User } from "@undp/carbon-services-lib";
 import { UserDto } from "@undp/carbon-services-lib";
 import { UserService,Action ,AppAbility,CaslAbilityFactory,CheckPolicies, PoliciesGuard, PoliciesGuardEx, Role} from "@undp/carbon-services-lib";
 import { QueryDto } from "@undp/carbon-services-lib";
@@ -115,14 +115,6 @@ export class UserController {
   queryUser(@Body() query: QueryDto, @Request() req) {
     console.log(req.abilityCondition);
     return this.userService.query(query, req.abilityCondition);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, PoliciesGuardEx(true, Action.Read, User, true))
-  // @UseGuards(JwtAuthGuard, PoliciesGuardEx(true, Action.Read, User, true))
-  @Post('download')
-  async getDownload(@Body()query: DataExportQueryDto, @Request() req) {
-    return this.userService.download(query, req.abilityCondition); // Return the filePath as a JSON response
   }
 
   @ApiBearerAuth()

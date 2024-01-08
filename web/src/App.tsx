@@ -1,9 +1,11 @@
 import { Suspense, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { ConnectionContextProvider } from './Context/ConnectionContext/connectionContext';
 import 'antd/dist/antd.css';
 import './Styles/theme.less';
 import './Styles/app.scss';
 import Login from './Pages/Login/login';
+import { UserInformationContextProvider } from './Context/UserInformationContext/userInformationContext';
 import PrivateRoute from './Components/PrivateRoute/privateRoute';
 import SignUp from './Pages/Signup/signup';
 import CustomLayout from './Components/Layout/layout';
@@ -26,6 +28,7 @@ import UserProfile from './Pages/UserProfile/UserProfile';
 import CompanyProfile from './Pages/CompanyProfile/companyProfile';
 import { AbilityContext } from './Casl/Can';
 import { defineAbility, updateUserAbility } from './Casl/ability';
+import { SettingsContextProvider } from './Context/SettingsContext/settingsContext';
 import AddProgramme from './Pages/Programme/programmeCreation';
 import InvestmentManagement from './Pages/InvestmentManagement/investmentManagement';
 import AddNdcAction from './Pages/AddNdcAction/addNdcAction';
@@ -33,18 +36,12 @@ import AddInvestmentComponent from './Pages/InvestmentManagement/investmentCreat
 import NdcActionManagement from './Pages/NdcActionManagement/ndcActionManagement';
 import NdcActionView from './Pages/NdcActionView/ndcActionView';
 import RegisterNewCompany from './Pages/Company/registerNewCompany';
-import {
-  Loading,
-  ConnectionContextProvider,
-  UserInformationContextProvider,
-  SettingsContextProvider,
-} from '@undp/carbon-library';
+import { Loading } from '@undp/carbon-library';
 import AddSupportComponent from './Pages/SupportManagement/supportCreation';
 import SupportManagement from './Pages/SupportManagement/supportManagement';
 import NdcDetails from './Pages/NdcDetails/ndcDetails';
 import GHGInventory from './Pages/GHGInventory/ghgInventory';
 import ReportSection from './Pages/ReportSection/reportsSection';
-import { useTranslation } from 'react-i18next';
 
 // message.config({
 //   duration: 60,
@@ -53,7 +50,6 @@ import { useTranslation } from 'react-i18next';
 const App = () => {
   const ability = defineAbility();
   const enableRegistration = process.env.REACT_APP_ENABLE_REGISTRATION || 'true';
-  const { i18n, t } = useTranslation(['common']);
 
   useEffect(() => {
     console.log(process.env.REACT_APP_BACKEND);
@@ -78,10 +74,6 @@ const App = () => {
       <ConnectionContextProvider
         serverURL={
           process.env.REACT_APP_BACKEND ? process.env.REACT_APP_BACKEND : 'http://localhost:9000'
-        }
-        t={t}
-        statServerUrl={
-          process.env.REACT_APP_STAT_URL ? process.env.REACT_APP_STAT_URL : 'http://localhost:9100'
         }
       >
         <UserInformationContextProvider>

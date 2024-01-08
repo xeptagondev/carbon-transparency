@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useConnection } from '../../Context/ConnectionContext/connectionContext';
 import { UserProfileComponent } from '@undp/carbon-library';
+import { useUserContext } from '../../Context/UserInformationContext/userInformationContext';
 
 const CompanyProfile = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation(['userProfile', 'companyDetails']);
+  const { t, i18n } = useTranslation(['userProfile']);
 
   const onNavigateUpdateUser = (organisationDetails: any, userDetails: any) => {
     navigate('/userManagement/updateUser', {
@@ -25,8 +27,10 @@ const CompanyProfile = () => {
     <UserProfileComponent
       t={t}
       i18n={i18n}
+      useConnection={useConnection}
       onNavigateUpdateUser={onNavigateUpdateUser}
       onNavigateLogin={onNavigateToLogin}
+      useUserContext={useUserContext}
     ></UserProfileComponent>
   );
 };

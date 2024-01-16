@@ -5400,10 +5400,10 @@
     "@types/node" "^18.11.9"
     convert-units "^2.3.4"
 
-"@undp/carbon-services-lib@0.0.306":
-  version "0.0.306"
-  resolved "https://registry.yarnpkg.com/@undp/carbon-services-lib/-/carbon-services-lib-0.0.306.tgz#777f3e459090189bc064a1781b7941caeab63b59"
-  integrity sha512-VdD2nRdbZQo4FLV8echTvdmX8C8Icvw4xNqeutew4qOGScky57gT1glJ45kdNBV5/IfrJ7TWOYrXLQHtC4PuDw==
+"@undp/carbon-services-lib@0.0.307-CARBON-432.1":
+  version "0.0.307-CARBON-432.1"
+  resolved "https://registry.npmjs.org/@undp/carbon-services-lib/-/carbon-services-lib-0.0.307-CARBON-432.1.tgz#425315e7266df18c2ac3a3655b93acd5198de685"
+  integrity sha512-Bd72qS5B8BdCphSO5ywCWxFCnDWDhHpyHF2085SGCdrvlWR8sCTS0UMGIxCb0fyRShZBb5s11a+oVqVZbENGtA==
   dependencies:
     "@aws-sdk/client-qldb" "^3.408.0"
     "@aws-sdk/client-qldb-session" "^3.408.0"

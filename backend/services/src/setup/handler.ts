@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { UserDto } from "@undp/carbon-services-lib";
 import { getLogger } from "@undp/carbon-services-lib";
-import { ProgrammeService,ProgrammeModule,CompanyRole,Country,UtilModule, LocationInterface,LocationModule,CountryService ,CompanyModule,CompanyService,UserModule,UserService,Role} from "@undp/carbon-services-lib";
+import { ProgrammeService,ProgrammeModule,CompanyRole,Country,UtilModule, LocationInterface,LocationModule,CountryService ,CompanyModule,CompanyService,UserModule,UserService,Role, GovDepartment, Ministry} from "@undp/carbon-services-lib";
 import { OrganisationDto as OrganisationDto } from "@undp/carbon-services-lib";
 import { Handler } from "aws-lambda";
 import { ConfigService } from "@nestjs/config";
@@ -14,6 +14,15 @@ export const handler: Handler = async (event) => {
 
   if (!event) {
     event = process.env;
+  }
+
+  function mapEnvironmentToEnum<T>(envValue: string, targetEnum: T): T[keyof T] | undefined {
+    const enumValues = Object.values(targetEnum).filter((value) => typeof value === 'string') as string[];
+    console.log(enumValues,"hellooo")
+    if (enumValues.includes(envValue)) {
+      return envValue as T[keyof T];
+    }
+    return undefined;
   }
 
   const userApp = await NestFactory.createApplicationContext(UserModule, {
@@ -197,6 +206,8 @@ export const handler: Handler = async (event) => {
     company.logo = event["logoBase64"];
     company.companyRole = CompanyRole.GOVERNMENT;
     company.taxId = `00000${event["systemCountryCode"]}`
+    company.govDep = GovDepartment[event["Department"]];
+    company.ministry = mapEnvironmentToEnum(event["Ministry"], Ministry);
 
     const user = new UserDto();
     user.email = event["rootEmail"];

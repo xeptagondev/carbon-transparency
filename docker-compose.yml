@@ -35,6 +35,8 @@ services:
       DB_PASSWORD: "<ANY PASSWORD>"
       RUN_MODULE: national-api
       rootEmail: <ROOT EMAIL>
+      Ministry: "Environment"
+      Department: "Environmental Protection Agency (defunct)"
       systemCountryCode: "NG"
       name: "Antactic Region"
       logoBase64: "sss"

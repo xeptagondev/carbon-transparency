@@ -34,6 +34,8 @@ services:
       DB_HOST: dbmrv
       DB_USER: root
       DB_PASSWORD: "<ANY PASSWORD>"
+      Ministry: "Environment"
+      Department: "Environmental Protection Agency (defunct)"
       RUN_MODULE: national-api
       rootEmail: <ROOT EMAIL>
       systemCountryCode: "NG"

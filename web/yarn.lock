@@ -2724,10 +2724,10 @@
     "@types/node" "^18.11.9"
     convert-units "^2.3.4"
 
-"@undp/carbon-library@1.0.293-CARBON-Sprint-54.2":
-  version "1.0.293-CARBON-Sprint-54.2"
-  resolved "https://registry.yarnpkg.com/@undp/carbon-library/-/carbon-library-1.0.293-CARBON-Sprint-54.2.tgz#bc66adfb90adc6d02457f01b4edd49b250a45ff6"
-  integrity sha512-kVQarRrfxsT4auR6qT5zxbDlkXvj+IKXnnzP2Shpa0fNhy+jOyKJRmonDw4WnIxopABNiIzpxVUHErnxCt61aQ==
+"@undp/carbon-library@1.0.293-CARBON-Sprint-54.3":
+  version "1.0.293-CARBON-Sprint-54.3"
+  resolved "https://registry.yarnpkg.com/@undp/carbon-library/-/carbon-library-1.0.293-CARBON-Sprint-54.3.tgz#f72da8cf4ec37ff3e81d092d262073e1c6408379"
+  integrity sha512-aq6ilg4Zy9lp/VRb2COOzAvPO94rPg527IgbyeyzlrT8c/VeF66Pox38qBBMaOeshqWkEllVvDikyfmmBjP6PA==
   dependencies:
     "@rollup/plugin-commonjs" "^25.0.0"
     "@rollup/plugin-json" "^6.0.1"
@@ -6926,11 +6926,6 @@ jake@^10.8.5:
   version "10.8.7"
   resolved "https://registry.yarnpkg.com/jake/-/jake-10.8.7.tgz#63a32821177940c33f356e0ba44ff9d34e1c7d8f"
   integrity sha512-ZDi3aP+fG/LchyBzUM804VjddnwfSfsdeYkwt8NcbKRvo4rFkjhs456iLFn3k2ZUWvNe4i48WACDbza8fhq2+w==
-  dependencies:
-    async "^3.2.3"
-    chalk "^4.0.2"
-    filelist "^1.0.4"
-    minimatch "^3.1.2"
 
 jest-changed-files@^27.5.1:
   version "27.5.1"

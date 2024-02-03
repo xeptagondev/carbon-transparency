@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Row, Col, Card, Progress, Tag, Steps, message, Skeleton, Button, Tooltip } from 'antd';
-import { useConnection } from '../../Context/ConnectionContext/connectionContext';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Chart from 'react-apexcharts';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +14,6 @@ import {
   QrcodeOutlined,
 } from '@ant-design/icons';
 import Geocoding from '@mapbox/mapbox-sdk/services/geocoding';
-import { useUserContext } from '../../Context/UserInformationContext/userInformationContext';
 import {
   CarbonSystemType,
   CompanyRole,
@@ -48,6 +46,8 @@ import {
   getStageEnumVal,
   getStageTagTypeMRV,
   isBase64,
+  useConnection,
+  useUserContext,
 } from '@undp/carbon-library';
 
 const ProgrammeView = () => {
@@ -363,8 +363,6 @@ const ProgrammeView = () => {
               userInfoState?.userRole !== Role.ViewOnly
             }
             translator={i18n}
-            useConnection={useConnection}
-            useUserContext={useUserContext}
           />
         ),
         icon: (
@@ -550,12 +548,12 @@ const ProgrammeView = () => {
 
   if (userInfoState && data.currentStage !== ProgrammeStageMRV.Rejected) {
     if (
-      userInfoState?.companyRole === CompanyRole.GOVERNMENT ||
-      (userInfoState?.companyRole === CompanyRole.PROGRAMME_DEVELOPER &&
-        data.companyId.map((e) => Number(e)).includes(userInfoState?.companyId)) ||
-      (userInfoState?.companyRole === CompanyRole.MINISTRY &&
-        ministrySectoralScope.includes(data.sectoralScope) &&
-        userInfoState?.userRole !== Role.ViewOnly)
+      (userInfoState?.companyRole === CompanyRole.GOVERNMENT ||
+        (userInfoState?.companyRole === CompanyRole.PROGRAMME_DEVELOPER &&
+          data.companyId.map((e) => Number(e)).includes(userInfoState?.companyId)) ||
+        (userInfoState?.companyRole === CompanyRole.MINISTRY &&
+          ministrySectoralScope.includes(data.sectoralScope))) &&
+      userInfoState?.userRole !== Role.ViewOnly
     ) {
       actionBtns.push(
         <Button
@@ -828,8 +826,6 @@ const ProgrammeView = () => {
                     ministrySectoralScope.includes(data.sectoralScope) &&
                     userInfoState?.userRole !== Role.ViewOnly
                   }
-                  useConnection={useConnection}
-                  useUserContext={useUserContext}
                   translator={i18n}
                   methodologyDocumentUpdated={methodologyDocumentApproved}
                   programmeStatus={data?.currentStage}

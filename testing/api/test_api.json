@@ -304,6 +304,9 @@
 							"const ProjectID = response.data.projectId;\r",
 							"pm.collectionVariables.set(\"ProjectID\", ProjectID);\r",
 							"\r",
+							"const startYear = response.data.startYear;\r",
+							"pm.collectionVariables.set(\"startYear\", startYear);\r",
+							"\r",
 							"const status = pm.iterationData.get(\"add_status\");\r",
 							"\r",
 							"pm.test(\"Project created successfully - \" + response.data.projectId, function(){\r",
@@ -343,6 +346,7 @@
 							"const currentTimeEpoch = Date.now();\r",
 							"\r",
 							"let body = {\r",
+							"    \"startYear\": pm.collectionVariables.get(\"startYear\"), \r",
 							"    \"parentType\": \"project\",\r",
 							"    \"parentId\": pm.collectionVariables.get(\"ProjectID\"),\r",
 							"    \"title\":\"Test Activity - \" + currentTimeEpoch,\r",
@@ -1210,6 +1214,10 @@
 		},
 		{
 			"key": "SupportID",
+			"value": ""
+		},
+		{
+			"key": "startYear",
 			"value": ""
 		}
 	]

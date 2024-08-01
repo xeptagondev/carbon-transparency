@@ -28,13 +28,19 @@ jobs:
             -d ./testing/api/Test-API-Automation.csv \
             --environment ./testing/api/RemoteEnv.postman_environment.json \
             --env-var "password=${{ secrets.ROOT_PASSWORD }}"
+            --reporters cli,html \
+            --reporter-html-export ./testing/api/report.html
+
+        - name: Check HTML Report Exists
+          run: |
+            if [ -f ./testing/api/report.html ]; then echo "HTML report exists."; else exit 1; fi
 
         - name: Convert HTML Report to PDF
           run: |
             node -e "const puppeteer = require('puppeteer'); (async () => { 
               const browser = await puppeteer.launch(); 
               const page = await browser.newPage(); 
-              await page.goto('file://' + process.cwd() + 'testing/api/report.html', { waitUntil: 'networkidle0' }); 
+              await page.goto('file://' + process.cwd() + '/testing/api/report.html', { waitUntil: 'networkidle0' }); 
               await page.pdf({ path: 'testing/api/report.pdf', format: 'A4' }); 
               await browser.close(); 
             })();"

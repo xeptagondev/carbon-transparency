@@ -34,7 +34,7 @@ jobs:
             node -e "const puppeteer = require('puppeteer'); (async () => { 
               const browser = await puppeteer.launch(); 
               const page = await browser.newPage(); 
-              await page.goto('file://' + process.cwd() + '/testing/api/report.html', { waitUntil: 'networkidle0' }); 
+              await page.goto('file://' + process.cwd() + 'testing/api/report.html', { waitUntil: 'networkidle0' }); 
               await page.pdf({ path: 'testing/api/report.pdf', format: 'A4' }); 
               await browser.close(); 
             })();"

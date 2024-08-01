@@ -1,0 +1,7 @@
+test case,username,password,username_2,password_2,username_3,password_3,username_4,password_4,username_5,password_5,sector,action,action-2,add_status,validate_status,delete_status,update_status,update-sector,unvalidate_status
+"Root creates Agriculture sector Action, Programme, Project, Activity and Support  ",palinda@xeptagon.com,,,,,,,,,,Agriculture,,,201,,,,,
+"Root validates Agriculture sector Action, Programme, Project, Activity and Support  ",palinda@xeptagon.com,,palinda@xeptagon.com,,,,,,,,Agriculture,validate,,201,201,,,,
+"Root deletes Agriculture sector Action, Programme, Project, Activity and Support  ",palinda@xeptagon.com,,,,palinda@xeptagon.com,,,,,,Agriculture,delete,,201,,200,,,
+"Root updates Agriculture sector Action, Programme, Project, Activity and Support  ",palinda@xeptagon.com,,,,,,palinda@xeptagon.com,,,,Agriculture,update,,201,,,200,Energy,
+"Root updates validated Agriculture sector Action, Programme, Project, Activity and Support  ",palinda@xeptagon.com,,palinda@xeptagon.com,,,,palinda@xeptagon.com,,,,Agriculture,validate,update,201,201,,200,Energy,
+"Root unvalidates validated Agriculture sector Action, Programme, Project, Activity and Support  ",palinda@xeptagon.com,,palinda@xeptagon.com,,,,,,palinda@xeptagon.com,,Agriculture,validate,unvalidate,201,201,,,Energy,201

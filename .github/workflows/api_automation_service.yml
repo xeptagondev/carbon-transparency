@@ -1,0 +1,47 @@
+name: Automating API Tests with Postman & Github Actions
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'staging'  
+
+jobs:
+# Run API Test
+  automated-api-tests:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Install Newman
+          run: npm install -g newman
+
+        - name: Install Dependencies
+          run: |
+            npm install -g newman newman-reporter-html
+            npm install puppeteer
+
+        - name: Run Test API
+          if: always()
+          run: |
+            newman run "testing/api/Entity-Add-Validate-Unvalidate-Edit-Delete.json" \
+            -d ./testing/api/Test-API-Automation.csv \
+            --environment ./testing/api/RemoteEnv.postman_environment.json \
+            --env-var "password=${{ secrets.ROOT_PASSWORD }}"
+
+        # - name: Convert HTML Report to PDF
+        #   run: |
+        #     node -e "const puppeteer = require('puppeteer'); (async () => { const browser = await puppeteer.launch(); const page = await browser.newPage(); await page.goto('file://' + process.cwd() + '/report.html', { waitUntil: 'networkidle0' }); await page.pdf({ path: 'report.pdf', format: 'A4' }); await browser.close(); })();"
+
+        # - name: Send Report via Email
+        #   uses: dawidd6/action-send-mail@v3
+        #   with:
+        #     server_address: email-smtp.us-east-1.amazonaws.com
+        #     server_port: 587
+        #     username: ${{ secrets.SMTP_USERNAME }}
+        #     password: ${{ secrets.SMTP_PASSWORD }}
+        #     subject: "API Test Report"
+        #     body: "Please find the attached API test report."
+        #     to: yashodhas@xeptagon.com
+        #     from: info@xeptagon.com
+        #     attachments: report.pdf
+
+ 

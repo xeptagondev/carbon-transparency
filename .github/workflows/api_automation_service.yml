@@ -27,9 +27,9 @@ jobs:
             newman run "testing/api/test-api.json" \
             -d ./testing/api/Test-API-Automation.csv \
             --environment ./testing/api/RemoteEnv.postman_environment.json \
-            --env-var "password=${{ secrets.ROOT_PASSWORD }}"
+            --env-var "password=${{ secrets.ROOT_PASSWORD }}" \
             --reporters cli,html \
-            --reporter-html-export ./testing/api/report.html
+            --reporter-html-export=./testing/api/report.html
 
         - name: Check HTML Report Exists
           run: |

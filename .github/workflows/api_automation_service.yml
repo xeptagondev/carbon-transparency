@@ -57,7 +57,7 @@ jobs:
             password: ${{ secrets.SMTP_PASSWORD }}
             subject: "API Test - Summary Report"
             body: "Please find the attached API test report."
-            from: Test User
+            from: "Yashodha Subhasinghe <yashodhas@xeptagon.com>"
             to: yashodhas+2@xeptagon.com
             cc: yashodhas+1@xeptagon.com
             attachments: ./testing/api/report.pdf

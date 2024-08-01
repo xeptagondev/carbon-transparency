@@ -8,6 +8,47 @@ on:
       - .github/workflows/api_automation_service*  
 
 jobs:
+  deploy:
+      name: test deploy
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - name: Setup and run unit tests
+          run: |
+            cd backend/services
+            yarn install
+            yarn run test
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v1
+        - name: Build, tag, and push the image to Amazon ECR
+          id: build-image
+          env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: transparency-services
+            IMAGE_TAG: ${{ github.head_ref || github.ref_name }} 
+          run: |
+            # Build a docker container and push it to ECR 
+            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f backend/services/Dockerfile .
+            echo "Pushing image to ECR..."
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+        - name: Wait for 1 min
+          run: sleep 60
+
 # Run API Test
   automated-api-tests:
       runs-on: ubuntu-latest

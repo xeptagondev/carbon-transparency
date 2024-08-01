@@ -799,7 +799,7 @@
 							"} else if(pm.iterationData.get(\"action\") === \"update\"){\r",
 							"    pm.execution.setNextRequest(\"user_login_to_update\");\r",
 							"} else {\r",
-							"    pm.execution.setNextRequest(null);\r",
+							"    pm.execution.setNextRequest(\"user_login_to_delete\");\r",
 							"}"
 						],
 						"type": "text/javascript",
@@ -1146,6 +1146,8 @@
 							"    pm.execution.setNextRequest(\"user_login_to_update\");\r",
 							"} else if(pm.iterationData.get(\"action-2\") === \"unvalidate\"){\r",
 							"    pm.execution.setNextRequest(\"user_login_to_unvalidate\");\r",
+							"} else if(pm.iterationData.get(\"action-2\") === \"deleteData\"){\r",
+							"    pm.execution.setNextRequest(\"user_login_to_delete\");\r",
 							"} else {\r",
 							"    pm.execution.setNextRequest(null);\r",
 							"}"
@@ -1484,7 +1486,7 @@
 							"\r",
 							"pm.test(\"Support unverified successfully!\" , function(){\r",
 							"    pm.response.to.have.status(status);\r",
-							"    pm.execution.setNextRequest(null);\r",
+							"    pm.execution.setNextRequest(\"user_login_to_delete\");\r",
 							"});\r",
 							""
 						],
@@ -2561,7 +2563,7 @@
 							"\r",
 							"pm.test(\"Support updated successfully!\" , function(){\r",
 							"    pm.response.to.have.status(status);\r",
-							"    pm.execution.setNextRequest(null);\r",
+							"    pm.execution.setNextRequest(\"user_login_to_delete\");\r",
 							"});\r",
 							""
 						],

@@ -3,7 +3,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'staging'  
+      - 'QA-pipeline'
+    paths:
+      - .github/workflows/api_automation_service*  
 
 jobs:
 # Run API Test

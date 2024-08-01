@@ -24,7 +24,7 @@ jobs:
         - name: Run Test API
           if: always()
           run: |
-            newman run "testing/api/Entity-Add-Validate-Unvalidate-Edit-Delete.json" \
+            newman run "testing/api/test-api.json" \
             -d ./testing/api/Test-API-Automation.csv \
             --environment ./testing/api/RemoteEnv.postman_environment.json \
             --env-var "password=${{ secrets.ROOT_PASSWORD }}"

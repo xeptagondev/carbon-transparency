@@ -1025,7 +1025,7 @@ export class LinkUnlinkService {
 				.transaction(async (em) => {
 					const logs = [];
 
-					const programmes = []
+					const programmeIdsToUnvalidate = []
 					for (const programme of programmeChildren) {
 						// unvalidate programme
 						if (programme.validated) {
@@ -1038,12 +1038,18 @@ export class LinkUnlinkService {
 								actionId)
 							)
 						}
-						programmes.push(programme)
+						programmeIdsToUnvalidate.push(programme.programmeId);
 					}
 
-					await em.save<ProgrammeEntity>(programmes);
+					if (programmeIdsToUnvalidate.length > 0) {
+						await em.createQueryBuilder()
+						  .update(ProgrammeEntity)
+						  .set({ validated: false })
+						  .whereInIds(programmeIdsToUnvalidate)
+						  .execute();
+					}
 
-					const projects = []
+					const projectIdsToUnvalidate = []
 					for (const project of projectChildren) {
 						// unvalidate project
 						if (project.validated) {
@@ -1057,12 +1063,18 @@ export class LinkUnlinkService {
 							)
 						}
 
-						projects.push(project)
+						projectIdsToUnvalidate.push(project.projectId);
 					}
 
-					await em.save<ProjectEntity>(projects);
+					if (projectIdsToUnvalidate.length > 0) {
+						await em.createQueryBuilder()
+						  .update(ProjectEntity)
+						  .set({ validated: false })
+						  .whereInIds(projectIdsToUnvalidate)
+						  .execute();
+					}
 
-					const activities = []
+					const activityIdsToUnvalidate = []
 					for (const activity of activityChildren) {
 						// unvalidate activity
 						if (activity.validated) {
@@ -1075,20 +1087,34 @@ export class LinkUnlinkService {
 								actionId)
 							)
 						}
-						activities.push(activity)
+						activityIdsToUnvalidate.push(activity.activityId);
 
 						if (activity.support && activity.support.length > 0) {
-							const supports = []
+							const supportIdsToUnvalidate = []
 							for (const support of activity.support) {
 								support.validated = false;
-								supports.push(support)
+								supportIdsToUnvalidate.push(support.supportId);
 							}
 
-							await em.save<SupportEntity>(supports);
+							if (supportIdsToUnvalidate.length > 0) {
+								await em.createQueryBuilder()
+								  .update(SupportEntity)
+								  .set({ validated: false })
+								  .whereInIds(supportIdsToUnvalidate)
+								  .execute();
+							}
+
 						}
 					}
 
-					await em.save<ActivityEntity>(activities);
+					if (activityIdsToUnvalidate.length > 0) {
+						await em.createQueryBuilder()
+						  .update(ActivityEntity)
+						  .set({ validated: false })
+						  .whereInIds(activityIdsToUnvalidate)
+						  .execute();
+					}
+
 					await em.save<LogEntity>(logs);
 
 				});
@@ -1137,12 +1163,12 @@ export class LinkUnlinkService {
 							0,
 							programme.programmeId)
 						);
-						await em.save<ActionEntity>(action)
+						await em.update<ActionEntity>(ActionEntity, action.actionId, { validated: false });
 
 						await this.updateAllValidatedChildrenStatusByActionId(action.actionId, em, [programme.programmeId], excludeProjectIds, excludeActivityIds);
 
 					} else {
-						const projects = []
+						const projectIdsToUnvalidate = []
 						for (const project of projectChildren) {
 							project.validated = false;
 							logs.push(this.buildLogEntity(
@@ -1152,12 +1178,18 @@ export class LinkUnlinkService {
 								0,
 								programme.programmeId)
 							);
-							projects.push(project)
+							projectIdsToUnvalidate.push(project.projectId);
 						}
 
-						await em.save<ProjectEntity>(projects);
+						if (projectIdsToUnvalidate.length > 0) {
+							await em.createQueryBuilder()
+							  .update(ProjectEntity)
+							  .set({ validated: false })
+							  .whereInIds(projectIdsToUnvalidate)
+							  .execute();
+						}
 
-						const activities = []
+						const activityIdsToUnvalidate = []
 						for (const activity of activityChildren) {
 							activity.validated = false;
 
@@ -1168,10 +1200,10 @@ export class LinkUnlinkService {
 								0,
 								programme.programmeId)
 							);
-							activities.push(activity)
+							activityIdsToUnvalidate.push(activity.activityId);
 
 							if (activity.support && activity.support.length > 0) {
-								const supports = []
+								const supportIdsToUnvalidate = []
 								for (const support of activity.support) {
 									support.validated = false;
 
@@ -1182,14 +1214,26 @@ export class LinkUnlinkService {
 										0,
 										programme.programmeId)
 									);
-									supports.push(support)
+									supportIdsToUnvalidate.push(support.supportId);
 								}
 
-								await em.save<SupportEntity>(supports);
+								if (supportIdsToUnvalidate.length > 0) {
+									await em.createQueryBuilder()
+									  .update(SupportEntity)
+									  .set({ validated: false })
+									  .whereInIds(supportIdsToUnvalidate)
+									  .execute();
+								}
 							}
 						}
 
-						await em.save<ActivityEntity>(activities);
+						if (activityIdsToUnvalidate.length > 0) {
+							await em.createQueryBuilder()
+							  .update(ActivityEntity)
+							  .set({ validated: false })
+							  .whereInIds(activityIdsToUnvalidate)
+							  .execute();
+						}
 					}
 
 

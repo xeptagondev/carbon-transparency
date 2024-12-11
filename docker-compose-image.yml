@@ -42,6 +42,8 @@ services:
       DB_HOST: dbmrv
       DB_USER: root
       DB_PASSWORD: "<ANY PASSWORD>"
+      DB_PORT: "5433"
+      DB_NAME: "carbondev"
       RUN_MODULE: national-api
       rootEmail: <ROOT EMAIL>
       systemCountryCode: "NG"
@@ -51,8 +53,6 @@ services:
       HOST: "http://localhost:80"
       DOMAIN_MAP: "true"
       EXPIRES_IN: "7200"
-      DB_PORT: "5433"
-      DB_NAME: "carbondev"
       NODE_ENV: 'dev'
       FILE_SERVICE: local
       DISABLE_LOW_PRIORITY_EMAIL: "true"

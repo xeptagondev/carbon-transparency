@@ -54,7 +54,8 @@ services:
       DOMAIN_MAP: "true"
       EXPIRES_IN: "7200"
       NODE_ENV: 'dev'
-      FILE_SERVICE: local
+      FILE_SERVICE: LOCAL
+      S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
       DISABLE_LOW_PRIORITY_EMAIL: "true"
       SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
       BACKEND_HOST: http://localhost:9000
@@ -79,7 +80,8 @@ services:
       DB_PORT: "5433"
       DB_NAME: "carbondev"
       NODE_ENV: 'dev'
-      FILE_SERVICE: local
+      FILE_SERVICE: LOCAL
+      S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
   async-operations-handler:
     image: 302213478610.dkr.ecr.us-east-1.amazonaws.com/transparency-services:CARBON-329
     depends_on:
@@ -98,7 +100,8 @@ services:
       DB_PORT: "5433"
       DB_NAME: "carbondev"
       NODE_ENV: 'dev'
-      FILE_SERVICE: local
+      FILE_SERVICE: LOCAL
+      S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
       DISABLE_LOW_PRIORITY_EMAIL: "true"
       SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
       BACKEND_HOST: http://localhost:9000

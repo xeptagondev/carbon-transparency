@@ -128,7 +128,7 @@ export class ActivityService {
 		}
 
 		if (activityDto.mitigationTimeline) {
-			const gwpSetting = this.getGwpSetting()
+			const gwpSetting = await this.getGwpSetting()
 
 			let validUnit: GHGS = GHGS.CO;
 			let gwpValue: number = 1;
@@ -1469,7 +1469,7 @@ export class ActivityService {
 
 		const currentMitigationTimeline = activity.mitigationTimeline;
 
-		const gwpSetting = this.getGwpSetting()
+		const gwpSetting = await this.getGwpSetting()
 
 		let gwpValue: number = 1;
 
@@ -1599,13 +1599,15 @@ export class ActivityService {
 			const gwp_ch4 = gwpSettingsRecord?.settingValue?.gwp_ch4;
 			const gwp_n2o = gwpSettingsRecord?.settingValue?.gwp_n2o;
 
-			if (gwp_ch4){
-				gwpSetting[GHGS.CH] = parseFloat(gwp_ch4)
-			}
-
-			if (gwp_n2o){
-				gwpSetting[GHGS.NO] = parseFloat(gwp_n2o)
-			}
+			const parseAndAssign = (value: any, key: GHGS) => {
+				const parsedValue = parseFloat(value);
+				if (!isNaN(parsedValue)) {
+					gwpSetting[key] = parsedValue;
+				}
+			};
+	
+			parseAndAssign(gwp_ch4, GHGS.CH);
+			parseAndAssign(gwp_n2o, GHGS.NO);
 		} catch (error: any) {
 			console.log("Error when building gwp setting", error);
 		}

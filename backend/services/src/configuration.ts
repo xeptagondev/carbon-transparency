@@ -38,9 +38,9 @@ export default () => ({
     getemailprefix: process.env.EMAILPREFIX || "",
     adresss: process.env.HOST_ADDRESS || "Address <br>Region, Country Zipcode"
   },
-  // s3CommonBucket: {
-  //   name: process.env.S3_COMMON_BUCKET || "carbon-common-dev",
-  // },
+  s3CommonBucket: {
+    name: process.env.S3_COMMON_BUCKET || "carbon-common-dev",
+  },
   host: process.env.HOST || "https://test.carbreg.org",
   backendHost: process.env.BACKEND_HOST || "http://localhost:3000",
   liveChat: "https://undp2020cdo.typeform.com/to/emSWOmDo",

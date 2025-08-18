@@ -7,6 +7,8 @@ import sliderLogo from '../../Assets/Images/mrvlogo.svg';
 import heroImage1 from '../../Assets/Images/homepage_img.webp';
 import heroImage2 from '../../Assets/Images/homepage_img2.webp';
 import heroImage3 from '../../Assets/Images/homepage_img3.webp';
+import logo_Gold from '../../Assets/Images/qatarlogo.png';
+import Doublelogo from '../../Assets/Images/double logo.png';
 // import undpLogo from '../../Assets/Images/undp1.webp';
 // import EBRD from '../../Assets/Images/EBRD.webp';
 // import EBRDff from '../../Assets/Images/EBRD.png';
@@ -88,27 +90,22 @@ const Homepage = () => {
     <div className="homepage-container">
       <Row>
         <Col md={24} lg={24} flex="auto">
-          <div
-            className="homepage-img-container"
-            style={{
-              backgroundImage: `url(${heroImages[currentSlide]})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'top',
-              transition: 'background-image 1s ease-in-out',
-            }}
-          >
+          <div className="homepage-img-container image-container">
             <Row>
               <Col md={18} lg={21} xs={17} flex="auto">
                 <div className="homepage-header-container">
                   <div className="logo">
-                    <img src={sliderLogo} alt="slider-logo" />
+                    <img src={logo_Gold} alt="slider-logo" />
                   </div>
-                  <div>
-                    <div style={{ display: 'flex' }}>
-                      <div className="title">{t('homepage:heading')}</div>
+                  {/* <div>
+                    <div style={{ display: "flex" }}>
+                      <div className="title">{"IMPACT REGISTRY"}</div> */}
+                  {/* <div className="title-sub">{'REGISTRY'}</div> */}
+                  {/* </div>
+                    <div className="country-name">
+                      {import.meta.env.VITE_APP_COUNTRY_NAME || "Gold Standard"}
                     </div>
-                    <div className="country-name">{countryName}</div>
-                  </div>
+                  </div> */}
                 </div>
               </Col>
               <Col md={6} lg={3} xs={7} flex="auto">
@@ -122,16 +119,23 @@ const Homepage = () => {
               </Col>
             </Row>
             <Row>
-              <div className="text-ctn">
-                <span>
-                  <Trans
-                    i18nKey="homepage:heading"
-                    components={{
-                      br: <br />,
-                    }}
-                  />
-                </span>
-                <div className="subhome">{t('homepage:subHeading')}</div>
+              <div className="homecolumns">
+                <div className="text-ctn">
+                  <span>
+                    <Trans
+                      i18nKey="homepage:heading"
+                      components={{
+                        br: <br />,
+                      }}
+                    />
+                  </span>
+                  <div className="subhome">{t('homepage:subHeading')}</div>
+                </div>
+                <div className="doublelogo">
+                  <div className="d_logo">
+                    <img src={Doublelogo} alt="slider-logo" />
+                  </div>
+                </div>
               </div>
             </Row>
             <Row className="arrow-ctn">
@@ -144,18 +148,6 @@ const Homepage = () => {
                   </svg>
                 </nav>
               )}
-
-              {/* Dot Indicators below the arrow */}
-              <div className="hero-slider-dots">
-                {heroImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`hero-dot ${index === currentSlide ? 'active' : ''}`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
             </Row>
           </div>
         </Col>
@@ -164,9 +156,9 @@ const Homepage = () => {
       <WhyThisPlatform />
       <TransparencyDashboardDemo />
       <DigitalPublicGood />
-      <MapAnimation />
-      <DemoSite />
-      <ProcessFlow />
+      {/* <MapAnimation /> */}
+      {/* <DemoSite /> */}
+      {/* <ProcessFlow /> */}
       <FeatureCards />
       {/* <PartnershipBanner /> */}
       <FAQ />

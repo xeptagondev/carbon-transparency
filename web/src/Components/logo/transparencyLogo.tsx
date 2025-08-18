@@ -1,6 +1,6 @@
 import './transparencyLogo.scss';
 import { Col, Row } from 'antd';
-import countryLogo from '../../Assets/Images/mrvlogo.svg';
+import countryLogo from '../../Assets/Images/qatarlogo.png';
 import { useNavigate } from 'react-router-dom';
 
 const TransparencyLogo: React.FC = () => {
@@ -8,7 +8,7 @@ const TransparencyLogo: React.FC = () => {
   return (
     <div className="mrv-logo">
       <Row>
-        <Col span={4}>
+        <Col span={24}>
           <div className="logo-image">
             <img
               src={countryLogo}
@@ -19,7 +19,7 @@ const TransparencyLogo: React.FC = () => {
             />
           </div>
         </Col>
-        <Col span={18} style={{ marginLeft: '20px' }}>
+        {/* <Col span={18} style={{ marginLeft: '20px' }}>
           <Row className="logo-text">
             <Col span={24}>
               <div className="bold-logo-title">{'NATIONAL CLIMATE TRANSPARENCY'}</div>
@@ -33,7 +33,7 @@ const TransparencyLogo: React.FC = () => {
               </div>
             </Col>
           </Row>
-        </Col>
+        </Col> */}
       </Row>
     </div>
   );

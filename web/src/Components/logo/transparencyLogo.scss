@@ -1,19 +1,24 @@
 .mrv-logo {
 
-    width: 450px;
-    padding-top: 50px;
+    width: 200%;
+    padding-top: 15px;
 
     .logo-image {
-        flex-direction: column;
-        align-items: center;
-        display: flex;
-        cursor: pointer;
+       flex-direction: column;
+    align-items: end;
+    display: flex;
+    width: 100%;
+    // padding-right: 1vw;
+    cursor: pointer;
+   
 
-        img {
-            object-fit: cover;
-            height: auto;
-            width: 4.5rem;
-        }
+    img {
+      margin-top: 25px;
+      object-fit: cover;
+      height: auto;
+      width: 15rem;
+      
+    }
     }
 
     .logo-text {

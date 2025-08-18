@@ -3,18 +3,28 @@
 
 .homepage-footer-container {
   background-color: variables.$background-color-dark;
-  min-height: 100px;
+  min-height: 250px;
   height: 100%;
   align-items: center;
   padding: 1rem 2rem 0 1rem;
+  cursor: pointer;
 
   .ant-divider {
     @media (max-width: 660px) {
       margin: 2px 60px 2px 60px !important;
+      
+      
     }
 
     @media (max-width: 645px) {
       margin: 2px 60px 2px 12px !important;
+      padding-left: 370px;
+    }
+  }
+  .ant-row{
+    @media (max-width: 660px) {
+      display: flex !important;
+      justify-content: center!important;
     }
   }
 
@@ -25,11 +35,13 @@
 
     @media (max-width: 645px) {
       padding: 5px 10px 20px 10px;
+      text-align: center;
     }
   }
 
   .footer-raw {
     display: flex;
+    
   }
 
   .footertext-bottom {
@@ -38,7 +50,6 @@
     font-size: 0.875rem;
     font-family: 'MuseoSans';
     font-weight: 100;
-    display: flex;
 
     @media (max-width: 837px) {
       padding: 10px 60px 28px 60px;
@@ -59,10 +70,12 @@
     padding: 100px 60px 20px 60px;
     font-size: 0.75rem;
     text-decoration: underline;
-    justify-content: right;
+    justify-content: center;
+    padding-left: 400px;
 
     @media (max-width: 1077px) {
       flex-direction: column;
+      padding-left: 0px;
     }
 
     @media (max-width: 837px) {
@@ -81,15 +94,15 @@
   .footertext-links {
     padding-right: 15px;
     color: variables.$dark-text-color;
+    white-space: nowrap;
 
-    @media (max-width: 646px) {
+    @media (max-width: 645px) {
       padding-left: 0;
       padding-right: 10px;
     }
 
     @media (max-width: 390px) {
-      padding-left: 0;
-      padding-right: 6px;
+      font-size: 6px;
     }
   }
 
@@ -101,30 +114,37 @@
 
   .logocontainer {
     display: flex;
-    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    margin-bottom: 20px;
 
     @media (max-width: 645px) {
-      margin-left: -50px;
+      margin-left: -3.5rem;
+      flex-direction: column;
+      align-items:end;
+      padding-right: 0.1rem;
+    }
+    .logo-text{
+      padding-left: 0.1rem;
     }
 
     .title {
       font-family: 'MuseoSans';
-      font-size: 2rem;
+      font-size: 1rem;
       color: variables.$dark-text-color;
       font-weight: 700;
-      // line-height: 2.5rem;
       margin-right: 0.5rem;
-      margin-left: 0.5rem;
+      padding-bottom: 1rem;
+      // margin-left: 0.5rem;
 
       @media (max-width: 645px) {
-        font-size: 1.45rem;
-      }
-
-      @media (max-width: 370px) {
-        font-size: 1.35rem;
+        font-size: 1.8rem;
       }
     }
-
+    span{
+      font-weight: 50;
+    }
     .title-sub {
       font-weight: 100 !important;
       font-family: 'MuseoSans';
@@ -132,31 +152,54 @@
       color: variables.$dark-text-color;
 
       @media (max-width: 645px) {
-        font-size: 1.45rem;
-      }
-
-      @media (max-width: 370px) {
-        font-size: 1.35rem;
+        font-size: 1.8rem;
       }
     }
 
     .logo {
-      height: 97px;
-      width: 110px;
+      height: 94px;
+      // width: 455px;
+      margin-top: -12px;
 
       img {
         object-fit: cover;
-        height: auto;
+        // height: auto;
         height: 70%;
-        margin-left: 50px;
+        margin-left:65px;
+      }
+       @media (max-width: 645px) {
+           height: 60px;
+      // width: 455px;
+      margin-top: -12px;
       }
     }
+    .footerLogoRight{
+      display: flex;
+      flex-direction: column;
+      .logo2 {
+      height: 94px;
+      // width: 455px;
+      margin-top: -12px;
+
+      img {
+        object-fit: cover;
+        // height: auto;
+        height: 70%;
+        margin-right:65px;
+         @media (max-width: 645px) {
+         margin-right:45px;
+      }
+      }
+    }
+    }
+    
 
     .footer-country-name {
-      font-size: 0.875rem;
+      font-size: 1.5rem;
       color: variables.$dark-text-color;
       font-family: 'MuseoSans';
-      margin-left: 0.6rem;
+      margin-left: 0.65rem;
+      margin-top: -15px;
     }
   }
 }

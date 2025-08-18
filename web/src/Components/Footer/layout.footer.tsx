@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import sliderLogo from '../../Assets/Images/mrvlogo.svg';
 import './layout.footer.scss';
 import { CcCircle } from 'react-bootstrap-icons';
+import footlogo from '../../Assets/Images/FooterLogo.png';
+import footlogo2 from '../../Assets/Images/double logo.png';
 
 const LayoutFooter = () => {
   const { t } = useTranslation(['common', 'homepage']);
@@ -13,17 +15,26 @@ const LayoutFooter = () => {
         <Col md={24} lg={24}>
           <div className="logocontainer">
             <div className="logo">
-              <img src={sliderLogo} alt="slider-logo" />
+              <img src={footlogo} alt="slider-logo" />
             </div>
-            <div>
-              <div style={{ display: 'flex' }}>
-                <div className="title">{'NATIONAL CLIMATE TRANSPARENCY '}</div>
-                <div className="title-sub">{'PLATFORM'}</div>
+            <div className="footerLogoRight">
+              <div className="title">
+                <span>Powered by</span>
               </div>
-              <div className="footer-country-name">
-                {process.env.REACT_APP_COUNTRY_NAME || 'CountryX'}
+              <div className="logo2">
+                <img src={footlogo2} alt="slider-logo" />
               </div>
             </div>
+
+            {/* <div className="logo-text">
+              <div style={{ display: "flex" }}>
+                <div className="title">
+                  {"IMPACT"} <span>REGISTRY</span>
+                </div> */}
+            {/* <div className="title-sub">{'REGISTRY'}</div> */}
+            {/* </div>
+              <div className="footer-country-name">{countryName}</div>
+            </div> */}
           </div>
         </Col>
       </Row>
@@ -31,38 +42,6 @@ const LayoutFooter = () => {
       <Row>
         <Col md={24} lg={24}>
           <div className="footertext">{t('homepage:footertext1')}</div>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={10} lg={10}>
-          <div className="footertext-bottom">
-            {process.env.REACT_APP_COUNTRY_NAME || 'CountryX'}
-            <CcCircle className="cc" color="#FFFF" size="10px" />
-          </div>
-        </Col>
-        <Col md={14} lg={14}>
-          <div className="footertext-link-container">
-            <div>
-              <a href="/info/help" className="footertext-links">
-                {t('homepage:Help')}
-              </a>
-              <a href="/info/status" className="footertext-links">
-                {t('homepage:Status')}
-              </a>
-              <a href="/info/cookie" className="footertext-links">
-                {t('homepage:Cookie')}
-              </a>
-              <a href="/info/codeOfConduct" className="footertext-links">
-                {t('homepage:codeOfConduct')}
-              </a>
-              <a href="/info/termsOfUse" className="footertext-links">
-                {t('homepage:terms')}
-              </a>
-              <a href="/info/privacy" className="footertext-links">
-                {t('homepage:privacy')}
-              </a>
-            </div>
-          </div>
         </Col>
       </Row>
     </div>

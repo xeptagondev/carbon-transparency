@@ -15,6 +15,7 @@ export enum NatAnchor {
   NDC = "NDC",
   NAP = "NAP",
   NDP = "NDP",
+  NECCS = "NECCS",
   OTHER = "Other",
 }
 

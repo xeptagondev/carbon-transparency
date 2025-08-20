@@ -17,22 +17,29 @@ export enum IntSupChannel {
 
 export enum IntFinInstrument {
   GRANT = 'Grant',
-  CONCES_LOAN = 'Concessional Loan',
-  NON_CONCES_LOAN = 'Non-concessional Loan',
   EQUITY = 'Equity',
-  GUARANTEE = 'Guarantee',
-  INSURANCE = 'Insurance',
+  COMM_BONDS_PRIVATE = 'Commercial Bonds (private sector)',
+  COMM_LOAN_PRIVATE = 'Commercial Loan (private sector)',
+  NATIONAL_BUDGET = 'National Budget',
+  NATIONAL_FISCAL_POLICY = 'National Fiscal Policy',
+  NATIONAL_MONETARY_POLICY = 'National Monetary Policy',
+  SOVEREIGN_BONDS = 'Sovereign Bonds',
+  SOVEREIGN_WEALTH_FUND = 'Sovereign Wealth Fund Investments',
+  ISLAMIC_FINANCE = 'Islamic Finance Instruments',
   OTHERS = 'Others',
 }
 
 export enum NatFinInstrument {
   GRANT = 'Grant',
   EQUITY = 'Equity',
-  COMM_BONDS = 'Commercial Bonds (private sector)',
-  COMM_LOAN = 'Commercial Loan (private sector)',
-  NAT_BUDGET = 'National Budget',
-  NAT_FISCAL = 'National Fiscal Policy',
-  NAT_MONETARY = 'National Monetary Policy',
+  COMM_BONDS_PRIVATE = 'Commercial Bonds (private sector)',
+  COMM_LOAN_PRIVATE = 'Commercial Loan (private sector)',
+  NATIONAL_BUDGET = 'National Budget',
+  NATIONAL_FISCAL_POLICY = 'National Fiscal Policy',
+  NATIONAL_MONETARY_POLICY = 'National Monetary Policy',
+  SOVEREIGN_BONDS = 'Sovereign Bonds',
+  SOVEREIGN_WEALTH_FUND = 'Sovereign Wealth Fund Investments',
+  ISLAMIC_FINANCE = 'Islamic Finance Instruments',
   OTHERS = 'Others',
 }
 

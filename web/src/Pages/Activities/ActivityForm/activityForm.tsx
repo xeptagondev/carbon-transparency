@@ -201,6 +201,12 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
       if (id === undefined && method === 'create') {
         setMtgStartYear(0);
       }
+
+      if (method === 'update' && isGasFlowCheck(activityMigratedData?.type)) {
+        setMtgStartYear(startYear1 || 0);
+        setIsGasFlow(true);
+        setIsMtgButtonEnabled(true);
+      }
       // KL: set Mitigation Start year to activity startYear
       // setMtgStartYear(startYear1 ?? 0);
     }
@@ -621,6 +627,8 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
           },
           achievedGHGReduction: parseFloat(form.getFieldValue('achievedGHGReduction')),
           expectedGHGReduction: parseFloat(form.getFieldValue('expectedGHGReduction')),
+          unit: selectedGhg,
+          startYear: startYear1,
         };
         const response: any = await put('national/activities/mitigation/update', payload);
 

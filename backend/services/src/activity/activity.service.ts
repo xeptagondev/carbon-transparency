@@ -1454,7 +1454,7 @@ export class ActivityService {
 		return log;
 	}
 
-	//MARK: update mitigation timeline Data
+	// MARK: update mitigation timeline Data
 	async updateMitigationTimeline(mitigationTimelineDto: mitigationTimelineDto, user: User) {
 		const { activityId, mitigationTimeline, expectedGHGReduction, achievedGHGReduction } = mitigationTimelineDto;
 		const activity = await this.linkUnlinkService.findActivityByIdWithSupports(activityId);
@@ -1479,13 +1479,24 @@ export class ActivityService {
 			);
 		}
 
+		 
 		const currentMitigationTimeline = activity.mitigationTimeline;
+
+		let unit = undefined;
+		let startYear = undefined;
+		if (currentMitigationTimeline) {
+			unit = currentMitigationTimeline.unit;
+			startYear = currentMitigationTimeline.startYear;
+		}else{
+			unit = mitigationTimelineDto.unit;
+			startYear = mitigationTimelineDto.startYear;
+		}
 
 		const gwpSetting = await this.getGwpSetting()
 
 		let gwpValue: number = 1;
 
-		switch (currentMitigationTimeline.unit) {
+		switch (unit) {
 			case GHGS.NO:
 				gwpValue = gwpSetting[GHGS.NO];
 				break;
@@ -1494,12 +1505,14 @@ export class ActivityService {
 				break;
 		}
 		
-		this.payloadValidator.validateMitigationTimelinePayload(mitigationTimelineDto, gwpValue, currentMitigationTimeline.startYear);
+		this.payloadValidator.validateMitigationTimelinePayload(mitigationTimelineDto, gwpValue, startYear);
 
 		const updatedMitigationTimeline = {
 			...currentMitigationTimeline,
+			unit:unit,
 			expected: mitigationTimeline.expected,
-			actual: mitigationTimeline.actual
+			actual: mitigationTimeline.actual,
+			startYear: startYear
 		};
 
 		const logs = [];

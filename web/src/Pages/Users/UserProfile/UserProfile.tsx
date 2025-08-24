@@ -105,7 +105,7 @@ const UserProfile = () => {
             <Button className="mg-left-1 btn-danger mg-bottom-1" onClick={() => signOut()}>
               {t('userProfile:logOut')}
             </Button>
-            <LanguageSelection i18n={i18n}></LanguageSelection>
+            {/* <LanguageSelection i18n={i18n}></LanguageSelection> */}
           </Row>
         </Col>
       </Row>

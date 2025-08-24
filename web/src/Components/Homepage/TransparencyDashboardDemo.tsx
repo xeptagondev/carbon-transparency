@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { Col, Row } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import PieChart from '../Charts/PieChart/pieChart';
@@ -7,6 +7,7 @@ import { ChartData } from '../../Definitions/dashboard.definitions';
 import { useTranslation } from 'react-i18next';
 import { dashboardHalfColumnBps } from '../../Definitions/breakpoints/breakpoints';
 import './TransparencyDashboardDemo.scss';
+import React, { useState, useEffect, useRef } from 'react';
 
 const TransparencyDashboardDemo: React.FC = () => {
   const { t } = useTranslation(['dashboard', 'actionList', 'columnHeader', 'homepage']);
@@ -69,7 +70,19 @@ const TransparencyDashboardDemo: React.FC = () => {
     lastUpdatedTime: Date.now() / 1000,
   };
 
-  const chartWidth = 600;
+  // const chartWidth = 600;
+  // const chartRef = useRef(null);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [chartWidth, setChartWidth] = useState(600);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (chartRef.current) setChartWidth(chartRef.current.offsetWidth);
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   return (
     <div className="transparency-demo-dashboard section">
@@ -101,7 +114,9 @@ const TransparencyDashboardDemo: React.FC = () => {
                       </Col>
                     </Row>
                   </div>
-                  <PieChart chart={actionChart} t={t} chartWidth={chartWidth} />
+                  <div className="chart-container" ref={chartRef}>
+                    <PieChart chart={actionChart} t={t} chartWidth={chartWidth} />
+                  </div>
                 </>
               )}
             </div>
@@ -126,7 +141,9 @@ const TransparencyDashboardDemo: React.FC = () => {
                       </Col>
                     </Row>
                   </div>
-                  <PieChart chart={projectChart} t={t} chartWidth={chartWidth} />
+                  <div className="chart-container" ref={chartRef}>
+                    <PieChart chart={projectChart} t={t} chartWidth={chartWidth} />
+                  </div>
                 </>
               )}
             </div>
@@ -151,7 +168,9 @@ const TransparencyDashboardDemo: React.FC = () => {
                       </Col>
                     </Row>
                   </div>
-                  <PieChart chart={supportChart} t={t} chartWidth={chartWidth} />
+                  <div className="chart-container" ref={chartRef}>
+                    <PieChart chart={supportChart} t={t} chartWidth={chartWidth} />
+                  </div>
                 </>
               )}
             </div>
@@ -176,7 +195,9 @@ const TransparencyDashboardDemo: React.FC = () => {
                       </Col>
                     </Row>
                   </div>
-                  <PieChart chart={financeChart} t={t} chartWidth={chartWidth} />
+                  <div className="chart-container" ref={chartRef}>
+                    <PieChart chart={financeChart} t={t} chartWidth={chartWidth} />
+                  </div>
                 </>
               )}
             </div>

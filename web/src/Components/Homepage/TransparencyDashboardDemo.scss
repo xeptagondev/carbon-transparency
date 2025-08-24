@@ -1,32 +1,69 @@
 @import '../../Assets/Styles/variables.scss';
 
+$chart-width-small: 400px;
+$chart-width-medium: 500px;
+$chart-width-large: 600px;
+
+$breakpoint-md: 600px;
+$breakpoint-lg: 1200px;
+
 .transparency-demo-dashboard {
-    padding: 20px;
+  padding: 20px 0px 20px 0px;
+  .section{
+    padding: 0px !important;
+  }
 
-    .chart-section-card {
-        margin: 1rem 0rem;
-        padding: 1rem;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
+  .chart-section-card {
+    margin: 1rem 0rem;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
 
-        .chart-title {
-            font-size: large;
-            font-weight: 600;
-            color: $text-color-80;
-            margin: 20px 20px 0 20px;
-        }
+    .chart-title {
+      font-size: large;
+      font-weight: 600;
+      color: $text-color-80;
+      margin: 20px 20px 0 20px;
     }
 
-    .chart-update-time {
-        margin: -40px 15px 30px;
-        text-align: right;
-
-        .time-chip {
-            align-content: center;
-            height: 28px;
-            border-width: 0;
-            background-color: $accent-color-20;
-            color: $accent-color-80;
-        }
+    .apexcharts-canvas {
+      position: relative;
+      direction: ltr !important;
+      user-select: none;
+      @media (max-width: $breakpoint-md) {
+        width: $chart-width-small !important;
+      }
     }
+    .chart-container {
+      width: $chart-width-large; // default
+
+      @media (max-width: $breakpoint-lg) {
+        width: $chart-width-medium;
+      }
+
+      @media (max-width: $breakpoint-md) {
+        width: $chart-width-small;
+      }
+    }
+     @media (max-width: $breakpoint-md) {
+        padding: 1rem 0rem 1rem 0rem;
+
+      }
+  }
+
+  .chart-update-time {
+    margin: -40px 15px 30px;
+    text-align: right;
+
+    .time-chip {
+      align-content: center;
+      height: 28px;
+      border-width: 0;
+      background-color: $accent-color-20;
+      color: $accent-color-80;
+    }
+      @media (max-width: $breakpoint-md) {
+        display: none;
+      }
+  }
 }

@@ -22,7 +22,7 @@ const Vision = () => {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
-            <h2 className="vision-title">{t('visionTitle')}</h2>
+            {/* <h2 className="vision-title">{t('visionTitle')}</h2> */}
             <p className="vision-description">{t('visionDescrption')}</p>
             <h3 className="vision-subtitle">{t('visionSubtitle')}</h3>
 

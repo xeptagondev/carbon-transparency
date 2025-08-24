@@ -36,6 +36,7 @@ import FeatureCards from '../../Components/Homepage/Keyfeatures';
 import Vision from '../../Components/Homepage/Vision';
 import WhyThisPlatform from '../../Components/Homepage/WhyThisPlatform';
 import TransparencyDashboardDemo from '../../Components/Homepage/TransparencyDashboardDemo';
+import DataLineChart from '../../Components/Homepage/DataChart';
 
 const Homepage = () => {
   const { i18n, t } = useTranslation(['common', 'homepage']);
@@ -155,7 +156,8 @@ const Homepage = () => {
       <Vision />
       <WhyThisPlatform />
       <TransparencyDashboardDemo />
-      <DigitalPublicGood />
+      <DataLineChart />
+      {/* <DigitalPublicGood /> */}
       {/* <MapAnimation /> */}
       {/* <DemoSite /> */}
       {/* <ProcessFlow /> */}

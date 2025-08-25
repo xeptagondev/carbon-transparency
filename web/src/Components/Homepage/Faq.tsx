@@ -93,7 +93,7 @@ const FAQ = () => {
             </div>
           )}
         </div>
-        <div className="faq-item">
+        {/* <div className="faq-item">
           <button
             className={`faq-question ${openIndex === 3 ? 'active' : ''}`}
             onClick={() => toggleItem(3)}
@@ -119,8 +119,8 @@ const FAQ = () => {
               />
             </div>
           )}
-        </div>
-        <div className="faq-item">
+        </div> */}
+        {/* <div className="faq-item">
           <button
             className={`faq-question ${openIndex === 4 ? 'active' : ''}`}
             onClick={() => toggleItem(4)}
@@ -284,7 +284,7 @@ const FAQ = () => {
               />
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

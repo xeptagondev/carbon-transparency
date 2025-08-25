@@ -23,7 +23,7 @@ const Vision = () => {
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
             {/* <h2 className="vision-title">{t('visionTitle')}</h2> */}
-            <p className="vision-description">{t('visionDescrption')}</p>
+            <p className="vision-description">{t('visionDescription')}</p>
             <h3 className="vision-subtitle">{t('visionSubtitle')}</h3>
 
             <div className="vision-grid">

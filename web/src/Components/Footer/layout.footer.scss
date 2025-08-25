@@ -36,6 +36,7 @@
     @media (max-width: 645px) {
       padding: 5px 10px 20px 10px;
       text-align: center;
+      font-size: 0.7rem;
     }
   }
 
@@ -124,6 +125,7 @@
       flex-direction: column;
       align-items:end;
       padding-right: 0.1rem;
+      margin-bottom: 0px;
     }
     .logo-text{
       padding-left: 0.1rem;
@@ -139,7 +141,7 @@
       // margin-left: 0.5rem;
 
       @media (max-width: 645px) {
-        font-size: 1.8rem;
+        font-size: 0.7rem;
       }
     }
     span{

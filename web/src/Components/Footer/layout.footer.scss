@@ -40,6 +40,19 @@
     }
   }
 
+   .footertext2 {
+    color: variables.$dark-text-color;
+    padding: 5px 60px 20px 60px;
+    font-size: 0.875rem;
+    text-align: end;
+
+    @media (max-width: 645px) {
+      padding: 5px 10px 20px 10px;
+      text-align: center;
+      font-size: 0.7rem;
+    }
+  }
+
   .footer-raw {
     display: flex;
     

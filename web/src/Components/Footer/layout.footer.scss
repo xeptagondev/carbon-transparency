@@ -159,15 +159,15 @@
     }
 
     .logo {
-      height: 94px;
+      height: 120px;
       // width: 455px;
       margin-top: -12px;
 
       img {
         object-fit: cover;
         // height: auto;
-        height: 70%;
-        margin-left:65px;
+        height: 80%;
+        margin-left:45px;
       }
        @media (max-width: 645px) {
            height: 60px;

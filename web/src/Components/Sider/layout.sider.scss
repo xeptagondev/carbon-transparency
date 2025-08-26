@@ -46,9 +46,8 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding-top: 15px;
-      padding-right: 10px;
-      padding-left: 20px;
+      justify-content: center;
+      // padding-left: 15px;
       cursor: pointer;
 
       .sider-logo-system-name {
@@ -73,16 +72,17 @@
       }
 
         .logo {
-        height: 52px;
+        height: 90px;
         width: auto;
+        margin-bottom: 0px;
         // width: 50px;
 
         img {
           object-fit: cover;
           height: auto;
           height: 78%;
-          margin-top: 6px;
-          margin-right: 5px;
+          // margin-top: 6px;
+          // margin-right: 5px;
         }
       }
     }
@@ -90,7 +90,7 @@
     .sider-menu-container {
       overflow-y: auto;
       max-height: 80vh;
-      padding-top: 10px;
+      // padding-top: 10px;
       padding-right: 8px;
 
       .ant-menu-item-selected {

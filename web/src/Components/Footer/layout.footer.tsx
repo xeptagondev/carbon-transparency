@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import sliderLogo from '../../Assets/Images/mrvlogo.svg';
 import './layout.footer.scss';
 import { CcCircle } from 'react-bootstrap-icons';
-import footlogo from '../../Assets/Images/FooterLogo.png';
+import footlogo from '../../Assets/Images/BahrainLogo.png';
 import footlogo2 from '../../Assets/Images/double logo.png';
 
 const LayoutFooter = () => {

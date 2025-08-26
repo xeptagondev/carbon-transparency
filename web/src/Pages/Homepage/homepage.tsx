@@ -165,7 +165,7 @@ const Homepage = () => {
       {/* <PartnershipBanner /> */}
       <FAQ />
 
-      <Row className="developer-resources-row">
+      {/* <Row className="developer-resources-row">
         <Col xs={12} sm={6} md={6} lg={3} xl={3} className="Devresources">
           <div className="resource-item">
             <b>{t('homepage:develperResources.title')}</b>
@@ -190,7 +190,7 @@ const Homepage = () => {
         <Col xs={12} sm={6} md={6} lg={3} xl={3} className="Devresources">
           <div className="resource-item connects">Data Templates</div>
         </Col>
-      </Row>
+      </Row> */}
       <LayoutFooter />
     </div>
   );

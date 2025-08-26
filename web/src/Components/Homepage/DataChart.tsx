@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 import React, { useEffect, useState } from 'react';
-import LineChart from '../Charts/line chart/lineChart';
+// import LineChart from '../Charts/line chart/lineChart';
 
 interface SeriesType {
   name: string;
@@ -36,7 +36,7 @@ const DataLineChart = () => {
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">GHG Actual Reductions</h1>
-      <LineChart labels={labels} series={series} />
+      {/* <LineChart labels={labels} series={series} /> */}
     </div>
   );
 };

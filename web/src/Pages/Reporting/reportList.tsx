@@ -62,14 +62,14 @@ const transparencyReports: TransparencyReport[] = [
   { annex: AnnexType.TWO, report: ReportType.SEVEN },
   { annex: AnnexType.TWO, report: ReportType.EIGHT },
   { annex: AnnexType.TWO, report: ReportType.NINE },
-  // { annex: AnnexType.THREE, report: ReportType.SIX },
-  // { annex: AnnexType.THREE, report: ReportType.SEVEN },
-  // { annex: AnnexType.THREE, report: ReportType.EIGHT },
-  // { annex: AnnexType.THREE, report: ReportType.NINE },
-  // { annex: AnnexType.THREE, report: ReportType.TEN },
-  // { annex: AnnexType.THREE, report: ReportType.ELEVEN },
-  // { annex: AnnexType.THREE, report: ReportType.TWELVE },
-  // { annex: AnnexType.THREE, report: ReportType.THIRTEEN },
+  { annex: AnnexType.THREE, report: ReportType.SIX },
+  { annex: AnnexType.THREE, report: ReportType.SEVEN },
+  { annex: AnnexType.THREE, report: ReportType.EIGHT },
+  { annex: AnnexType.THREE, report: ReportType.NINE },
+  { annex: AnnexType.THREE, report: ReportType.TEN },
+  { annex: AnnexType.THREE, report: ReportType.ELEVEN },
+  { annex: AnnexType.THREE, report: ReportType.TWELVE },
+  { annex: AnnexType.THREE, report: ReportType.THIRTEEN },
 ];
 
 const reportList = () => {
@@ -281,432 +281,432 @@ const reportList = () => {
     }
   };
 
-  // const getTableSixData = async () => {
-  //   // ML - rounded up requiredAmountDomestic and requiredAmount
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[6],
-  //       size: aggregatePageSize[6],
-  //     };
+  const getTableSixData = async () => {
+    // ML - rounded up requiredAmountDomestic and requiredAmount
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[6],
+        size: aggregatePageSize[6],
+      };
 
-  //     const response: any = await post('national/reports/3/6/query', payload);
-  //     if (response) {
-  //       const tempReportSixData: ReportSixRecord[] = [];
+      const response: any = await post('national/reports/3/6/query', payload);
+      if (response) {
+        const tempReportSixData: ReportSixRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportSixData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           sector: report.sector,
-  //           subSectors: report.subSector ?? [],
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           requiredAmountDomestic: Math.round(report.requiredAmountDomestic),
-  //           requiredAmount: Math.round(report.requiredAmount),
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           financialInstrument: report.internationalFinancialInstrument,
-  //           type: report.type,
-  //           techDevelopment: report.meansOfImplementation === ImplMeans.TECH_DEV ? 'Yes' : 'No',
-  //           capacityBuilding:
-  //             report.meansOfImplementation === ImplMeans.CAPACITY_BUILD ? 'Yes' : 'No',
-  //           anchoredInNationalStrategy: report.anchoredInNationalStrategy ? 'Yes' : 'No',
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //           supportChannel: report.internationalSupportChannel,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportSixData.push({
+            key: index,
+            activityId: report.activityId,
+            sector: report.sector,
+            subSectors: report.subSector ?? [],
+            titleOfActivity: report.title,
+            description: report.description,
+            requiredAmountDomestic: Math.round(report.requiredAmountDomestic),
+            requiredAmount: Math.round(report.requiredAmount),
+            startYear: report.startYear,
+            endYear: report.endYear,
+            financialInstrument: report.internationalFinancialInstrument,
+            type: report.type,
+            techDevelopment: report.meansOfImplementation === ImplMeans.TECH_DEV ? 'Yes' : 'No',
+            capacityBuilding:
+              report.meansOfImplementation === ImplMeans.CAPACITY_BUILD ? 'Yes' : 'No',
+            anchoredInNationalStrategy: report.anchoredInNationalStrategy ? 'Yes' : 'No',
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+            supportChannel: report.internationalSupportChannel,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.SIX]: tempReportSixData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.SIX]: tempReportSixData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.SIX]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.SIX]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableSevenData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[7],
-  //       size: aggregatePageSize[7],
-  //     };
+  const getTableSevenData = async () => {
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[7],
+        size: aggregatePageSize[7],
+      };
 
-  //     const response: any = await post('national/reports/3/7/query', payload);
+      const response: any = await post('national/reports/3/7/query', payload);
 
-  //     if (response) {
-  //       const tempReportSevenData: ReportSevenRecord[] = [];
+      if (response) {
+        const tempReportSevenData: ReportSevenRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportSevenData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           supportChannel: report.internationalSupportChannel,
-  //           recipientEntities: report.recipientEntities ?? [],
-  //           nationalImplementingEntities: report.nationalImplementingEntity ?? [],
-  //           internationalImplementingEntities: report.internationalImplementingEntity ?? [],
-  //           receivedAmount: report.receivedAmount,
-  //           receivedAmountDomestic: report.receivedAmountDomestic,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           financialInstrument: report.internationalFinancialInstrument,
-  //           financingStatus: report.financingStatus,
-  //           type: report.type,
-  //           sector: report.sector,
-  //           subSectors: report.subSector ?? [],
-  //           techDevelopment: report.meansOfImplementation === ImplMeans.TECH_DEV ? 'Yes' : 'No',
-  //           capacityBuilding:
-  //             report.meansOfImplementation === ImplMeans.CAPACITY_BUILD ? 'Yes' : 'No',
-  //           activityStatus: report.status,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportSevenData.push({
+            key: index,
+            activityId: report.activityId,
+            titleOfActivity: report.title,
+            description: report.description,
+            supportChannel: report.internationalSupportChannel,
+            recipientEntities: report.recipientEntities ?? [],
+            nationalImplementingEntities: report.nationalImplementingEntity ?? [],
+            internationalImplementingEntities: report.internationalImplementingEntity ?? [],
+            receivedAmount: report.receivedAmount,
+            receivedAmountDomestic: report.receivedAmountDomestic,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            financialInstrument: report.internationalFinancialInstrument,
+            financingStatus: report.financingStatus,
+            type: report.type,
+            sector: report.sector,
+            subSectors: report.subSector ?? [],
+            techDevelopment: report.meansOfImplementation === ImplMeans.TECH_DEV ? 'Yes' : 'No',
+            capacityBuilding:
+              report.meansOfImplementation === ImplMeans.CAPACITY_BUILD ? 'Yes' : 'No',
+            activityStatus: report.status,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.SEVEN]: tempReportSevenData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.SEVEN]: tempReportSevenData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.SEVEN]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.SEVEN]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableEightData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[8],
-  //       size: aggregatePageSize[8],
-  //     };
+  const getTableEightData = async () => {
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[8],
+        size: aggregatePageSize[8],
+      };
 
-  //     const response: any = await post('national/reports/3/8/query', payload);
+      const response: any = await post('national/reports/3/8/query', payload);
 
-  //     if (response) {
-  //       const tempReportEightData: ReportEightRecord[] = [];
+      if (response) {
+        const tempReportEightData: ReportEightRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportEightData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           sector: report.sector,
-  //           subSectors: report.subSector ?? [],
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           type: report.type,
-  //           technologyType: report.technologyType,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportEightData.push({
+            key: index,
+            activityId: report.activityId,
+            sector: report.sector,
+            subSectors: report.subSector ?? [],
+            titleOfActivity: report.title,
+            description: report.description,
+            type: report.type,
+            technologyType: report.technologyType,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.EIGHT]: tempReportEightData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.EIGHT]: tempReportEightData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.EIGHT]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.EIGHT]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableNineData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[9],
-  //       size: aggregatePageSize[9],
-  //     };
+  const getTableNineData = async () => {
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[9],
+        size: aggregatePageSize[9],
+      };
 
-  //     const response: any = await post('national/reports/3/9/query', payload);
+      const response: any = await post('national/reports/3/9/query', payload);
 
-  //     if (response) {
-  //       const tempReportNineData: ReportNineRecord[] = [];
+      if (response) {
+        const tempReportNineData: ReportNineRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportNineData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           technologyType: report.technologyType,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           recipientEntities: report.recipientEntities ?? [],
-  //           nationalImplementingEntities: report.nationalImplementingEntity ?? [],
-  //           internationalImplementingEntities: report.internationalImplementingEntity ?? [],
-  //           type: report.type,
-  //           sector: report.sector,
-  //           subSectors: report.subSector ?? [],
-  //           activityStatus: report.status,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportNineData.push({
+            key: index,
+            activityId: report.activityId,
+            titleOfActivity: report.title,
+            description: report.description,
+            technologyType: report.technologyType,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            recipientEntities: report.recipientEntities ?? [],
+            nationalImplementingEntities: report.nationalImplementingEntity ?? [],
+            internationalImplementingEntities: report.internationalImplementingEntity ?? [],
+            type: report.type,
+            sector: report.sector,
+            subSectors: report.subSector ?? [],
+            activityStatus: report.status,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.NINE]: tempReportNineData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.NINE]: tempReportNineData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.NINE]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.NINE]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableTenData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[10],
-  //       size: aggregatePageSize[10],
-  //     };
+  const getTableTenData = async () => {
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[10],
+        size: aggregatePageSize[10],
+      };
 
-  //     const response: any = await post('national/reports/3/10/query', payload);
+      const response: any = await post('national/reports/3/10/query', payload);
 
-  //     if (response) {
-  //       const tempReportTenData: ReportTenRecord[] = [];
+      if (response) {
+        const tempReportTenData: ReportTenRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportTenData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           sector: report.sector,
-  //           subSectors: report.subSector ?? [],
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           type: report.type,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportTenData.push({
+            key: index,
+            activityId: report.activityId,
+            sector: report.sector,
+            subSectors: report.subSector ?? [],
+            titleOfActivity: report.title,
+            description: report.description,
+            type: report.type,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.TEN]: tempReportTenData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.TEN]: tempReportTenData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.TEN]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.TEN]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableElevenData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[11],
-  //       size: aggregatePageSize[11],
-  //     };
+  const getTableElevenData = async () => {
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[11],
+        size: aggregatePageSize[11],
+      };
 
-  //     const response: any = await post('national/reports/3/11/query', payload);
+      const response: any = await post('national/reports/3/11/query', payload);
 
-  //     if (response) {
-  //       const tempReportElevenData: ReportElevenRecord[] = [];
+      if (response) {
+        const tempReportElevenData: ReportElevenRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportElevenData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           recipientEntities: report.recipientEntities ?? [],
-  //           nationalImplementingEntities: report.nationalImplementingEntity ?? [],
-  //           internationalImplementingEntities: report.internationalImplementingEntity ?? [],
-  //           type: report.type,
-  //           sector: report.sector,
-  //           subSectors: report.subSector ?? [],
-  //           activityStatus: report.status,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportElevenData.push({
+            key: index,
+            activityId: report.activityId,
+            titleOfActivity: report.title,
+            description: report.description,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            recipientEntities: report.recipientEntities ?? [],
+            nationalImplementingEntities: report.nationalImplementingEntity ?? [],
+            internationalImplementingEntities: report.internationalImplementingEntity ?? [],
+            type: report.type,
+            sector: report.sector,
+            subSectors: report.subSector ?? [],
+            activityStatus: report.status,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.ELEVEN]: tempReportElevenData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.ELEVEN]: tempReportElevenData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.ELEVEN]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.ELEVEN]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableTwelveData = async () => {
-  //   // ML - rounded up requiredAmountDomestic and requiredAmount
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[12],
-  //       size: aggregatePageSize[12],
-  //     };
+  const getTableTwelveData = async () => {
+    // ML - rounded up requiredAmountDomestic and requiredAmount
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[12],
+        size: aggregatePageSize[12],
+      };
 
-  //     const response: any = await post('national/reports/3/12/query', payload);
+      const response: any = await post('national/reports/3/12/query', payload);
 
-  //     if (response) {
-  //       const tempReportTwelveData: ReportTwelveRecord[] = [];
+      if (response) {
+        const tempReportTwelveData: ReportTwelveRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportTwelveData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           recipientEntities: report.recipientEntities ?? [],
-  //           supportChannel: report.internationalSupportChannel ?? [],
-  //           requiredAmountDomestic: Math.round(report.requiredAmountDomestic) ?? [],
-  //           requiredAmount: Math.round(report.requiredAmount),
-  //           activityStatus: report.status,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportTwelveData.push({
+            key: index,
+            activityId: report.activityId,
+            titleOfActivity: report.title,
+            description: report.description,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            recipientEntities: report.recipientEntities ?? [],
+            supportChannel: report.internationalSupportChannel ?? [],
+            requiredAmountDomestic: Math.round(report.requiredAmountDomestic) ?? [],
+            requiredAmount: Math.round(report.requiredAmount),
+            activityStatus: report.status,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.TWELVE]: tempReportTwelveData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.TWELVE]: tempReportTwelveData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.TWELVE]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.TWELVE]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
-  // const getTableThirteenData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const payload: any = {
-  //       page: aggregateCurrentPage[13],
-  //       size: aggregatePageSize[13],
-  //     };
+  const getTableThirteenData = async () => {
+    setLoading(true);
+    try {
+      const payload: any = {
+        page: aggregateCurrentPage[13],
+        size: aggregatePageSize[13],
+      };
 
-  //     const response: any = await post('national/reports/3/13/query', payload);
+      const response: any = await post('national/reports/3/13/query', payload);
 
-  //     if (response) {
-  //       const tempReportThirteenData: ReportThirteenRecord[] = [];
+      if (response) {
+        const tempReportThirteenData: ReportThirteenRecord[] = [];
 
-  //       response.data.forEach((report: any, index: number) => {
-  //         tempReportThirteenData.push({
-  //           key: index,
-  //           activityId: report.activityId,
-  //           titleOfActivity: report.title,
-  //           description: report.description,
-  //           startYear: report.startYear,
-  //           endYear: report.endYear,
-  //           recipientEntities: report.recipientEntities ?? [],
-  //           supportChannel: report.internationalSupportChannel,
-  //           receivedAmountDomestic: report.receivedAmountDomestic,
-  //           receivedAmount: report.receivedAmount,
-  //           activityStatus: report.status,
-  //           achievedGHGReduction: report.achievedGHGReductionAlternate
-  //             ? report.achievedGHGReductionAlternate
-  //             : report.achievedGHGReduction ?? 'N/A',
-  //           additionalInfo: report.etfDescription,
-  //         });
-  //       });
+        response.data.forEach((report: any, index: number) => {
+          tempReportThirteenData.push({
+            key: index,
+            activityId: report.activityId,
+            titleOfActivity: report.title,
+            description: report.description,
+            startYear: report.startYear,
+            endYear: report.endYear,
+            recipientEntities: report.recipientEntities ?? [],
+            supportChannel: report.internationalSupportChannel,
+            receivedAmountDomestic: report.receivedAmountDomestic,
+            receivedAmount: report.receivedAmount,
+            activityStatus: report.status,
+            achievedGHGReduction: report.achievedGHGReductionAlternate
+              ? report.achievedGHGReductionAlternate
+              : report.achievedGHGReduction ?? 'N/A',
+            additionalInfo: report.etfDescription,
+          });
+        });
 
-  //       setAggregateReportData((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.THIRTEEN]: tempReportThirteenData,
-  //       }));
+        setAggregateReportData((prevState) => ({
+          ...prevState,
+          [ReportType.THIRTEEN]: tempReportThirteenData,
+        }));
 
-  //       setAggregateReportTotal((prevState) => ({
-  //         ...prevState,
-  //         [ReportType.THIRTEEN]: response.response.data.total,
-  //       }));
+        setAggregateReportTotal((prevState) => ({
+          ...prevState,
+          [ReportType.THIRTEEN]: response.response.data.total,
+        }));
 
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     displayErrorMessage(error);
-  //     setLoading(false);
-  //   }
-  // };
+        setLoading(false);
+      }
+    } catch (error: any) {
+      displayErrorMessage(error);
+      setLoading(false);
+    }
+  };
 
   // Function to Export Report Data
 
@@ -866,37 +866,37 @@ const reportList = () => {
     getAnnexTwoTableNineData();
   }, [aggregateAnnexIICurrentPage?.[9], aggregateAnnexIIPageSize?.[9]]);
 
-  // useEffect(() => {
-  //   getTableSixData();
-  // }, [aggregateCurrentPage?.[6], aggregatePageSize?.[6]]);
+  useEffect(() => {
+    getTableSixData();
+  }, [aggregateCurrentPage?.[6], aggregatePageSize?.[6]]);
 
-  // useEffect(() => {
-  //   getTableSevenData();
-  // }, [aggregateCurrentPage?.[7], aggregatePageSize?.[7]]);
+  useEffect(() => {
+    getTableSevenData();
+  }, [aggregateCurrentPage?.[7], aggregatePageSize?.[7]]);
 
-  // useEffect(() => {
-  //   getTableEightData();
-  // }, [aggregateCurrentPage?.[8], aggregatePageSize?.[9]]);
+  useEffect(() => {
+    getTableEightData();
+  }, [aggregateCurrentPage?.[8], aggregatePageSize?.[9]]);
 
-  // useEffect(() => {
-  //   getTableNineData();
-  // }, [aggregateCurrentPage?.[9], aggregatePageSize?.[9]]);
+  useEffect(() => {
+    getTableNineData();
+  }, [aggregateCurrentPage?.[9], aggregatePageSize?.[9]]);
 
-  // useEffect(() => {
-  //   getTableTenData();
-  // }, [aggregateCurrentPage?.[10], aggregatePageSize?.[10]]);
+  useEffect(() => {
+    getTableTenData();
+  }, [aggregateCurrentPage?.[10], aggregatePageSize?.[10]]);
 
-  // useEffect(() => {
-  //   getTableElevenData();
-  // }, [aggregateCurrentPage?.[11], aggregatePageSize?.[11]]);
+  useEffect(() => {
+    getTableElevenData();
+  }, [aggregateCurrentPage?.[11], aggregatePageSize?.[11]]);
 
-  // useEffect(() => {
-  //   getTableTwelveData();
-  // }, [aggregateCurrentPage?.[12], aggregatePageSize?.[12]]);
+  useEffect(() => {
+    getTableTwelveData();
+  }, [aggregateCurrentPage?.[12], aggregatePageSize?.[12]]);
 
-  // useEffect(() => {
-  //   getTableThirteenData();
-  // }, [aggregateCurrentPage?.[13], aggregatePageSize?.[13]]);
+  useEffect(() => {
+    getTableThirteenData();
+  }, [aggregateCurrentPage?.[13], aggregatePageSize?.[13]]);
 
   // Selected Reports Custom Rendering Function
 

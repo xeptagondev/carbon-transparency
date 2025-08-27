@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Menu, Layout, MenuProps, Row } from 'antd';
-import sliderLogo from '../../Assets/Images/qatarlogo.png';
+import sliderLogo from '../../Assets/Images/BahrainDark.svg';
 import { useNavigate } from 'react-router-dom';
 import './layout.sider.scss';
 import * as Icon from 'react-bootstrap-icons';
-import collapsedLogo from '../../Assets/Images/collapsedlogo.png';
+import collapsedLogo from '../../Assets/Images/BahrainCollapsedsider.svg';
 import {
   AppstoreOutlined,
   CloudDownloadOutlined,
@@ -104,7 +104,7 @@ const LayoutSider = (props: LayoutSiderProps) => {
                 src={
                   // import.meta.env.VITE_APP_COUNTRY_FLAG_URL ||
                   // "https://carbon-common-dev.s3.amazonaws.com/flag.png"
-                  'https://flagcdn.com/w320/qa.png'
+                  'https://flagcdn.com/w320/bh.png'
                 }
               />
             </div>

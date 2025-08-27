@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import sliderLogo from '../../Assets/Images/mrvlogo.svg';
 import './layout.footer.scss';
 import { CcCircle } from 'react-bootstrap-icons';
-import footlogo from '../../Assets/Images/FooterLogo.png';
+import footlogo from '../../Assets/Images/BahrainLogo.png';
 import footlogo2 from '../../Assets/Images/double logo.png';
 
 const LayoutFooter = () => {
@@ -41,7 +41,7 @@ const LayoutFooter = () => {
       <Divider className="divider" style={{ backgroundColor: '#FFFF' }} />
       <Row>
         <Col md={24} lg={12}>
-          <div className="footertext">{t('homepage:footertext1')}</div>
+          <div className="footertext">Transparent Climate Action for a Sustainable Future</div>
         </Col>
         <Col md={24} lg={12}>
           <div className="footertext2">System is based on UNDP Transparency Codebase.</div>

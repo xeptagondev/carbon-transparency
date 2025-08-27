@@ -13,18 +13,17 @@
   }
 }
 
-
 .login-container {
   height: 100vh;
   overflow-y: auto;
   // overflow-x: hidden;
   background-color: variables.$outside-background-color;
-  
-   .container-image {
-    background-image: url("../../Assets/Images/homepageqatar.webp");
+
+  .container-image {
+    background-image: url('../../Assets/Images/homepageBahrain.png');
     background-image: image-set(
-      "../../Assets/Images/homepageqatar.webp" type("image/png"),
-      "../../Assets/Images/homepageqatar.webp" type("image/webp")
+      '../../Assets/Images/homepageBahrain.png' type('image/png'),
+      '../../Assets/Images/homepageBahrain.png' type('image/webp')
     );
     background-size: cover;
     background-position: top !important;
@@ -33,7 +32,6 @@
   .login-img {
     height: 100%;
     width: auto;
-    
   }
 
   .login-img-waiting {
@@ -85,6 +83,25 @@
       }
     }
   }
+  .mrv-logo {
+    margin-top: 0px !important;
+
+    .logo-image {
+      // height: 10px;
+    //  background: linear-gradient(to right, #ffffff , #ce1126 75%);
+    //   border-top-right-radius: 20px;
+    //   border-bottom-right-radius: 20px;
+      display: flex;
+      align-items: right; /* vertical center */
+      margin-top: 0px !important;
+      justify-content: center; /* horizontal center */
+    }
+  }
+ 
+  .mrv-logo .logo-image img {
+    margin-top: 0px !important;
+    height: 100%;
+  }
 
   .login-text-contents {
     display: flex;
@@ -107,7 +124,11 @@
   }
 
   .ant-btn-primary {
-    background: linear-gradient(to right, variables.$gradient-background-start, variables.$gradient-background-end);
+    background: linear-gradient(
+      to right,
+      variables.$gradient-background-start,
+      variables.$gradient-background-end
+    );
     border: none;
     height: 2.4rem;
     font-size: 1rem;
@@ -120,7 +141,7 @@
     height: 40px;
     border-radius: 0.3rem;
   }
-  
+
   .form-item-header {
     color: #3a3541;
     opacity: 0.8;
@@ -189,7 +210,7 @@
   }
 
   .back-to-sign {
-    color: #0468B1;
+    color: #0468b1;
     cursor: pointer;
   }
 }

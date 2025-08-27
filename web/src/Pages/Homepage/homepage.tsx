@@ -7,7 +7,7 @@ import sliderLogo from '../../Assets/Images/mrvlogo.svg';
 import heroImage1 from '../../Assets/Images/homepage_img.webp';
 import heroImage2 from '../../Assets/Images/homepage_img2.webp';
 import heroImage3 from '../../Assets/Images/homepage_img3.webp';
-import logo_Gold from '../../Assets/Images/qatarlogo.png';
+import logo_Gold from '../../Assets/Images/BahrainLogo.png';
 import Doublelogo from '../../Assets/Images/double logo.png';
 // import undpLogo from '../../Assets/Images/undp1.webp';
 // import EBRD from '../../Assets/Images/EBRD.webp';

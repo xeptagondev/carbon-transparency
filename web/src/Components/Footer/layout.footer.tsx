@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import sliderLogo from '../../Assets/Images/mrvlogo.svg';
 import './layout.footer.scss';
 import { CcCircle } from 'react-bootstrap-icons';
-import footlogo from '../../Assets/Images/BahrainLogo.png';
-import footlogo2 from '../../Assets/Images/double logo.png';
+import footlogo from '../../Assets/Images/KoreanMinistryLogoWhite.png';
+import footlogo2 from '../../Assets/Images/kiudaDoubleLogo.png';
 
 const LayoutFooter = () => {
   const { t } = useTranslation(['common', 'homepage']);

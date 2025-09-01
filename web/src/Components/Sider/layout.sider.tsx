@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Menu, Layout, MenuProps, Row } from 'antd';
-import sliderLogo from '../../Assets/Images/BahrainDark.svg';
+import sliderLogo from '../../Assets/Images/KoreanMinistryLogo.png';
 import { useNavigate } from 'react-router-dom';
 import './layout.sider.scss';
 import * as Icon from 'react-bootstrap-icons';
-import collapsedLogo from '../../Assets/Images/BahrainCollapsedsider.svg';
+import collapsedLogo from '../../Assets/Images/collapsedMinistryLogo.png';
 import {
   AppstoreOutlined,
   CloudDownloadOutlined,

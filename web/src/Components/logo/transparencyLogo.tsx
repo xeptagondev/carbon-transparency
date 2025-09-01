@@ -1,6 +1,6 @@
 import './transparencyLogo.scss';
 import { Col, Row } from 'antd';
-import countryLogo from '../../Assets/Images/BahrainDark.svg';
+import countryLogo from '../../Assets/Images/KoreanMinistryLogo.png';
 import { useNavigate } from 'react-router-dom';
 
 const TransparencyLogo: React.FC = () => {

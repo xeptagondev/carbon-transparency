@@ -8,7 +8,7 @@ import heroImage1 from '../../Assets/Images/homepage_img.webp';
 import heroImage2 from '../../Assets/Images/homepage_img2.webp';
 import heroImage3 from '../../Assets/Images/homepage_img3.webp';
 import logo_Gold from '../../Assets/Images/KoreanMinistryLogo.png';
-import Doublelogo from '../../Assets/Images/kiudaDoubleLogo.png';
+import Doublelogo from '../../Assets/Images/KiudaDoubleLogo2.png';
 // import undpLogo from '../../Assets/Images/undp1.webp';
 // import EBRD from '../../Assets/Images/EBRD.webp';
 // import EBRDff from '../../Assets/Images/EBRD.png';

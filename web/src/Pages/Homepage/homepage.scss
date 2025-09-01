@@ -28,13 +28,13 @@ $title-color: #3a8ab5;
 
     img {
       object-fit: cover;
-      height: 80px;
-      width: 160px;
+       height: 81.75px;
+       width: 436.25px;
     }
   }
 
   .homepage-header-container {
-    background-color: rgba(12, 0, 0, 0.214);
+    background-color: #ffffff;
     height: 90px;
     padding-top: 15px;
 
@@ -98,10 +98,10 @@ $title-color: #3a8ab5;
   }
 
   .image-container {
-    background-image: url('../../Assets/Images/homepageBahrain.png');
+    background-image: url('../../Assets/Images/KoreanHeroImg.webp');
     background-image: image-set(
-      '../../Assets/Images/homepageBahrain.png' type('image/png'),
-      '../../Assets/Images/homepageBahrain.png' type('image/webp')
+      '../../Assets/Images/KoreanHeroImg.webp' type('image/png'),
+      '../../Assets/Images/KoreanHeroImg.webp' type('image/webp')
     );
     background-size: cover;
     // padding-top: 60px;
@@ -145,7 +145,7 @@ $title-color: #3a8ab5;
     justify-content: center;
     align-items: center;
     height: 90px;
-    background-color: rgba(12, 0, 0, 0.214);
+    background-color: #ffffff;
 
     button {
       // margin-top: 29px;

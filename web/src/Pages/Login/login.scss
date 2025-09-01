@@ -20,11 +20,9 @@
   background-color: variables.$outside-background-color;
 
   .container-image {
-    background-image: url('../../Assets/Images/homepageBahrain.png');
-    background-image: image-set(
-      '../../Assets/Images/homepageBahrain.png' type('image/png'),
-      '../../Assets/Images/homepageBahrain.png' type('image/webp')
-    );
+    background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0,0,0,0)),
+    url("../../Assets/Images/KoreanHeroImg.webp");
     background-size: cover;
     background-position: top !important;
   }

@@ -29,7 +29,7 @@ export const actionMenuWithAttaching = (
       dataSource={[
         {
           text: viewText,
-          icon: <InfoCircleOutlined style={{ color: '#8A1538' }} />,
+          icon: <InfoCircleOutlined style={{ color: '#456A3E' }} />,
           isDisabled: false,
           click: () => {
             {
@@ -39,7 +39,7 @@ export const actionMenuWithAttaching = (
         },
         {
           text: t(`tableAction:${calledIn}Edit`),
-          icon: <EditOutlined style={{ color: '#8A1538' }} />,
+          icon: <EditOutlined style={{ color: '#456A3E' }} />,
           isDisabled: !ability.can(Action.Update, entity),
           click: () => {
             {
@@ -82,7 +82,7 @@ export const actionMenuWithoutAttaching = (
       dataSource={[
         {
           text: viewText,
-          icon: <InfoCircleOutlined style={{ color: '#CE1126' }} />,
+          icon: <InfoCircleOutlined style={{ color: '#456A3E' }} />,
           isDisabled: false,
           click: () => {
             {
@@ -92,7 +92,7 @@ export const actionMenuWithoutAttaching = (
         },
         {
           text: t(`tableAction:${calledIn}Edit`),
-          icon: <EditOutlined style={{ color: '#CE1126' }} />,
+          icon: <EditOutlined style={{ color: '#456A3E' }} />,
           isDisabled: !ability.can(Action.Update, entity),
           click: () => {
             {

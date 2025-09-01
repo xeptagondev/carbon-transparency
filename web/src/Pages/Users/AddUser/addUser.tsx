@@ -454,7 +454,7 @@ const AddUser = () => {
                   <PhoneInput
                     placeholder={t('addUser:phoneNo')}
                     international
-                    defaultCountry="BH"
+                    defaultCountry="KR"
                     countryCallingCodeEditable={false}
                     onChange={() => {}}
                   />

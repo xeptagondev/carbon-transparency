@@ -21,7 +21,7 @@ const ScrollableList: React.FC<Props> = ({ listToShow }) => {
         key: index,
         label: item.length > 15 ? `${item.slice(0, 15)}...` : item,
         value: item,
-        color: 'rgba(233, 68, 118, 0.11)',
+        color: 'rgba(101, 233, 68, 0.11)',
       })
     );
   }

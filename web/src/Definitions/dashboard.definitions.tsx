@@ -32,6 +32,6 @@ export const chartColorMappings = {
     '#6B8E23',
     '#B44DD3',
   ],
-  finance: ['#F5D486', '#FF8183'],
-  support: ['#F5D486', '#FF8183'],
+  finance: ['#A5D6A7', '#93D1D7'],
+  support: ['#A5D6A7', '#93D1D7'],
 };

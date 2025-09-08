@@ -156,8 +156,12 @@ const Login: FC<LoginPageProps> = (props: LoginPageProps) => {
                 /> */}
                 <div className="gradient-overlay"></div>
                 <div className="text-ctn">
+                  <span className="text-ctn-country">
+                    {t('login:nationalNdc')}
+                    <br />
+                  </span>
                   <span>
-                    {t('login:nationalNdc')} <br /> {t('login:creditMrv')} <br />
+                    {t('login:creditMrv')} <br />
                     {t('login:management')}
                   </span>
                 </div>

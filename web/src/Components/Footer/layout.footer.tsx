@@ -44,7 +44,7 @@ const LayoutFooter = () => {
           <div className="footertext">Transparent Climate Action for a Sustainable Future</div>
         </Col>
         <Col md={24} lg={12}>
-          <div className="footertext2">System is based on UNDP Transparency Codebase.</div>
+          <div className="footertext2">System is based on UNDP ETF Framework.</div>
         </Col>
       </Row>
     </div>

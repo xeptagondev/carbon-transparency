@@ -17,7 +17,6 @@ const SupportRecievedChart = () => {
         undefined,
         statServerUrl
       );
-      console.log(response.data.stats);
       const supportReceived: number = response.data.stats.supportReceived;
       const supportNeeded: number = response.data.stats.supportNeeded;
       const recievedPercentage = (supportReceived * 100) / Math.max(supportNeeded, 1);

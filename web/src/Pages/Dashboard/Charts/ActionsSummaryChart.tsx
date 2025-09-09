@@ -32,8 +32,6 @@ const ActionsSummaryChart = () => {
     fetchActionData();
   }, []);
 
-  console.log(seriesLabels[series.findIndex((item) => item === 50)]);
-
   useEffect(() => {
     if (series.length > 0) {
       const currentMax = Math.max(...series);
@@ -43,7 +41,7 @@ const ActionsSummaryChart = () => {
 
   if (series.length === 0) {
     return (
-      <ChartWrapper title="" height="50%">
+      <ChartWrapper title="Actions Summary" height="50%">
         <div
           style={{
             height: 200,
@@ -68,7 +66,7 @@ const ActionsSummaryChart = () => {
   }
 
   return (
-    <ChartWrapper title="" height="50%">
+    <ChartWrapper title="Actions Summary" height="50%">
       <div>
         <Chart
           key={`radial-bar-${maxValue}`}
@@ -91,7 +89,7 @@ const ActionsSummaryChart = () => {
               radialBar: {
                 startAngle: 0,
                 endAngle: 270,
-                offsetY: -30,
+                offsetY: -10,
                 hollow: {
                   margin: 5,
                   size: '40%',

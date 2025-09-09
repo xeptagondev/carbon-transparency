@@ -51,4 +51,16 @@ export class AnalyticsController {
   getGhgMitigationForRecentYear() {
     return this.analyticsService.getGhgMitigationForRecentYear();
   }
+	
+  @UseGuards(JwtAuthGuard)
+  @Get('/getCombinedGHGReductionTimeline')
+  getCombinedGHGReductionTimeline() {
+    return this.analyticsService.getCombinedGHGReductionTimeline();
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('/getCombinedGHGEmissionsTimeline')
+  getCombinedGHGEmissionsTimeline() {
+    return this.analyticsService.getCombinedGHGEmissionsTimeline();
+  }
 }

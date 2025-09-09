@@ -242,4 +242,42 @@ export class AnalyticsService {
 		}
 	}
 
+  async getCombinedGHGReductionTimeline() {
+    try {
+      const query = `
+      SELECT 
+        sum_emission_arrays_agg_fn("actualEmissionReduct") as "actualEmissionReduction"
+      FROM
+        combined_ghg_reduction_view_entity`;
+      const result = await this.entityManager.query(query);
+      return result[0]?.actualEmissionReduction;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        this.helperService.formatReqMessagesString(
+          "common.unableToGetStats",
+          []
+        ),
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  
+  }
+
+  async getCombinedGHGEmissionsTimeline() {
+    try {
+      const query = `SELECT * FROM annex_two_view`;
+      const result = await this.entityManager.query(query);
+	  return result;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        this.helperService.formatReqMessagesString(
+          "common.unableToGetStats",
+          []
+        ),
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
 }

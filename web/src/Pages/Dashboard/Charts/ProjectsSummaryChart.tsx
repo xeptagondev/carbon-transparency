@@ -17,7 +17,6 @@ const ProjectsSummaryChart = () => {
     const fetchActionData = async () => {
       const response: any = await get('stats/analytics/projectSummary', undefined, statServerUrl);
       const dataList = response.data;
-      console.log(dataList);
       const tempSeries: Array<number> = dataList.stats.counts.map((count: string) =>
         parseInt(count)
       );
@@ -42,7 +41,7 @@ const ProjectsSummaryChart = () => {
 
   if (series.length === 0) {
     return (
-      <ChartWrapper title="" height="50%">
+      <ChartWrapper title="Projects Summary" height="50%">
         <div
           style={{
             height: 200,
@@ -67,7 +66,7 @@ const ProjectsSummaryChart = () => {
   }
 
   return (
-    <ChartWrapper title="" height="50%">
+    <ChartWrapper title="Projects Summary" height="50%">
       <div>
         <Chart
           key={`radial-bar-${maxValue}`}
@@ -90,7 +89,7 @@ const ProjectsSummaryChart = () => {
               radialBar: {
                 startAngle: 0,
                 endAngle: 270,
-                offsetY: -30,
+                offsetY: -10,
                 hollow: {
                   margin: 5,
                   size: '40%',

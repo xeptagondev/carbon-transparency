@@ -31,7 +31,6 @@ const KpiAchievedChart = () => {
           });
         }, 1000)
       );
-      console.log(response.data.stats);
       const supportReceived: number = response.data.stats.kpiReceived;
       const supportNeeded: number = response.data.stats.kpiNeeded;
       const recievedPercentage = (supportReceived * 100) / Math.max(supportNeeded, 1);

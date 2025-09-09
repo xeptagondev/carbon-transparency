@@ -41,6 +41,7 @@ const GhgEmissionChart = () => {
   return (
     <ChartWrapper height={'100%'} title="GHG Emission Comparison Timeline">
       <Chart
+        key={withAMSeries.join('-')}
         options={{
           chart: {
             id: 'GHG-emission',

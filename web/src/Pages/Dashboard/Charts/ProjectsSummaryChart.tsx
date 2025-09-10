@@ -22,7 +22,6 @@ const ProjectsSummaryChart = () => {
       );
       const tempMaxValue = tempSeries.length > 0 ? Math.max(...tempSeries) : 10;
       setSeriesLabels(tempSeries);
-
       const percentages = tempSeries.map((value) =>
         Math.round((value * 100) / Math.max(tempMaxValue, 1))
       );

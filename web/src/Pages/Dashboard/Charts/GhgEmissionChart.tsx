@@ -59,6 +59,9 @@ const GhgEmissionChart = () => {
               formatter: (val) => parseInt(val).toFixed(0),
             },
           },
+          dataLabels: {
+            enabled: false,
+          },
           yaxis: {
             labels: {
               formatter: function (val) {
@@ -68,18 +71,19 @@ const GhgEmissionChart = () => {
           },
           stroke: {
             curve: 'smooth',
+            width: [3, 3, 3],
           },
         }}
         series={[
           {
             name: 'Without Measures',
             data: withAMSeries,
-            color: '#000000',
+            color: '#333232',
           },
           {
             name: 'With Measures',
             data: withMSeries,
-            color: '#0000FF',
+            color: '#1567FF',
           },
           {
             name: 'With Additional Measures',

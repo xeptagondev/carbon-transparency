@@ -12,6 +12,9 @@ import GhgEmissionChart from './Charts/GhgEmissionChart';
 import ActionsSummaryChart from './Charts/ActionsSummaryChart';
 import ProjectsSummaryChart from './Charts/ProjectsSummaryChart';
 import KpiAchievedChart from './Charts/KpiAchievedChart';
+import EmissionTrajectoryChart from './Charts/EmissionTrajectoryChart';
+import EmissionSourcesComparisonChart from './Charts/EmissionSourcesComparisonChart';
+import GhgEmissionTypesChart from './Charts/GhgEmissionTypesChart';
 
 const Dashboard = () => {
   return (
@@ -33,6 +36,19 @@ const Dashboard = () => {
         </Col>
         <Col md={6}>
           <TotalActivitiesCard />
+        </Col>
+      </Row>
+      <Row className="card-wrapper">
+        <Col md={24}>
+          <EmissionTrajectoryChart />
+        </Col>
+      </Row>
+      <Row className="card-wrapper">
+        <Col md={10}>
+          <EmissionSourcesComparisonChart />
+        </Col>
+        <Col md={14}>
+          <GhgEmissionTypesChart />
         </Col>
       </Row>
       <Row className="card-wrapper">

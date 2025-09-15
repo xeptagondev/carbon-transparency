@@ -25,6 +25,7 @@ const TotalProjectsCard = () => {
       onClick={() => {
         navigate('/projects');
       }}
+      bgColor="#be63fa4d"
     />
   );
 };

@@ -98,8 +98,8 @@ const ProjectsSummaryChart = () => {
                 dataLabels: {
                   show: true,
                   name: {
-                    fontSize: '20px',
-                    color: '#8a1538',
+                    fontSize: '16px',
+                    color: '#152a8aff',
                     offsetY: 0,
                   },
                   value: {
@@ -113,7 +113,7 @@ const ProjectsSummaryChart = () => {
                 },
                 barLabels: {
                   enabled: true,
-                  useSeriesColors: true,
+                  useSeriesColors: false,
                   offsetX: -30,
                   offsetY: 0,
                   fontSize: '16px',
@@ -127,9 +127,9 @@ const ProjectsSummaryChart = () => {
             labels: sectors,
             fill: {
               type: 'gradient',
-              colors: ['#8a1538', '#915366'],
+              colors: ['#3498DB', '#4ee65aff'],
               gradient: {
-                shade: 'dark',
+                shade: 'ligght',
                 shadeIntensity: 0.15,
                 inverseColors: false,
                 opacityFrom: 0.5,

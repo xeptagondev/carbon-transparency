@@ -117,13 +117,15 @@
         height: 100%;
         
         .card {
-            position: relative;
+            // position: relative;
+            display: flex;
+            flex-direction: column;
             cursor: pointer;
 
             .pre-topic {
                 margin: 10px 0px 0px;
                 font-size: 16px;
-                color: #aaaaaa
+                color: #807f7f
             }
 
             .topic {
@@ -132,14 +134,14 @@
             }
 
             .motion-elemet {
-                position: absolute;
-                bottom: 20px;
-                right: 10px;
-                font-size: 60px;
-                color: #8a1538;
-                margin: 0px 16px;
-                text-align: end;
-                line-height: 72px;
+                // position: absolute;
+                // bottom: 20px;
+                // right: 10px;
+                font-size: 40px;
+                color: #585758;
+                margin: 0px;
+                text-align: start;
+                // line-height: 72px;
             }
         }
     }

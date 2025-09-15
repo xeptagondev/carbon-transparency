@@ -25,6 +25,7 @@ const TotalActivitiesCard = () => {
       onClick={() => {
         navigate('/activities');
       }}
+      bgColor="#887cfd4d"
     />
   );
 };

@@ -56,8 +56,8 @@ const SupportRecievedChart = () => {
                 offsetY: -30,
                 dataLabels: {
                   name: {
-                    fontSize: '14px',
-                    color: '#8a1538',
+                    fontSize: '13px',
+                    color: '#1a8b49ff',
                     offsetY: 20,
                   },
                   value: {
@@ -71,7 +71,7 @@ const SupportRecievedChart = () => {
             },
             fill: {
               type: 'gradient',
-              colors: ['#8a1538', '#915366'],
+              colors: ['#2ECC71', '#54ec93ff'],
               gradient: {
                 shade: 'dark',
                 shadeIntensity: 0.15,

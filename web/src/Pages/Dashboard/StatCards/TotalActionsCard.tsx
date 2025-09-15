@@ -22,9 +22,8 @@ const TotalActionsCard = () => {
       topic="Actions"
       preTopic="Total"
       value={actionCount}
-      onClick={() => {
-        navigate('/actions');
-      }}
+      onClick={() => navigate('/actions')}
+      bgColor="#a1e7e1"
     />
   );
 };

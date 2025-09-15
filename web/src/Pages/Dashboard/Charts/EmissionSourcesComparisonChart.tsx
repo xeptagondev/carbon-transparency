@@ -7,12 +7,15 @@ const EmissionSourcesComparisonChart = () => {
       <Chart
         options={{
           plotOptions: { pie: { offsetY: 30 } },
-          theme: {
-            monochrome: {
-              enabled: true,
-              color: '#8a1538',
-            },
-          },
+          colors: [
+            '#9B59B6', // Industrial Process
+            '#e63946', // Waste
+            '#2a9d8f', // Enteric and Manure
+            '#f57812ff', // Power and Water
+            '#3498DB', // Road Transport
+            '#F1C40F', // Building Industry
+            '#2ECC71', // Oil and Gas
+          ],
           legend: {
             position: 'bottom',
             offsetY: 50,

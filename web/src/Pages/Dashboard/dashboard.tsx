@@ -21,9 +21,9 @@ const Dashboard = () => {
     <div className="dashboard-page">
       <Row
         className="card-wrapper"
-        style={{
-          height: '200px',
-        }}
+        // style={{
+        //   height: '230px',
+        // }}
       >
         <Col md={6}>
           <TotalActionsCard />

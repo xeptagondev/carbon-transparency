@@ -21,7 +21,7 @@ const createCumulativeData = (originalData: number[]): number[] => {
 
 const TotalClimateImpactChart = ({
   height = '100%',
-  primaryColor = '#8a1538',
+  primaryColor = '#3498DB',
 }: ITotalClimateImpactChart) => {
   const { get, statServerUrl } = useConnection();
   const [impactSeries, setImpactSeries] = useState(zeroFillArray);

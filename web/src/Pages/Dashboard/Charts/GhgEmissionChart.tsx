@@ -88,7 +88,7 @@ const GhgEmissionChart = () => {
           {
             name: 'With Additional Measures',
             data: withoutMSeries,
-            color: '#8a1538',
+            color: '#2ECC71',
           },
         ]}
         type="line"

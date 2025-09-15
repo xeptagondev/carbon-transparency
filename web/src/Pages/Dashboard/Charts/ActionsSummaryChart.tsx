@@ -99,7 +99,7 @@ const ActionsSummaryChart = () => {
                 dataLabels: {
                   show: true,
                   name: {
-                    fontSize: '20px',
+                    fontSize: '18px',
                     color: '#8a1538',
                     offsetY: 0,
                   },
@@ -114,10 +114,10 @@ const ActionsSummaryChart = () => {
                 },
                 barLabels: {
                   enabled: true,
-                  useSeriesColors: true,
+                  useSeriesColors: false,
                   offsetX: -30,
                   offsetY: 0,
-                  fontSize: '16px',
+                  fontSize: '14px',
                   formatter(barName, opts) {
                     return barName + ': ' + seriesLabels[opts.seriesIndex];
                   },
@@ -128,9 +128,11 @@ const ActionsSummaryChart = () => {
             labels: sectors,
             fill: {
               type: 'gradient',
-              colors: ['#8a1538', '#915366'],
+              // Instead of monochrome
+              colors: ['#3498DB', '#2ECC71', '#D35400', '#457b9d', '#2a9d8f', '#f4a261'],
+
               gradient: {
-                shade: 'dark',
+                shade: 'light',
                 shadeIntensity: 0.15,
                 inverseColors: false,
                 opacityFrom: 0.5,

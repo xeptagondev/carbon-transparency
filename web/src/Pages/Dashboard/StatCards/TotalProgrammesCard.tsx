@@ -25,6 +25,7 @@ const TotalProgrammesCard = () => {
       onClick={() => {
         navigate('/programmes');
       }}
+      bgColor="#4896fe4d"
     />
   );
 };

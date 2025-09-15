@@ -78,7 +78,7 @@ const GhgEmissionTypesChart = () => {
                 y: 88.684,
               },
             ],
-            color: '#8a1538',
+            color: '#3498DB',
           },
           {
             name: 'CH4',
@@ -122,7 +122,7 @@ const GhgEmissionTypesChart = () => {
               },
             ],
             type: 'line',
-            color: '#42282c',
+            color: '#9B59B6',
           },
           {
             name: 'N20',
@@ -165,7 +165,7 @@ const GhgEmissionTypesChart = () => {
                 y: 0.611,
               },
             ],
-            color: '#bd9e3a',
+            color: '#F1C40F',
           },
           {
             name: 'F-gases',
@@ -208,7 +208,7 @@ const GhgEmissionTypesChart = () => {
                 y: 0.764,
               },
             ],
-            color: '#500b52',
+            color: '#2ECC71',
           },
         ]}
         type="line"

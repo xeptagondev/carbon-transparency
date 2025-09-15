@@ -69,8 +69,8 @@ const KpiAchievedChart = () => {
                 offsetY: -30,
                 dataLabels: {
                   name: {
-                    fontSize: '14px',
-                    color: '#8a1538',
+                    fontSize: '13px',
+                    color: '#2270a3ff',
                     offsetY: 20,
                   },
                   value: {
@@ -84,9 +84,9 @@ const KpiAchievedChart = () => {
             },
             fill: {
               type: 'gradient',
-              colors: ['#8a1538', '#915366'],
+              colors: ['#3498DB', '#915366'],
               gradient: {
-                shade: 'dark',
+                shade: 'light',
                 shadeIntensity: 0.15,
                 inverseColors: false,
                 opacityFrom: 0.5,

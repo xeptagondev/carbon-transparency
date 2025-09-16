@@ -52,8 +52,8 @@ const GhgEmissionChart = () => {
           xaxis: {
             categories: categories,
             type: 'numeric',
-            min: 2015,
-            max: 2025,
+            min: 2013,
+            max: 2050,
             tickAmount: 5,
             labels: {
               formatter: (val) => parseInt(val).toFixed(0),

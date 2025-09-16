@@ -8,13 +8,13 @@ const EmissionSourcesComparisonChart = () => {
         options={{
           plotOptions: { pie: { offsetY: 30 } },
           colors: [
-            '#9B59B6', // Industrial Process
-            '#e63946', // Waste
-            '#2a9d8f', // Enteric and Manure
-            '#f57812ff', // Power and Water
-            '#3498DB', // Road Transport
-            '#F1C40F', // Building Industry
-            '#2ECC71', // Oil and Gas
+            '#9B59B6A0', // Industrial Process
+            '#e63946A0', // Waste
+            '#2a9d8fA0', // Enteric and Manure
+            '#f57812A0', // Power and Water
+            '#3498DBA0', // Road Transport
+            '#F1C40FA0', // Building Industry
+            '#2ECC71A0', // Oil and Gas
           ],
           legend: {
             position: 'bottom',

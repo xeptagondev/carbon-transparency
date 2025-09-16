@@ -3,12 +3,13 @@ import ChartWrapper from '../Components/ChartWrapper';
 
 const GhgEmissionTypesChart = () => {
   return (
-    <ChartWrapper height={'100%'} title="GHG Emissions by Type">
+    <ChartWrapper height={'100%'} title="Current GHG Emissions by Type">
       <Chart
         height={600}
         options={{
           chart: {
             id: 'GHG-emission',
+            stacked: true,
             toolbar: {
               show: false,
             },
@@ -27,10 +28,15 @@ const GhgEmissionTypesChart = () => {
           },
           yaxis: {
             labels: {
+              show: false,
               formatter: function (val) {
                 return val + ' ktCO2e';
               },
             },
+          },
+          dataLabels: {
+            enabled: true,
+            distributed: false,
           },
           stroke: {
             curve: 'monotoneCubic',
@@ -38,6 +44,123 @@ const GhgEmissionTypesChart = () => {
           },
         }}
         series={[
+          {
+            name: 'F-gases',
+            data: [
+              {
+                x: 2013,
+                y: 0.485,
+              },
+              {
+                x: 2014,
+                y: 0.476,
+              },
+              {
+                x: 2015,
+                y: 0.587,
+              },
+              {
+                x: 2016,
+                y: 0.613,
+              },
+              {
+                x: 2017,
+                y: 0.638,
+              },
+              {
+                x: 2018,
+                y: 0.664,
+              },
+              {
+                x: 2019,
+                y: 0.69,
+              },
+              {
+                x: 2020,
+                y: 0.715,
+              },
+              {
+                x: 2021,
+                y: 0.764,
+              },
+              {
+                x: 2022,
+                y: 0.864,
+              },
+              {
+                x: 2023,
+                y: 0.824,
+              },
+              {
+                x: 2024,
+                y: 0.825,
+              },
+              {
+                x: 2024,
+                y: 0.825,
+              },
+            ],
+            color: '#2ECC71',
+          },
+          {
+            name: 'N20',
+            data: [
+              {
+                x: 2013,
+                y: 0.485,
+              },
+              {
+                x: 2014,
+                y: 0.532,
+              },
+
+              {
+                x: 2015,
+                y: 0.56,
+              },
+              {
+                x: 2016,
+                y: 0.602,
+              },
+              {
+                x: 2017,
+                y: 0.619,
+              },
+              {
+                x: 2018,
+                y: 0.601,
+              },
+              {
+                x: 2019,
+                y: 0.621,
+              },
+              {
+                x: 2020,
+                y: 0.608,
+              },
+              {
+                x: 2021,
+                y: 0.611,
+              },
+              {
+                x: 2021,
+                y: 0.615,
+              },
+              {
+                x: 2022,
+                y: 0.612,
+              },
+              {
+                x: 2023,
+                y: 0.608,
+              },
+              {
+                x: 2024,
+                y: 0.605,
+              },
+            ],
+            color: '#F1C40F',
+          },
           {
             name: 'CO2',
             data: [
@@ -76,6 +199,18 @@ const GhgEmissionTypesChart = () => {
               {
                 x: 2021,
                 y: 88.684,
+              },
+              {
+                x: 2022,
+                y: 89.684,
+              },
+              {
+                x: 2023,
+                y: 88.184,
+              },
+              {
+                x: 2024,
+                y: 87.684,
               },
             ],
             color: '#3498DB',
@@ -120,98 +255,24 @@ const GhgEmissionTypesChart = () => {
                 x: 2021,
                 y: 30.252,
               },
+              {
+                x: 2022,
+                y: 30.262,
+              },
+              {
+                x: 2023,
+                y: 29.856,
+              },
+              {
+                x: 2024,
+                y: 30.15,
+              },
             ],
-            type: 'line',
+            // type: 'area',
             color: '#9B59B6',
           },
-          {
-            name: 'N20',
-            data: [
-              {
-                x: 2013,
-                y: 0.485,
-              },
-              {
-                x: 2014,
-                y: 0.532,
-              },
-
-              {
-                x: 2015,
-                y: 0.56,
-              },
-              {
-                x: 2016,
-                y: 0.602,
-              },
-              {
-                x: 2017,
-                y: 0.619,
-              },
-              {
-                x: 2018,
-                y: 0.601,
-              },
-              {
-                x: 2019,
-                y: 0.621,
-              },
-              {
-                x: 2020,
-                y: 0.608,
-              },
-              {
-                x: 2021,
-                y: 0.611,
-              },
-            ],
-            color: '#F1C40F',
-          },
-          {
-            name: 'F-gases',
-            data: [
-              {
-                x: 2013,
-                y: 0.485,
-              },
-              {
-                x: 2014,
-                y: 0.476,
-              },
-
-              {
-                x: 2015,
-                y: 0.587,
-              },
-              {
-                x: 2016,
-                y: 0.613,
-              },
-              {
-                x: 2017,
-                y: 0.638,
-              },
-              {
-                x: 2018,
-                y: 0.664,
-              },
-              {
-                x: 2019,
-                y: 0.69,
-              },
-              {
-                x: 2020,
-                y: 0.715,
-              },
-              {
-                x: 2021,
-                y: 0.764,
-              },
-            ],
-            color: '#2ECC71',
-          },
         ]}
-        type="line"
+        type="area"
       />
     </ChartWrapper>
   );

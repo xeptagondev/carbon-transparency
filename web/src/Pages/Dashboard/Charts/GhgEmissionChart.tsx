@@ -63,6 +63,7 @@ const GhgEmissionChart = () => {
             enabled: false,
           },
           yaxis: {
+            max: 120000,
             labels: {
               formatter: function (val) {
                 return val + ' ktCO2e';

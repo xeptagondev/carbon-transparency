@@ -3,6 +3,17 @@ import ChartWrapper from '../Components/ChartWrapper';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
 import { useEffect, useState } from 'react';
 
+type GhgEmissionCategory = {
+  category: string;
+  withM: number[];
+  withAM: number[];
+  withoutM: number[];
+};
+
+type GhgEmissionDataResponse = {
+  data: GhgEmissionCategory[];
+};
+
 const zeroFillArray = Array(51).fill(0);
 
 const GhgEmissionChart = () => {
@@ -12,28 +23,40 @@ const GhgEmissionChart = () => {
   const [withAMSeries, setWithAMSeries] = useState(zeroFillArray);
 
   const categories = Array.from({ length: 51 }, (_, i) => i + 2000);
+  function createSummedArrays(data: GhgEmissionCategory[]) {
+    const arrayLength = data[0].withM.length;
+    const withM = new Array<number>(arrayLength).fill(0);
+    const withAM = new Array<number>(arrayLength).fill(0);
+    const withoutM = new Array<number>(arrayLength).fill(0);
 
+    data.forEach((category) => {
+      category.withM.forEach((value, index) => {
+        withM[index] += value;
+      });
+
+      category.withAM.forEach((value, index) => {
+        withAM[index] += value;
+      });
+
+      category.withoutM.forEach((value, index) => {
+        withoutM[index] += value;
+      });
+    });
+
+    return { withM, withAM, withoutM };
+  }
   useEffect(() => {
     const fetchGhgReductionData = async () => {
-      const response: any = await get(
+      const response: GhgEmissionDataResponse = await get(
         'stats/analytics/getCombinedGHGEmissionsTimeline',
         undefined,
         statServerUrl
       );
       const dataList = response.data;
-      const withoutM = zeroFillArray;
-      const withM = zeroFillArray;
-      const withAM = zeroFillArray;
-      dataList.forEach((category: any) => {
-        for (let i = 0; i < 51; i++) {
-          withoutM[i] += category.withoutM[i];
-          withM[i] += category.withM[i];
-          withAM[i] += category.withAM[i];
-        }
-      });
-      setWithoutMSeries(withoutM);
-      setWithMSeries(withM);
-      setWithAMSeries(withAM);
+      const result = createSummedArrays(dataList);
+      setWithoutMSeries(result.withoutM);
+      setWithMSeries(result.withM);
+      setWithAMSeries(result.withAM);
     };
     fetchGhgReductionData();
   }, []);

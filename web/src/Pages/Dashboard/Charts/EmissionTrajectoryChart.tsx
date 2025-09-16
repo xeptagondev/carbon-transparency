@@ -36,6 +36,54 @@ const EmissionTrajectoryChart = () => {
               show: false,
             },
           },
+          annotations: {
+            points: [
+              {
+                x: 2030, // x-axis value or timestamp
+                y: 146, // y-axis value
+                marker: {
+                  size: 4,
+                  fillColor: '#FF4560',
+                  strokeColor: '#FF4560',
+                  // radius: 2,
+                  offsetX: 5,
+                  shape: 'none',
+                },
+                label: {
+                  borderColor: '#FF4560',
+                  offsetY: 0,
+                  offsetX: 20,
+                  style: {
+                    color: '#fff',
+                    background: '#FF4560',
+                  },
+                  text: 'BAU Prediction by 2030',
+                },
+              },
+              {
+                x: 2030, // x-axis value or timestamp
+                y: 146 * 0.75, // y-axis value
+                marker: {
+                  size: 4,
+                  fillColor: '#3396D3A0',
+                  strokeColor: '#3396D3A0',
+                  // radius: 2,
+                  offsetX: 5,
+                  shape: 'none',
+                },
+                label: {
+                  borderColor: '#3396D3A0',
+                  offsetY: 0,
+                  offsetX: 20,
+                  style: {
+                    color: '#fff',
+                    background: '#3396D3',
+                  },
+                  text: '25% Reduction Target by 2030',
+                },
+              },
+            ],
+          },
           plotOptions: {
             bar: {
               dataLabels: {
@@ -66,7 +114,9 @@ const EmissionTrajectoryChart = () => {
             },
           },
           yaxis: {
-            max: 200,
+            max: 170,
+            min: 0,
+            tickAmount: 5,
             labels: {
               formatter: function (val) {
                 return val + ' ktCO2e';
@@ -86,6 +136,10 @@ const EmissionTrajectoryChart = () => {
               {
                 x: 2013,
                 y: 102.132,
+              },
+              {
+                x: 2014,
+                y: 105.352,
               },
               {
                 x: 2015,
@@ -145,32 +199,115 @@ const EmissionTrajectoryChart = () => {
           {
             name: 'Prediction',
             data: [
-              { x: 2025, y: 73.389 },
-              { x: 2026, y: 74.951 },
-              { x: 2027, y: 76.559 },
-              { x: 2028, y: 78.21 },
-              { x: 2029, y: 79.907 },
-              { x: 2030, y: 82.774 },
-              { x: 2031, y: 85.642 },
-              { x: 2032, y: 88.302 },
-              { x: 2033, y: 90.945 },
-              { x: 2034, y: 93.571 },
-              { x: 2035, y: 96.368 },
-              { x: 2036, y: 99.374 },
-              { x: 2037, y: 102.414 },
-              { x: 2038, y: 105.538 },
-              { x: 2039, y: 108.747 },
-              { x: 2040, y: 112.044 },
-              { x: 2041, y: 115.431 },
-              { x: 2042, y: 118.911 },
-              { x: 2043, y: 122.486 },
-              { x: 2044, y: 126.158 },
-              { x: 2045, y: 129.931 },
-              { x: 2046, y: 133.807 },
-              { x: 2047, y: 137.789 },
-              { x: 2048, y: 141.88 },
-              { x: 2049, y: 146.084 },
-              { x: 2050, y: 150.0 },
+              {
+                x: 2026,
+                y: 123.425,
+              },
+              {
+                x: 2027,
+                y: 126.028,
+              },
+              {
+                x: 2028,
+                y: 132.683,
+              },
+              {
+                x: 2029,
+                y: 140.392,
+              },
+              {
+                x: 2030,
+                y: 146.0,
+                goals: [
+                  {
+                    name: 'Expected',
+                    value: 146 * 0.75,
+                    strokeWidth: 50000,
+                    strokeColor: '#3396D3A0',
+                    strokeDashArray: 3,
+                  },
+                ],
+              },
+              {
+                x: 2031,
+                y: 145.175,
+              },
+              {
+                x: 2032,
+                y: 144.35,
+              },
+              {
+                x: 2033,
+                y: 143.525,
+              },
+              {
+                x: 2034,
+                y: 142.7,
+              },
+              {
+                x: 2035,
+                y: 141.875,
+              },
+              {
+                x: 2036,
+                y: 141.05,
+              },
+              {
+                x: 2037,
+                y: 140.225,
+              },
+              {
+                x: 2038,
+                y: 139.4,
+              },
+              {
+                x: 2039,
+                y: 138.575,
+              },
+              {
+                x: 2040,
+                y: 137.75,
+              },
+              {
+                x: 2041,
+                y: 136.925,
+              },
+              {
+                x: 2042,
+                y: 136.1,
+              },
+              {
+                x: 2043,
+                y: 135.275,
+              },
+              {
+                x: 2044,
+                y: 134.45,
+              },
+              {
+                x: 2045,
+                y: 133.625,
+              },
+              {
+                x: 2046,
+                y: 132.8,
+              },
+              {
+                x: 2047,
+                y: 131.975,
+              },
+              {
+                x: 2048,
+                y: 128.15,
+              },
+              {
+                x: 2049,
+                y: 120.325,
+              },
+              {
+                x: 2050,
+                y: 109.5,
+              },
             ],
             color: '#E0E0E0',
             type: 'bar',

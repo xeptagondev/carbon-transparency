@@ -54,8 +54,8 @@ const TotalClimateImpactChart = ({
           xaxis: {
             categories: categories,
             type: 'numeric',
-            min: 2020,
-            max: 2030,
+            min: 2013,
+            max: 2050,
             tickAmount: 5,
             labels: {
               formatter: (val) => parseInt(val).toFixed(0),

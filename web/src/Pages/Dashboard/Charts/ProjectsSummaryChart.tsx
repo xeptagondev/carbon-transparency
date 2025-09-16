@@ -40,7 +40,7 @@ const ProjectsSummaryChart = () => {
 
   if (series.length === 0) {
     return (
-      <ChartWrapper title="Projects Summary" height="50%">
+      <ChartWrapper title="Actions Summary" height="50%">
         <div
           style={{
             height: 200,
@@ -127,9 +127,9 @@ const ProjectsSummaryChart = () => {
             labels: sectors,
             fill: {
               type: 'gradient',
-              colors: ['#3498DB', '#4ee65aff'],
+              colors: ['#3498DB', '#2ECC71', '#1ee6c8', '#457b9d', '#2a9d8f', '#f4a261'],
               gradient: {
-                shade: 'ligght',
+                shade: 'light',
                 shadeIntensity: 0.15,
                 inverseColors: false,
                 opacityFrom: 0.5,

@@ -119,7 +119,7 @@ const EmissionTrajectoryChart = () => {
             tickAmount: 5,
             labels: {
               formatter: function (val) {
-                return val + ' ktCO2e';
+                return val + ' MtCO2e';
               },
             },
           },

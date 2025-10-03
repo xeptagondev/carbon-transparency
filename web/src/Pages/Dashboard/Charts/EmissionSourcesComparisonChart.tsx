@@ -23,7 +23,7 @@ const EmissionSourcesComparisonChart = () => {
           yaxis: {
             labels: {
               formatter: function (val) {
-                return val + ' ktCO2e';
+                return val + ' MtCO2e';
               },
             },
           },

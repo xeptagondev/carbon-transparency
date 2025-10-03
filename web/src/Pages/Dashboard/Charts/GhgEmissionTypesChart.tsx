@@ -30,13 +30,14 @@ const GhgEmissionTypesChart = () => {
             labels: {
               show: false,
               formatter: function (val) {
-                return val + ' ktCO2e';
+                return val + ' MtCO2e';
               },
             },
           },
           dataLabels: {
             enabled: true,
             distributed: false,
+            formatter: (val) => parseInt(val as string).toFixed(2) + ' MtCO2e',
           },
           stroke: {
             curve: 'monotoneCubic',
@@ -162,60 +163,6 @@ const GhgEmissionTypesChart = () => {
             color: '#F1C40F',
           },
           {
-            name: 'CO2',
-            data: [
-              {
-                x: 2013,
-                y: 76.539,
-              },
-              {
-                x: 2014,
-                y: 82.165,
-              },
-              {
-                x: 2015,
-                y: 85.21,
-              },
-              {
-                x: 2016,
-                y: 87.055,
-              },
-              {
-                x: 2017,
-                y: 88.731,
-              },
-              {
-                x: 2018,
-                y: 87.244,
-              },
-              {
-                x: 2019,
-                y: 90.945,
-              },
-              {
-                x: 2020,
-                y: 87.34,
-              },
-              {
-                x: 2021,
-                y: 88.684,
-              },
-              {
-                x: 2022,
-                y: 89.684,
-              },
-              {
-                x: 2023,
-                y: 88.184,
-              },
-              {
-                x: 2024,
-                y: 87.684,
-              },
-            ],
-            color: '#3498DB',
-          },
-          {
             name: 'CH4',
             data: [
               {
@@ -270,6 +217,60 @@ const GhgEmissionTypesChart = () => {
             ],
             // type: 'area',
             color: '#9B59B6',
+          },
+          {
+            name: 'CO2',
+            data: [
+              {
+                x: 2013,
+                y: 76.539,
+              },
+              {
+                x: 2014,
+                y: 82.165,
+              },
+              {
+                x: 2015,
+                y: 85.21,
+              },
+              {
+                x: 2016,
+                y: 87.055,
+              },
+              {
+                x: 2017,
+                y: 88.731,
+              },
+              {
+                x: 2018,
+                y: 87.244,
+              },
+              {
+                x: 2019,
+                y: 90.945,
+              },
+              {
+                x: 2020,
+                y: 87.34,
+              },
+              {
+                x: 2021,
+                y: 88.684,
+              },
+              {
+                x: 2022,
+                y: 89.684,
+              },
+              {
+                x: 2023,
+                y: 88.184,
+              },
+              {
+                x: 2024,
+                y: 87.684,
+              },
+            ],
+            color: '#3498DB',
           },
         ]}
         type="area"

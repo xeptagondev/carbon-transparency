@@ -100,7 +100,7 @@ const GhgEmissionChart = () => {
         series={[
           {
             name: 'Without Measures',
-            data: withAMSeries,
+            data: withoutMSeries,
             color: '#333232',
           },
           {
@@ -110,7 +110,7 @@ const GhgEmissionChart = () => {
           },
           {
             name: 'With Additional Measures',
-            data: withoutMSeries,
+            data: withAMSeries,
             color: '#2ECC71',
           },
         ]}

@@ -34,8 +34,6 @@ services:
       DB_NAME: "carbondev"
   national:
     image: 302213478610.dkr.ecr.us-east-1.amazonaws.com/transparency-services:CARBON-329
-    ports:
-      - "9000:3000"
     depends_on:
       - dbmrv
     environment:
@@ -59,15 +57,13 @@ services:
       S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
       DISABLE_LOW_PRIORITY_EMAIL: "true"
       SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
-      BACKEND_HOST: http://localhost:9000
+      BACKEND_HOST: https://localhost:443
     volumes:
       - filestore:/app/backend/services/public
       - ./users.csv:/app/backend/services/users.csv
       - ./organisations.csv:/app/backend/services/organisations.csv
   stats:
     image: 302213478610.dkr.ecr.us-east-1.amazonaws.com/transparency-services:CARBON-329
-    ports:
-      - "9100:3100"
     depends_on:
       - dbmrv
       - national
@@ -105,11 +101,18 @@ services:
       S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
       DISABLE_LOW_PRIORITY_EMAIL: "true"
       SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
-      BACKEND_HOST: http://localhost:9000
+      BACKEND_HOST: https://localhost:443
   web:
     image: 302213478610.dkr.ecr.us-east-1.amazonaws.com/transparency-web:CARBON-329
     ports:
-      - "9030:3030"
+      - "443:443"
+      - "80:80"
     depends_on:
       - dbmrv
       - national
+      - stats
+    environment:
+      REACT_APP_BACKEND: "https://transparency-demo.carbreg.org"
+      REACT_APP_STAT_URL: "https://transparency-demo.carbreg.org"
+    volumes:
+      - ./web/nginx_prod.conf:/etc/nginx/conf.d/default.conf

@@ -57,10 +57,10 @@ jobs:
             echo "frontend-changes=false" >> $GITHUB_OUTPUT
           fi
 
-  backend-deploy:
+  backend-build:
     needs: changes
     if: needs.changes.outputs.backend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true'
-    name: Carbon Transparency Backend Deploy
+    name: Carbon Transparency Backend Build
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-'backend'
@@ -94,21 +94,11 @@ jobs:
           echo "Pushing image to ACR..."
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$REGISTRY/$REPOSITORY:$IMAGE_TAG"
-      - name: Deploy backend images to Azure VM
-        id: deploy-backend
-        env:
-          PRIVATE_KEY: ${{ secrets.AZURE_TEST_VM_KEY }}
-          HOSTNAME: ${{ secrets.AZURE_TEST_VM_IP }}
-          USER_NAME: azureuser
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            repos/carbon-transparency/mrv_backend_deploy.sh '
 
-  frontend-deploy:
+  frontend-build:
     needs: changes
     if: needs.changes.outputs.frontend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true' 
-    name: Carbon Transparency Frontend Deploy
+    name: Carbon Transparency Frontend Build
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-'web'
@@ -142,13 +132,25 @@ jobs:
           echo "Pushing image to ACR..."
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$REGISTRY/$REPOSITORY:$IMAGE_TAG"
-      - name: Deploy frontend images to Azure VM
-        id: deploy-frontend
-        env:
-          PRIVATE_KEY: ${{ secrets.AZURE_TEST_VM_KEY }}
-          HOSTNAME: ${{ secrets.AZURE_TEST_VM_IP }}
-          USER_NAME: azureuser
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            repos/carbon-transparency/mrv_frontend_deploy.sh '
+
+  backend-deploy:
+    needs: backend-build
+    name: Carbon Transparency Backend Deploy
+    runs-on: [self-hosted, mrv-test]
+    concurrency:
+      group: mrv-test-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Deploy backend on the Azure VM
+        run: sudo /home/azureuser/repos/carbon-transparency/mrv_backend_deploy.sh
+
+  frontend-deploy:
+    needs: frontend-build
+    name: Carbon Transparency Frontend Deploy
+    runs-on: [self-hosted, mrv-test]
+    concurrency:
+      group: mrv-test-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Deploy frontend on the Azure VM
+        run: sudo /home/azureuser/repos/carbon-transparency/mrv_frontend_deploy.sh

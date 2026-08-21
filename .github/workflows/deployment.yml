@@ -3,20 +3,18 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "staging"
+      - "azure-migration-test"
     paths:
       - backend/**
       - web/**
       - .github/workflows/deployment*
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: us-east-1
+  REGISTRY: ${{ secrets.ACR_USERNAME }}.azurecr.io
 
 jobs:
   changes:
-    name: Carbon Transparency Deploy Pre
+    name: Carbon Transparency Deploy Pre Check
     runs-on: ubuntu-latest
     outputs:
       backend-changes: ${{ steps.changes.outputs.backend-changes }}
@@ -75,33 +73,33 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push the backend images to Amazon ECR
+          registry: ${{ secrets.ACR_USERNAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build, tag, and push the backend images to ACR
         id: build-backend-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: transparency-services
-          IMAGE_TAG: ${{ github.head_ref || github.ref_name }} 
+          REGISTRY: ${{ env.REGISTRY }}
+          REPOSITORY: transparency-services
+          # TEMPORARY - pinned for the Azure pipeline test run so the
+          # deploy script (which pulls a hardcoded :staging) picks up
+          # what we build. REVERT before merging to staging.
+          IMAGE_TAG: staging
         run: |
-          # Build a docker container and push it to ECR 
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f backend/services/Dockerfile .
-          echo "Pushing image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Deploy backend images to Amazon EC2
+          # Build a docker container and push it to ACR 
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f backend/services/Dockerfile .
+          echo "Pushing image to ACR..."
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$REGISTRY/$REPOSITORY:$IMAGE_TAG"
+      - name: Deploy backend images to Azure VM
         id: deploy-backend
         env:
-          PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY_PRIVATE }}
-          HOSTNAME: ${{secrets.HOST_IP }}
-          USER_NAME: ec2-user
+          PRIVATE_KEY: ${{ secrets.AZURE_TEST_VM_KEY }}
+          HOSTNAME: ${{ secrets.AZURE_TEST_VM_IP }}
+          USER_NAME: azureuser
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
@@ -123,33 +121,33 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push the frontend images to Amazon ECR
+          registry: ${{ secrets.ACR_USERNAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build, tag, and push the frontend images to ACR
         id: build-frontend-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: transparency-web
-          IMAGE_TAG: ${{ github.head_ref || github.ref_name }} 
+          REGISTRY: ${{ env.REGISTRY }}
+          REPOSITORY: transparency-web
+          # TEMPORARY - pinned for the Azure pipeline test run so the
+          # deploy script (which pulls a hardcoded :staging) picks up
+          # what we build. REVERT before merging to staging.
+          IMAGE_TAG: staging
         run: |
-          # Build a docker container and push it to ECR 
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f web/Dockerfile . --build-arg PORT=3030 --build-arg REACT_APP_BACKEND=http://localhost:9000 --build-arg REACT_APP_STAT_URL=http://localhost:9100 --build-arg COUNTRY_NAME="CountryX" --build-arg COUNTRY_FLAG_URL="https://carbon-common-dev.s3.amazonaws.com/flag.png" --build-arg COUNTRY_CODE="NG" --build-arg REACT_APP_MAP_TYPE="Mapbox" --build-arg REACT_APP_GOVERNMENT_MINISTRY:"Ministry Of Environment" --build-arg REACT_APP_MAPBOXGL_ACCESS_TOKEN=${{ secrets.MAPBOXGL_ACCESS_TOKEN }} 
-          echo "Pushing image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Deploy frontend images to Amazon EC2
+          # Build a docker container and push it to ACR 
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f web/Dockerfile . --build-arg PORT=3030 --build-arg REACT_APP_BACKEND=http://localhost:9000 --build-arg REACT_APP_STAT_URL=http://localhost:9100 --build-arg COUNTRY_NAME="CountryX" --build-arg COUNTRY_FLAG_URL="https://transparency-test.carbreg.org:9000/flag.png" --build-arg COUNTRY_CODE="NG" --build-arg REACT_APP_MAP_TYPE="Mapbox" --build-arg REACT_APP_GOVERNMENT_MINISTRY:"Ministry Of Environment" --build-arg REACT_APP_MAPBOXGL_ACCESS_TOKEN=${{ secrets.MAPBOXGL_ACCESS_TOKEN }} 
+          echo "Pushing image to ACR..."
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$REGISTRY/$REPOSITORY:$IMAGE_TAG"
+      - name: Deploy frontend images to Azure VM
         id: deploy-frontend
         env:
-          PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY_PRIVATE }}
-          HOSTNAME: ${{secrets.HOST_IP }}
-          USER_NAME: ec2-user
+          PRIVATE_KEY: ${{ secrets.AZURE_TEST_VM_KEY }}
+          HOSTNAME: ${{ secrets.AZURE_TEST_VM_IP }}
+          USER_NAME: azureuser
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '

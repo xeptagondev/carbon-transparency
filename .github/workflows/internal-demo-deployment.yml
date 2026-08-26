@@ -1,0 +1,156 @@
+name: Internal Demo Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "internal-demo"
+    paths:
+      - backend/**
+      - web/**
+      - .github/workflows/internal-demo-deployment.yml
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_INTDEMO }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_INTDEMO }}
+  AWS_DEFAULT_REGION: us-east-1
+
+jobs:
+  changes:
+    name: Internal Demo Deploy Pre Check
+    runs-on: ubuntu-latest
+    outputs:
+      backend-changes: ${{ steps.changes.outputs.backend-changes }}
+      workflows-changes: ${{ steps.changes.outputs.workflows-changes }}
+      frontend-changes: ${{ steps.changes.outputs.frontend-changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine changed services
+        id: changes
+        run: |
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+
+          if echo "$CHANGED_FILES" | grep -q "backend/"; then
+            echo "Backend changes detected."
+            echo "backend-changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No Backend changes detected."
+            echo "backend-changes=false" >> $GITHUB_OUTPUT
+          fi
+
+          if echo "$CHANGED_FILES" | grep -q ".github/workflows/"; then
+            echo "Workflow changes detected."
+            echo "workflows-changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No Workflow changes detected."
+            echo "workflows-changes=false" >> $GITHUB_OUTPUT
+          fi
+
+          if echo "$CHANGED_FILES" | grep -q "web/"; then
+            echo "Frontend changes detected."
+            echo "frontend-changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No Frontend changes detected."
+            echo "frontend-changes=false" >> $GITHUB_OUTPUT
+          fi
+
+  backend-deploy:
+    needs: changes
+    if: needs.changes.outputs.backend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true'
+    name: Internal Demo Backend Deploy
+    runs-on: ubuntu-latest
+    concurrency:
+      group: internal-demo-deploy-backend
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_INTDEMO }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_INTDEMO }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push the backend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: transparency-services
+          IMAGE_TAG: ${{ github.head_ref || github.ref_name }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f backend/services/Dockerfile .
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy backend on the shared demo EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_INTDEMO }}
+          HOSTNAME: ${{ secrets.HOST_IP_INTDEMO }}
+          USER_NAME: ec2-user
+        run: |
+          install -m 600 /dev/null private_key
+          printf '%s\n' "$PRIVATE_KEY" > private_key
+          ssh -o StrictHostKeyChecking=accept-new -i private_key ${USER_NAME}@${HOSTNAME} '
+            exchange/internal-demo/internal_demo_backend_deploy.sh '
+
+  frontend-deploy:
+    needs: changes
+    if: needs.changes.outputs.frontend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true'
+    name: Internal Demo Frontend Deploy
+    runs-on: ubuntu-latest
+    concurrency:
+      group: internal-demo-deploy-frontend
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_INTDEMO }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_INTDEMO }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push the frontend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: transparency-web
+          IMAGE_TAG: ${{ github.head_ref || github.ref_name }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f web/Dockerfile . \
+            --build-arg PORT=3030 \
+            --build-arg REACT_APP_BACKEND=http://localhost:9000 \
+            --build-arg REACT_APP_STAT_URL=http://localhost:9100 \
+            --build-arg REACT_APP_COUNTRY_NAME="Internal Demo" \
+            --build-arg REACT_APP_COUNTRY_FLAG_URL="https://transparency.xeptagon.com/api/flag.png" \
+            --build-arg COUNTRY_CODE="NG" \
+            --build-arg REACT_APP_MAP_TYPE="Mapbox" \
+            --build-arg REACT_APP_GOVERNMENT_MINISTRY="Ministry Of Environment" \
+            --build-arg REACT_APP_MAPBOXGL_ACCESS_TOKEN=${{ secrets.MAPBOXGL_ACCESS_TOKEN }}
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy frontend on the shared demo EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_INTDEMO }}
+          HOSTNAME: ${{ secrets.HOST_IP_INTDEMO }}
+          USER_NAME: ec2-user
+        run: |
+          install -m 600 /dev/null private_key
+          printf '%s\n' "$PRIVATE_KEY" > private_key
+          ssh -o StrictHostKeyChecking=accept-new -i private_key ${USER_NAME}@${HOSTNAME} '
+            exchange/internal-demo/internal_demo_frontend_deploy.sh '

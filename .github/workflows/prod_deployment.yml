@@ -10,9 +10,7 @@ on:
       - .github/workflows/deployment*
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: us-east-1
+  REGISTRY: ${{ secrets.ACR_USERNAME }}.azurecr.io
 
 jobs:
   changes:
@@ -59,10 +57,10 @@ jobs:
             echo "frontend-changes=false" >> $GITHUB_OUTPUT
           fi
 
-  backend-deploy:
+  build_backend:
     needs: changes
     if: needs.changes.outputs.backend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true'
-    name: Carbon Registry Backend Deploy
+    name: Carbon Transparency Backend Build
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-'backend'
@@ -75,42 +73,28 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push the backend images to Amazon ECR
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build, tag, and push the backend image to ACR
         id: build-backend-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: transparency-services
-          IMAGE_TAG: ${{ github.head_ref || github.ref_name }} 
+          REGISTRY: ${{ env.REGISTRY }}
+          REPOSITORY: transparency-services
+          IMAGE_TAG: ${{ github.head_ref || github.ref_name }}
         run: |
-          # Build a docker container and push it to ECR 
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f backend/services/Dockerfile .
-          echo "Pushing image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Deploy backend images to Amazon EC2
-        id: deploy-backend
-        env:
-          PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY_PRIVATE_DEMO }}
-          HOSTNAME: ${{secrets.HOST_IP_DEMO }}
-          USER_NAME: ec2-user
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            repos/carbon-transparency/prod_backend_deploy.sh '
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f backend/services/Dockerfile .
+          echo "Pushing image to ACR..."
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$REGISTRY/$REPOSITORY:$IMAGE_TAG"
 
-  frontend-deploy:
+  build_frontend:
     needs: changes
-    if: needs.changes.outputs.frontend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true' 
-    name: Carbon Registry Frontend Deploy
+    if: needs.changes.outputs.frontend-changes == 'true' || needs.changes.outputs.workflows-changes == 'true'
+    name: Carbon Transparency Frontend Build
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-'web'
@@ -123,34 +107,44 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push the frontend images to Amazon ECR
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build, tag, and push the frontend image to ACR
         id: build-frontend-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: transparency-web
-          IMAGE_TAG: ${{ github.head_ref || github.ref_name }} 
+          REGISTRY: ${{ env.REGISTRY }}
+          REPOSITORY: transparency-web
+          IMAGE_TAG: ${{ github.head_ref || github.ref_name }}
         run: |
-          # Build a docker container and push it to ECR 
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f web/Dockerfile . --build-arg PORT=3030 --build-arg REACT_APP_BACKEND=http://localhost:9000 --build-arg REACT_APP_STAT_URL=http://localhost:9100 --build-arg COUNTRY_NAME="CountryX" --build-arg COUNTRY_FLAG_URL="https://carbon-common-dev.s3.amazonaws.com/flag.png" --build-arg COUNTRY_CODE="NG" --build-arg REACT_APP_MAP_TYPE="Mapbox" --build-arg REACT_APP_GOVERNMENT_MINISTRY:"Ministry Of Environment" --build-arg REACT_APP_MAPBOXGL_ACCESS_TOKEN=${{ secrets.MAPBOXGL_ACCESS_TOKEN }} 
-          echo "Pushing image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Deploy frontend images to Amazon EC2
-        id: deploy-frontend
-        env:
-          PRIVATE_KEY: ${{ secrets.AWS_SSH_KEY_PRIVATE_DEMO }}
-          HOSTNAME: ${{secrets.HOST_IP_DEMO }}
-          USER_NAME: ec2-user
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            repos/carbon-transparency/prod_frontend_deploy.sh '
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f web/Dockerfile . --build-arg PORT=3030 --build-arg REACT_APP_BACKEND=http://localhost:9000 --build-arg REACT_APP_STAT_URL=http://localhost:9100 --build-arg COUNTRY_CODE="NG" --build-arg REACT_APP_MAP_TYPE="Mapbox" --build-arg REACT_APP_MAPBOXGL_ACCESS_TOKEN=${{ secrets.MAPBOXGL_ACCESS_TOKEN }}
+          echo "Pushing image to ACR..."
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$REGISTRY/$REPOSITORY:$IMAGE_TAG"
+
+  deploy_backend:
+    name: Carbon Transparency Backend Deploy
+    needs: build_backend
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, mrv-demo]
+    concurrency:
+      group: mrv-demo-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Deploy backend on the Azure VM
+        run: sudo /home/azureuser/repos/carbon-transparency/prod_backend_deploy.sh
+
+  deploy_frontend:
+    name: Carbon Transparency Frontend Deploy
+    needs: build_frontend
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, mrv-demo]
+    concurrency:
+      group: mrv-demo-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Deploy frontend on the Azure VM
+        run: sudo /home/azureuser/repos/carbon-transparency/prod_frontend_deploy.sh

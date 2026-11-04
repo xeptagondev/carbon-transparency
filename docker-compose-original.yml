@@ -132,6 +132,7 @@ services:
       RUN_MODULE: async-operations-handler,data-importer
       LOCATION_SERVICE: https://mrv-common-dev.s3.amazonaws.com/flag.png
       CERTIFIER_IMAGE : "https://mrv-common-dev.s3.amazonaws.com/flag.png"
+      EMAIL_SERVICE: ${EMAIL_SERVICE:-SMTP}
       SMTP_ENDPOINT: email-smtp.us-east-1.amazonaws.com
       SMTP_PASSWORD: ""
       SMTP_USERNAME: AKIAUMXKTXDJPDYDJ76J

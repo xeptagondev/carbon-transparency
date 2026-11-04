@@ -72,7 +72,7 @@ services:
       rootEmail: <ROOT EMAIL>
       systemCountryCode: "NG"
       name: "Antactic Region"
-      IS_EMAIL_DISABLED: "true"
+      IS_EMAIL_DISABLED: ${IS_EMAIL_DISABLED:-true}
       ASYNC_OPERATIONS_TYPE: Database
       HOST: "http://localhost:3030"
       DOMAIN_MAP: "true"
@@ -82,7 +82,7 @@ services:
       NODE_ENV: 'dev'
       FILE_SERVICE: local
       S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
-      DISABLE_LOW_PRIORITY_EMAIL: "true"
+      DISABLE_LOW_PRIORITY_EMAIL: ${DISABLE_LOW_PRIORITY_EMAIL:-true}
       SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM  
       BACKEND_HOST: http://localhost:9000
       SYSTEM_NAME: National Climate Transparency System
@@ -131,10 +131,11 @@ services:
       RUN_MODULE: async-operations-handler,data-importer
       LOCATION_SERVICE: https://mrv-common-dev.s3.amazonaws.com/flag.png
       CERTIFIER_IMAGE : "https://mrv-common-dev.s3.amazonaws.com/flag.png"
+      EMAIL_SERVICE: ${EMAIL_SERVICE:-SMTP}
       SMTP_ENDPOINT: email-smtp.us-east-1.amazonaws.com
       SMTP_PASSWORD: ""
       SMTP_USERNAME: AKIAUMXKTXDJPDYDJ76J
-      IS_EMAIL_DISABLED: "true"
+      IS_EMAIL_DISABLED: ${IS_EMAIL_DISABLED:-true}
       ASYNC_OPERATIONS_TYPE: Database
       ITMO_API_KEY: ""
       ITMO_EMAIL: ""                      
@@ -145,7 +146,7 @@ services:
       NODE_ENV: 'dev'
       FILE_SERVICE: local
       S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
-      DISABLE_LOW_PRIORITY_EMAIL: "true"
+      DISABLE_LOW_PRIORITY_EMAIL: ${DISABLE_LOW_PRIORITY_EMAIL:-true}
       SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
       BACKEND_HOST: http://localhost:9000
     env_file:

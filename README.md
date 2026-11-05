@@ -80,9 +80,44 @@ Implemented 2 options for static file hosting.
 1. NestJS static file hosting using the local storage and container volumes.
 2. AWS S3 file storage.
 
-Can add more options by implementing [file handler interface](./backend/services/src/shared/file-handler/filehandler.interface.ts)
+Can add more options by implementing [file handler interface](./backend/services/src/file-handler/filehandler.interface.ts)
 
 Change by environment variable `FILE_SERVICE`. Supported types are `LOCAL` (default) and `S3`.
+
+#### Email Service
+
+Implemented 2 options for sending email.
+
+1. SMTP, using nodemailer against an SMTP relay such as AWS SES.
+2. Microsoft Graph, using application (app-only) permissions.
+
+Can add more options by implementing [email handler interface](./backend/services/src/email/email.interface.ts)
+
+Change by environment variable `EMAIL_SERVICE`. Supported types are `SMTP` (default) and `GRAPH`. The value is case insensitive. An unrecognised value stops the service starting rather than falling back to another transport, so a typo cannot send over credentials you believed you had replaced.
+
+`SMTP` reads `SMTP_ENDPOINT`, `SMTP_USERNAME` and `SMTP_PASSWORD`.
+
+`GRAPH` reads the variables below and ignores the `SMTP_*` ones. The three credentials are required while Graph is selected; the service validates them at startup and refuses to boot if any is missing or malformed, including when email is disabled.
+
+* `EMAIL_SERVICE_GRAPH_TENANT_ID`
+* `EMAIL_SERVICE_GRAPH_CLIENT_ID`
+* `EMAIL_SERVICE_GRAPH_CLIENT_SECRET`
+* `EMAIL_SERVICE_GRAPH_APP_NAME` (optional, used as the sender display name)
+
+Graph sends from the mailbox named by `SOURCE_EMAIL`, so unlike SMTP that address must be a real licensed or shared mailbox rather than just a From header. The Azure app registration needs the **application** (not delegated) `Mail.Send` permission with admin consent granted. Because application-level `Mail.Send` otherwise permits sending as any mailbox in the tenant, scope the app to the one mailbox with an [ApplicationAccessPolicy](https://learn.microsoft.com/en-us/graph/auth-limit-mailbox-access).
+
+Optional Graph settings, shown with their defaults:
+
+| Variable | Default | Purpose |
+| :--- | :--- | :--- |
+| `EMAIL_SERVICE_GRAPH_SAVE_TO_SENT_ITEMS` | `false` | Keep a copy in the sending mailbox's Sent Items |
+| `EMAIL_SERVICE_GRAPH_MAX_ATTACHMENT_BYTES` | `2500000` | Total inline attachment budget; Graph caps `sendMail` near 4MB |
+| `EMAIL_SERVICE_GRAPH_ATTACHMENT_FAILURE_MODE` | `skip` | `skip` sends the mail without the attachment, `fail` rejects the send |
+| `EMAIL_SERVICE_GRAPH_REQUEST_TIMEOUT_MS` | `20000` | Per-request timeout |
+| `EMAIL_SERVICE_GRAPH_LOGIN_HOST` | `https://login.microsoftonline.com` | Token authority host |
+| `EMAIL_SERVICE_GRAPH_API_HOST` | `https://graph.microsoft.com` | Graph API host |
+
+Both transports honour `IS_EMAIL_DISABLED` and `DISABLE_LOW_PRIORITY_EMAIL`.
 
 <a name="structure"></a>
 
@@ -114,9 +149,10 @@ Change by environment variable `FILE_SERVICE`. Supported types are `LOCAL` (defa
   * Add / update following environment variables to enable email functionality.
     * `IS_EMAIL_DISABLED`=false
     * `SOURCE_EMAIL` (Sender email address)
-    * `SMTP_ENDPOINT`
-    * `SMTP_USERNAME`
-    * `SMTP_PASSWORD`
+    * `EMAIL_SERVICE`=`SMTP` (default) or `GRAPH` — see [Email Service](#email-service)
+    * For `SMTP`: `SMTP_ENDPOINT`, `SMTP_USERNAME`, `SMTP_PASSWORD`
+    * For `GRAPH`: `EMAIL_SERVICE_GRAPH_TENANT_ID`, `EMAIL_SERVICE_GRAPH_CLIENT_ID`, `EMAIL_SERVICE_GRAPH_CLIENT_SECRET`
+  * Note the compose files set `IS_EMAIL_DISABLED` in the service's `environment:` block, which overrides any value in an env file. Change it there, not in `.env`.
   * Use `DB_PASSWORD` env variable to change PostgreSQL database password
   * Configure system root account email by updating environment variable `ROOT EMAIL`. If the email service is enabled, on the first docker start, this email address will receive a new email with the root user password.
 * Add user data

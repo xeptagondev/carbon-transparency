@@ -14,5 +14,7 @@
   "projections": "Projections",
   "combinedExpected": "Combined - Expected",
   "combinedAchieved": "Combined - Achieved",
-  "configurations": "Configurations"
+  "configurations": "Configurations",
+  "cmaConfigurations": "CMA configurations",
+  "nationalConfigurations": "National configurations"
 }

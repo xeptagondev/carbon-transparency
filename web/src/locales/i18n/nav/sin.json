@@ -12,5 +12,7 @@
   "users": "පරිශීලකයින්",
   "emissions": "විමෝචන",
   "projections": "ආක්තිත",
-  "configurations": "වින්‍යාසයන්"
+  "configurations": "වින්‍යාසයන්",
+  "cmaConfigurations": "CMA configurations",
+  "nationalConfigurations": "National configurations"
 }

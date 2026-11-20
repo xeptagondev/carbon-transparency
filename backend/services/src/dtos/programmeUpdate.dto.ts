@@ -1,9 +1,11 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsArray, ArrayMinSize, MaxLength, Min, Max, ValidateNested} from 'class-validator';
-import { SubSector, NatImplementor, KPIAction } from "../enums/shared.enum";
+import { KPIAction } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
 import { ProgrammeStatus } from "../enums/programme-status.enum";
 import { KpiUpdateDto } from "./kpi.update.dto";
+import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ProgrammeUpdateDto {
 
@@ -29,17 +31,13 @@ export class ProgrammeUpdateDto {
     
     @IsArray()
     @ArrayMinSize(1)
-    @MaxLength(100, { each: true })
+    @MaxLength(500, { each: true })
     @IsNotEmpty({ each: true })
-    @IsEnum(SubSector, {
-        each: true,
-        message: 'Invalid Sub sector. Supported following sub sectors:' + Object.values(SubSector)
-    })
+    @IsReferenceValue(ReferenceDataList.SUB_SECTOR, { each: true })
     @ApiProperty({
-      type: [String],
-      enum: Object.values(SubSector),
+      type: [String]
     })
-    affectedSubSector: SubSector[];
+    affectedSubSector: string[];
 
     @IsNotEmpty()
     @IsNumber()
@@ -50,17 +48,13 @@ export class ProgrammeUpdateDto {
 
     @IsArray()
     @ArrayMinSize(1)
-    @MaxLength(100, { each: true })
+    @MaxLength(500, { each: true })
     @IsNotEmpty({ each: true })
-    @IsEnum(NatImplementor, {
-        each: true,
-        message: 'Invalid National Implementing Entity. Supported following entities:' + Object.values(NatImplementor)
-    })
+    @IsReferenceValue(ReferenceDataList.NATIONAL_IMPLEMENTING_ENTITY, { each: true })
     @ApiProperty({
-      type: [String],
-      enum: Object.values(NatImplementor),
+      type: [String]
     })
-    natImplementor: NatImplementor[];
+    natImplementor: string[];
 
     // @IsNotEmpty()
     // @IsNumber()

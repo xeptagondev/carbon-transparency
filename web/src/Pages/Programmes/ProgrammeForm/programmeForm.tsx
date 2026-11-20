@@ -6,7 +6,7 @@ import LayoutTable from '../../../Components/common/Table/layout.table';
 import { useNavigate, useParams } from 'react-router-dom';
 import UploadFileGrid from '../../../Components/Upload/uploadFiles';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
-import { SubSector, NatImplementor, KPIAction } from '../../../Enums/shared.enum';
+import { KPIAction } from '../../../Enums/shared.enum';
 import { ProgrammeStatus } from '../../../Enums/programme.enum';
 import './programmeForm.scss';
 import EntityIdCard from '../../../Components/EntityIdCard/entityIdCard';
@@ -45,6 +45,8 @@ import {
 import { displayErrorMessage } from '../../../Utils/errorMessageHandler';
 import { useUserContext } from '../../../Context/UserInformationContext/userInformationContext';
 import InfoKpi from '../../../Components/KPI/InfoKpi';
+import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -67,6 +69,8 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
 
   const navigate = useNavigate();
   const { get, post, put, delete: del } = useConnection();
+  const subSectorOptions = useReferenceOptions(ReferenceDataList.SUB_SECTOR);
+  const natImplementorOptions = useReferenceOptions(ReferenceDataList.NATIONAL_IMPLEMENTING_ENTITY);
   const ability = useAbilityContext();
   const { isValidationAllowed, setIsValidationAllowed } = useUserContext();
   const { entId } = useParams();
@@ -971,6 +975,7 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
                     rules={[validation.required]}
                   >
                     <Select
+                      optionFilterProp="children"
                       size="large"
                       style={{ fontSize: inputFontSize }}
                       mode="multiple"
@@ -978,9 +983,9 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled={isView}
                       showSearch
                     >
-                      {Object.values(SubSector).map((instrument) => (
-                        <Option key={instrument} value={instrument}>
-                          {instrument}
+                      {subSectorOptions.map((option) => (
+                        <Option key={option.value} value={option.value}>
+                          {option.label}
                         </Option>
                       ))}
                     </Select>
@@ -1058,6 +1063,7 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
                     rules={[validation.required]}
                   >
                     <Select
+                      optionFilterProp="children"
                       size="large"
                       style={{ fontSize: inputFontSize }}
                       mode="multiple"
@@ -1065,9 +1071,9 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled={isView}
                       showSearch
                     >
-                      {Object.values(NatImplementor).map((instrument) => (
-                        <Option key={instrument} value={instrument}>
-                          {instrument}
+                      {natImplementorOptions.map((option) => (
+                        <Option key={option.value} value={option.value}>
+                          {option.label}
                         </Option>
                       ))}
                     </Select>

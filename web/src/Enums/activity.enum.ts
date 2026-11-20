@@ -24,17 +24,3 @@ export enum ImplMeans {
   TRANSP = 'Transparency',
   NONE = 'None',
 }
-
-export enum TechnologyType {
-  ENERGY_EFI = 'Energy Efficiency',
-  REN_ENERGY = 'Renewable Energy',
-  EMISSION_ABT = 'Emissions Abatement',
-  NATURE_BASED = 'Nature Based Solution',
-  CARBON_STORAGE = 'Carbon Storage',
-  IT_SOLUTION = 'IT Solutions',
-  SYSTEM_MGT = 'Systems Management',
-  RESILIENCE = 'Resilience',
-  COASTAL_MGT = 'Coastal Management',
-  CIVIL = 'Civil',
-  OTHER = 'Other',
-}

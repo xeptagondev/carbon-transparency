@@ -3,7 +3,8 @@ import { ArrayMinSize, IsArray, IsEmail, IsEnum, isNotEmpty, IsNotEmpty, IsNumbe
 import { Role, SubRole } from "../casl/role.enum";
 import { GHGInventoryManipulate, SubRoleManipulate, UserState, ValidateEntity } from "../enums/user.enum";
 import { Sector } from "../enums/sector.enum";
-import { Organisation } from "../enums/organisation.enum";
+import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class UserUpdateDto {
 
@@ -68,11 +69,9 @@ export class UserUpdateDto {
 		sector: Sector[];
 
 		@IsOptional()
-		@ApiProperty({ enum: Organisation })
-		@IsEnum(Organisation, {
-			message: "Invalid organisation. Supported following Organisations:" + Object.values(Organisation),
-		})
-		organisation: Organisation;
+		@ApiProperty()
+		@IsReferenceValue(ReferenceDataList.USER_ORGANISATION)
+		organisation: string;
 
     @IsString()
     @IsOptional()

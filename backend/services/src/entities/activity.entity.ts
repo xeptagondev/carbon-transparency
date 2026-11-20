@@ -6,21 +6,10 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
-import {
-  EntityType,
-  GHGS,
-  IpccSubSector,
-  Recipient,
-} from "../enums/shared.enum";
+import { EntityType, GHGS, IpccSubSector } from "../enums/shared.enum";
 import { AchievementEntity } from "./achievement.entity";
 import { SupportEntity } from "./support.entity";
-import {
-  Measure,
-  TechnologyType,
-  ImpleMeans,
-  ActivityStatus,
-} from "../enums/activity.enum";
-import { NatImplementor, IntImplementor } from "../enums/shared.enum";
+import { Measure, ImpleMeans, ActivityStatus } from "../enums/activity.enum";
 import { Sector } from "../enums/sector.enum";
 import { EntitySubject } from "./entity.subject";
 
@@ -48,13 +37,13 @@ export class ActivityEntity implements EntitySubject {
   status: string;
 
   @Column("varchar", { array: true, nullable: true })
-  internationalImplementingEntity: IntImplementor[];
+  internationalImplementingEntity: string[];
 
   @Column("varchar", { array: true, nullable: true })
-  nationalImplementingEntity: NatImplementor[];
+  nationalImplementingEntity: string[];
 
   @Column("varchar", { array: true, nullable: false })
-  recipientEntities: Recipient[];
+  recipientEntities: string[];
 
   @Column({ type: "varchar", nullable: true })
   ipccSubSector: IpccSubSector;
@@ -65,7 +54,7 @@ export class ActivityEntity implements EntitySubject {
   @Column({ type: "enum", enum: ImpleMeans, nullable: true })
   meansOfImplementation: string;
 
-  @Column({ type: "enum", enum: TechnologyType, nullable: true })
+  @Column({ type: "varchar", nullable: true })
   technologyType: string;
 
   @Column({ type: "jsonb", nullable: true })

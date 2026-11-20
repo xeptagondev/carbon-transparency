@@ -20,19 +20,17 @@ export class ReferenceDataService {
   /** Values offered in forms and filters: disabled values are left out. */
   async getActiveValues(listKey: string): Promise<ReferenceDataEntity[]> {
     this.assertValidList(listKey);
-    return await this.referenceDataRepo.find({
-      where: { listKey, isActive: true },
-      order: { label: "ASC" },
-    });
+    const rows = await this.referenceDataRepo.find({ where: { listKey, isActive: true } });
+    return this.sortByLabel(rows);
   }
 
   /** Every list with its edit level and all of its values (disabled included), for the admin screen. */
   async getAllLists() {
-    const rows = await this.referenceDataRepo.find({ order: { label: "ASC" } });
+    const rows = await this.referenceDataRepo.find();
     return (Object.keys(REFERENCE_DATA_LISTS) as ReferenceDataList[]).map((listKey) => ({
       listKey,
       editLevel: REFERENCE_DATA_LISTS[listKey],
-      values: rows.filter((row) => row.listKey === listKey),
+      values: this.sortByLabel(rows.filter((row) => row.listKey === listKey)),
     }));
   }
 
@@ -70,6 +68,13 @@ export class ReferenceDataService {
   }
 
   // ---------------------------------------------------------------- helpers
+
+  /** Numbers inside the text sort as numbers, so A2 comes before A10 and S1.2 before S10.1. */
+  private sortByLabel(rows: ReferenceDataEntity[]): ReferenceDataEntity[] {
+    return [...rows].sort((a, b) =>
+      a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" })
+    );
+  }
 
   private assertValidList(listKey: string) {
     if (!Object.prototype.hasOwnProperty.call(REFERENCE_DATA_LISTS, listKey)) {

@@ -4,15 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
 import './supportForm.scss';
-import {
-  FinanceNature,
-  FinancingStatus,
-  IntFinInstrument,
-  IntSource,
-  IntSupChannel,
-  NatFinInstrument,
-  SupportDirection,
-} from '../../../Enums/support.enum';
+import { FinanceNature, FinancingStatus, SupportDirection } from '../../../Enums/support.enum';
 import EntityIdCard from '../../../Components/EntityIdCard/entityIdCard';
 import { getValidationRules } from '../../../Utils/validationRules';
 import { delay, doesUserHaveValidatePermission, getFormTitle } from '../../../Utils/utilServices';
@@ -29,6 +21,8 @@ import { displayErrorMessage } from '../../../Utils/errorMessageHandler';
 import { useUserContext } from '../../../Context/UserInformationContext/userInformationContext';
 import ConfirmPopup from '../../../Components/Popups/Confirmation/confirmPopup';
 import { DeleteOutlined } from '@ant-design/icons';
+import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const { Option } = Select;
 
@@ -53,6 +47,12 @@ const SupportForm: React.FC<Props> = ({ method }) => {
 
   const navigate = useNavigate();
   const { get, post, put, delete: del } = useConnection();
+  const channelOptions = useReferenceOptions(ReferenceDataList.CHANNEL_OF_SUPPORT);
+  const intInstrumentOptions = useReferenceOptions(
+    ReferenceDataList.INTERNATIONAL_FINANCIAL_INSTRUMENT
+  );
+  const natInstrumentOptions = useReferenceOptions(ReferenceDataList.NATIONAL_FINANCIAL_INSTRUMENT);
+  const intSourceOptions = useReferenceOptions(ReferenceDataList.INTERNATIONAL_SOURCE);
   const ability = useAbilityContext();
   const { isValidationAllowed, setIsValidationAllowed } = useUserContext();
   const { entId } = useParams();
@@ -476,14 +476,15 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                     rules={[{ required: !isView, message: 'Required Field' }]}
                   >
                     <Select
+                      optionFilterProp="children"
                       size={'large'}
                       style={{ fontSize: inputFontSize }}
                       disabled={isView}
                       showSearch
                     >
-                      {Object.values(IntSupChannel).map((channel) => (
-                        <Option key={channel} value={channel}>
-                          {channel}
+                      {channelOptions.map((option) => (
+                        <Option key={option.value} value={option.value}>
+                          {option.label}
                         </Option>
                       ))}
                     </Select>
@@ -503,14 +504,15 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                       rules={[{ required: !isView && isInternational, message: 'Required Field' }]}
                     >
                       <Select
+                        optionFilterProp="children"
                         size="large"
                         style={{ fontSize: inputFontSize }}
                         disabled={isView}
                         showSearch
                       >
-                        {Object.values(IntFinInstrument).map((instrument) => (
-                          <Option key={instrument} value={instrument}>
-                            {instrument}
+                        {intInstrumentOptions.map((option) => (
+                          <Option key={option.value} value={option.value}>
+                            {option.label}
                           </Option>
                         ))}
                       </Select>
@@ -527,14 +529,15 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                       rules={[{ required: !isView && isNational, message: 'Required Field' }]}
                     >
                       <Select
+                        optionFilterProp="children"
                         size="large"
                         style={{ fontSize: inputFontSize }}
                         disabled={isView}
                         showSearch
                       >
-                        {Object.values(NatFinInstrument).map((instrument) => (
-                          <Option key={instrument} value={instrument}>
-                            {instrument}
+                        {natInstrumentOptions.map((option) => (
+                          <Option key={option.value} value={option.value}>
+                            {option.label}
                           </Option>
                         ))}
                       </Select>
@@ -550,6 +553,7 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                       name="internationalSource"
                     >
                       <Select
+                        optionFilterProp="children"
                         size="large"
                         mode="multiple"
                         style={{ fontSize: inputFontSize }}
@@ -557,9 +561,9 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                         disabled={isView}
                         showSearch
                       >
-                        {Object.values(IntSource).map((source) => (
-                          <Option key={source} value={source}>
-                            {source}
+                        {intSourceOptions.map((option) => (
+                          <Option key={option.value} value={option.value}>
+                            {option.label}
                           </Option>
                         ))}
                       </Select>

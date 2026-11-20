@@ -114,6 +114,16 @@ describe("ReferenceDataService", () => {
     });
   });
 
+  it("sorts numbers inside the text as numbers", async () => {
+    store.push(
+      row({ id: 1, listKey: ReferenceDataList.NDC_REFERENCE, code: "A10", label: "A10" }),
+      row({ id: 2, listKey: ReferenceDataList.NDC_REFERENCE, code: "A2", label: "A2" }),
+      row({ id: 3, listKey: ReferenceDataList.NDC_REFERENCE, code: "A1", label: "A1" })
+    );
+    const values = await service.getActiveValues(ReferenceDataList.NDC_REFERENCE);
+    expect(values.map((r) => r.label)).toEqual(["A1", "A2", "A10"]);
+  });
+
   it("returns 404 for a missing value", async () => {
     await expect(service.renameValue(99, "x")).rejects.toMatchObject({ status: HttpStatus.NOT_FOUND });
   });

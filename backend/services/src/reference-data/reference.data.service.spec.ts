@@ -67,6 +67,18 @@ describe("ReferenceDataService", () => {
     ).resolves.toMatchObject({ label: "Energy" });
   });
 
+  it("reports a unique-index violation from a concurrent add as a duplicate, not a server error", async () => {
+    // Two requests both pass the read check; the second save hits the unique (listKey, code) index.
+    (repo.save as jest.Mock).mockRejectedValueOnce({ code: "23505" });
+    await expect(service.addValue(ReferenceDataList.SUB_SECTOR, "Wetlands")).rejects.toMatchObject({
+      status: HttpStatus.BAD_REQUEST,
+    });
+    (repo.save as jest.Mock).mockRejectedValueOnce(new Error("connection lost"));
+    await expect(service.addValue(ReferenceDataList.SUB_SECTOR, "Marshes")).rejects.toThrow(
+      "connection lost"
+    );
+  });
+
   it("rejects a duplicate of a disabled value", async () => {
     store.push(row({ id: 1, isActive: false }));
     await expect(service.addValue(ReferenceDataList.SUB_SECTOR, "Energy")).rejects.toBeInstanceOf(

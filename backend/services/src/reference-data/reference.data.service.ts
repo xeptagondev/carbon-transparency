@@ -39,13 +39,14 @@ export class ReferenceDataService {
     const cleanLabel = this.cleanLabel(label);
     await this.assertNoDuplicate(listKey, cleanLabel);
 
-    return await this.referenceDataRepo.save(
+    return await this.saveRow(
       this.referenceDataRepo.create({
         listKey,
         code: cleanLabel,
         label: cleanLabel,
         isActive: true,
-      })
+      }),
+      cleanLabel
     );
   }
 
@@ -56,7 +57,7 @@ export class ReferenceDataService {
     await this.assertNoDuplicate(row.listKey, cleanLabel, row.id);
 
     row.label = cleanLabel;
-    return await this.referenceDataRepo.save(row);
+    return await this.saveRow(row, cleanLabel);
   }
 
   async setValueStatus(id: number, isActive: boolean): Promise<ReferenceDataEntity> {
@@ -68,6 +69,25 @@ export class ReferenceDataService {
   }
 
   // ---------------------------------------------------------------- helpers
+
+  /**
+   * Saves a row. The duplicate check above is a read, so two requests can pass it together;
+   * the unique (listKey, code) index is the last line of defence and its violation (23505)
+   * is reported as the same duplicate message instead of a server error.
+   */
+  private async saveRow(row: ReferenceDataEntity, label: string): Promise<ReferenceDataEntity> {
+    try {
+      return await this.referenceDataRepo.save(row);
+    } catch (error) {
+      if ((error as any)?.code === "23505" || (error as any)?.driverError?.code === "23505") {
+        throw new HttpException(
+          this.helperService.formatReqMessagesString("referenceData.duplicateValue", [label]),
+          HttpStatus.BAD_REQUEST
+        );
+      }
+      throw error;
+    }
+  }
 
   /** Numbers inside the text sort as numbers, so A2 comes before A10 and S1.2 before S10.1. */
   private sortByLabel(rows: ReferenceDataEntity[]): ReferenceDataEntity[] {

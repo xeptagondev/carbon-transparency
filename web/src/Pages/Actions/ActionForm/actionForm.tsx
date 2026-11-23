@@ -4,13 +4,7 @@ import { Row, Col, Input, Button, Form, Select, message, Spin, Tooltip } from 'a
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import LayoutTable from '../../../Components/common/Table/layout.table';
-import {
-  InstrumentType,
-  ActionStatus,
-  NatAnchor,
-  Action,
-  ActionType,
-} from '../../../Enums/action.enum';
+import { InstrumentType, ActionStatus, Action, ActionType } from '../../../Enums/action.enum';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
 import UploadFileGrid from '../../../Components/Upload/uploadFiles';
@@ -50,6 +44,8 @@ import {
 } from '../../../Definitions/breakpoints/breakpoints';
 import { displayErrorMessage } from '../../../Utils/errorMessageHandler';
 import InfoKpi from '../../../Components/KPI/InfoKpi';
+import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -72,6 +68,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
 
   const navigate = useNavigate();
   const { get, post, put, delete: del } = useConnection();
+  const natAnchorOptions = useReferenceOptions(ReferenceDataList.NATIONAL_STRATEGY_ANCHOR);
   const ability = useAbilityContext();
   const { userInfoState, isValidationAllowed, setIsValidationAllowed } = useUserContext();
   const { entId } = useParams();
@@ -927,6 +924,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                     rules={[validation.required]}
                   >
                     <Select
+                      optionFilterProp="children"
                       size="large"
                       mode="multiple"
                       style={{ fontSize: inputFontSize }}
@@ -934,9 +932,9 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled={isView}
                       showSearch
                     >
-                      {Object.values(NatAnchor).map((instrument) => (
-                        <Option key={instrument} value={instrument}>
-                          {instrument}
+                      {natAnchorOptions.map((option) => (
+                        <Option key={option.value} value={option.value}>
+                          {option.label}
                         </Option>
                       ))}
                     </Select>

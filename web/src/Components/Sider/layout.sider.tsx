@@ -41,6 +41,9 @@ const LayoutSider = (props: LayoutSiderProps) => {
   const { userInfoState } = useUserContext();
   const { t } = useTranslation(['nav']);
 
+  const canManageNationalConfigurations =
+    userInfoState?.userRole === Role.Root || userInfoState?.userRole === Role.Admin;
+
   const items: MenuItem[] = [
     getItem(t('nav:dashboard'), 'dashboard', <DashboardOutlined />),
     getItem(t('nav:actions'), 'actions', <Icon.Clipboard2Data />),
@@ -53,7 +56,12 @@ const LayoutSider = (props: LayoutSiderProps) => {
       getItem(t('nav:projections'), 'projections'),
       getItem(t('nav:combinedExpected'), 'combinedExpected'),
       getItem(t('nav:combinedAchieved'), 'combinedAchieved'),
-      getItem(t('nav:configurations'), 'configurations'),
+      getItem(t('nav:configurations'), 'configurationsMenu', undefined, [
+        getItem(t('nav:cmaConfigurations'), 'configurations'),
+        ...(canManageNationalConfigurations
+          ? [getItem(t('nav:nationalConfigurations'), 'nationalConfigurations')]
+          : []),
+      ]),
     ]),
     getItem(t('nav:reporting'), 'reportings', <ClipboardMinus />),
     getItem(t('nav:faq'), 'faqs', <Headset />),

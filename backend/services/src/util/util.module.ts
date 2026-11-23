@@ -25,6 +25,8 @@ import { ProgrammeEntity } from "../entities/programme.entity";
 import { ProjectEntity } from "../entities/project.entity";
 import { ActivityEntity } from "../entities/activity.entity";
 import { ProjectionEntity } from "../entities/projection.entity";
+import { ReferenceDataEntity } from "../entities/reference.data.entity";
+import { IsReferenceValueConstraint } from "./referenceValue.decorator";
 
 @Module({
   imports: [
@@ -57,7 +59,8 @@ import { ProjectionEntity } from "../entities/projection.entity";
 			ProgrammeEntity,
 			ProjectEntity,
 			ActivityEntity,
-      ProjectionEntity
+      ProjectionEntity,
+      ReferenceDataEntity
     ]),
     forwardRef(() => AsyncOperationsModule),
     FileHandlerModule,
@@ -72,6 +75,7 @@ import { ProjectionEntity } from "../entities/projection.entity";
     FileUploadService,
 		LinkUnlinkService,
 		IsTwoDecimalPointsConstraint,
+		IsReferenceValueConstraint,
 		DataExportService,
   ],
   exports: [

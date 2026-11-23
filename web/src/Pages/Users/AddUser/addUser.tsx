@@ -19,7 +19,6 @@ import { User } from '../../../Entities/user';
 import ChangePasswordModel from '../../../Components/Models/changePasswordModel';
 import { Role } from '../../../Enums/role.enum';
 import { Sector } from '../../../Enums/sector.enum';
-import { Organisation } from '../../../Enums/organisation.enum';
 import {
   GHGInventoryManipulate,
   SubRoleManipulate,
@@ -39,6 +38,8 @@ import {
   ghgInventoryPermitBGColor,
   ghgInventoryPermitColor,
 } from '../../../Styles/role.color.constants';
+import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -46,6 +47,8 @@ const AddUser = () => {
   const themeColor = '#9155fd';
 
   const { post, put } = useConnection();
+
+  const organisationOptions = useReferenceOptions(ReferenceDataList.USER_ORGANISATION);
   const [formOne] = Form.useForm();
   const { state } = useLocation();
   const { removeTokens } = useConnection();
@@ -748,10 +751,10 @@ const AddUser = () => {
                       },
                     ]}
                   >
-                    <Select size="large" allowClear showSearch>
-                      {Object.values(Organisation).map((instrument) => (
-                        <Select.Option key={instrument} value={instrument}>
-                          {instrument}
+                    <Select optionFilterProp="children" size="large" allowClear showSearch>
+                      {organisationOptions.map((option) => (
+                        <Select.Option key={option.value} value={option.value}>
+                          {option.label}
                         </Select.Option>
                       ))}
                     </Select>

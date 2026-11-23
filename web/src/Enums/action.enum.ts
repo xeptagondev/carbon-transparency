@@ -29,10 +29,3 @@ export enum ActionStatus {
   ADOPTED = 'Adopted',
   IMPLEMENTED = 'Implemented',
 }
-
-export enum NatAnchor {
-  NDC = 'NDC',
-  NAP = 'NAP',
-  NDP = 'NDP',
-  OTHER = 'Other',
-}

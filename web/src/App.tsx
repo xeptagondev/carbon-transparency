@@ -42,6 +42,9 @@ const GhgProjections = lazy(() => import('./Pages/Projections/projections'));
 const GhgCombinedExpected = lazy(() => import('./Pages/CombinedExpected/combinedExpected'));
 const GhgCombinedAchieved = lazy(() => import('./Pages/CombinedAchieved/combinedAchieved'));
 const GhgConfigurations = lazy(() => import('./Pages/Configurations/configurations'));
+const NationalConfigurations = lazy(
+  () => import('./Pages/NationalConfigurations/nationalConfigurations')
+);
 const TransparencyHelp = lazy(() => import('./Pages/InformationPages/Help/help'));
 const TransparencyStatus = lazy(() => import('./Pages/InformationPages/Status/status'));
 const PrivacyPolicy = lazy(() => import('./Pages/InformationPages/PrivacyPolicy/privacyPolicy'));
@@ -152,6 +155,12 @@ const App = () => {
                   element={<CustomLayout selectedKey="configurations" />}
                 >
                   <Route index element={<GhgConfigurations />} />
+                </Route>
+                <Route
+                  path="/nationalConfigurations"
+                  element={<CustomLayout selectedKey="nationalConfigurations" />}
+                >
+                  <Route index element={<NationalConfigurations />} />
                 </Route>
                 <Route path="/reportings" element={<CustomLayout selectedKey="reportings" />}>
                   <Route index element={<ReportList />} />

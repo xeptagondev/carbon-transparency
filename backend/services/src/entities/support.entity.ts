@@ -48,6 +48,32 @@ export class SupportEntity {
   @Column({ type: 'decimal', precision: 15, scale: 2, nullable: false })
   receivedAmountDomestic: number;
 
+  /** Needed support only: how far the funding request has progressed (list "Pipeline status"). */
+  @Column({ type: "varchar", nullable: true })
+  pipelineStatus: string;
+
+  /** National finance only: whether the national budget contributes to the activity. */
+  @Column({ type: "boolean", nullable: true })
+  nationallyBudgetSupported: boolean;
+
+  /** National budget by year in the domestic currency: [{ year, amount }], one entry per year of the activity. */
+  @Column({ type: "jsonb", nullable: true })
+  nationalBudgetAllocation: { year: number; amount: number }[];
+
+  /** Sum of the yearly allocations, in the domestic currency. */
+  @Column({ type: "decimal", precision: 15, scale: 2, nullable: true })
+  nationalBudgetTotalDomestic: number;
+
+  /** The same total in US dollars (domestic total / exchange rate). */
+  @Column({ type: "decimal", precision: 15, scale: 2, nullable: true })
+  nationalBudgetTotal: number;
+
+  @Column({ type: "text", nullable: true })
+  comments: string;
+
+  @Column({ type: "jsonb", nullable: true })
+  documents: any;
+
   @Column({ nullable: true })
   sector: Sector;
 

@@ -23,6 +23,11 @@ import { Role } from "../casl/role.enum";
 import { LinkUnlinkService } from "../util/linkUnlink.service";
 import { ActionEntity } from "src/entities/action.entity";
 import { ProgrammeEntity } from "src/entities/programme.entity";
+import { FileUploadService } from "../util/fileUpload.service";
+import { DocumentDto } from "../dtos/document.dto";
+import { DocumentEntityDto } from "../dtos/document.entity.dto";
+import { FinanceNature, SupportDirection } from "../enums/support.enum";
+import { calculateSupportFinance, InvalidBudgetYearsError } from "./support.finance";
 
 @Injectable()
 export class SupportService {
@@ -32,8 +37,70 @@ export class SupportService {
 		private counterService: CounterService,
 		private helperService: HelperService,
 		private activityService: ActivityService,
-		private linkUnlinkService: LinkUnlinkService
+		private linkUnlinkService: LinkUnlinkService,
+		private fileUploadService: FileUploadService
 	) { }
+
+	//MARK: Finance fields
+	/**
+	 * Copies the finance fields of a create/update request onto the entity. A record is one stage
+	 * of one money flow, so the fields of the other stage or of the other kind of finance are
+	 * cleared, and the amounts (including the domestic currency ones) are calculated here, not trusted.
+	 */
+	private applyFinance(support: SupportEntity, dto: SupportDto, activity: ActivityEntity) {
+		let finance;
+		try {
+			finance = calculateSupportFinance(dto, { startYear: activity.startYear, endYear: activity.endYear });
+		} catch (error) {
+			if (error instanceof InvalidBudgetYearsError) {
+				throw new HttpException(
+					this.helperService.formatReqMessagesString("support.invalidBudgetYears", [error.message]),
+					HttpStatus.BAD_REQUEST
+				);
+			}
+			throw error;
+		}
+
+		const international = dto.financeNature === FinanceNature.INTERNATIONAL;
+		const received = dto.direction === SupportDirection.RECEIVED;
+
+		support.direction = dto.direction;
+		support.financeNature = dto.financeNature;
+		support.internationalSupportChannel = international ? dto.internationalSupportChannel : null;
+		support.internationalFinancialInstrument = international ? dto.internationalFinancialInstrument : null;
+		support.internationalSource = international ? (dto.internationalSource ?? null) : null;
+		support.nationalFinancialInstrument = international ? null : dto.nationalFinancialInstrument;
+		support.financingStatus = received ? dto.financingStatus : null;
+		support.pipelineStatus = received ? null : dto.pipelineStatus;
+		support.exchangeRate = dto.exchangeRate;
+		support.comments = dto.comments?.trim() ? dto.comments.trim() : null;
+		Object.assign(support, finance);
+	}
+
+	//MARK: Documents
+	private async uploadDocuments(documents: DocumentDto[]) {
+		const uploaded: DocumentEntityDto[] = [];
+		for (const documentItem of documents) {
+			const url = await this.fileUploadService.uploadDocument(documentItem.data, documentItem.title, EntityType.SUPPORT);
+			const docEntity = new DocumentEntityDto();
+			docEntity.title = documentItem.title;
+			docEntity.url = url;
+			docEntity.createdTime = new Date().getTime();
+			uploaded.push(docEntity);
+		}
+		return uploaded;
+	}
+
+	private async updateDocumentList(current: any[], added?: DocumentDto[], removed?: string[]) {
+		let documents: any[] = current ? [...current] : [];
+		if (removed?.length) {
+			documents = documents.filter((item) => !removed.includes(item.url));
+		}
+		if (added?.length) {
+			documents = [...documents, ...(await this.uploadDocuments(added))];
+		}
+		return documents.length > 0 ? documents : null;
+	}
 
 	//MARK: Create Support
 	async createSupport(supportDto: SupportDto, user: User) {
@@ -81,8 +148,10 @@ export class SupportService {
 			parentAction = await this.activityService.isActionValid(activity.parentId, user);
 		}
 
-		support.requiredAmountDomestic = this.helperService.roundToTwoDecimals(support.requiredAmount / support.exchangeRate);
-		support.receivedAmountDomestic = this.helperService.roundToTwoDecimals(support.receivedAmount / support.exchangeRate);
+		this.applyFinance(support, supportDto, activity);
+		support.documents = supportDto.documents?.length
+			? await this.uploadDocuments(supportDto.documents)
+			: null;
 		support.sector = activity.sector;
 		// support.type = activity.type;
 
@@ -438,19 +507,12 @@ export class SupportService {
 			
 		}
 
-		currentSupport.direction = supportUpdateDto.direction;
-		currentSupport.financeNature = supportUpdateDto.financeNature;
-		currentSupport.internationalSupportChannel = supportUpdateDto.internationalSupportChannel;
-		currentSupport.internationalFinancialInstrument = supportUpdateDto.internationalFinancialInstrument;
-		currentSupport.nationalFinancialInstrument = supportUpdateDto.nationalFinancialInstrument;
-		currentSupport.financingStatus = supportUpdateDto.financingStatus;
-		currentSupport.internationalSource = supportUpdateDto.internationalSource;
-		currentSupport.nationalSource = supportUpdateDto.nationalSource;
-		currentSupport.requiredAmount = supportUpdateDto.requiredAmount;
-		currentSupport.receivedAmount = supportUpdateDto.receivedAmount;
-		currentSupport.exchangeRate = supportUpdateDto.exchangeRate;
-		currentSupport.requiredAmountDomestic = this.helperService.roundToTwoDecimals(currentSupport.requiredAmount / currentSupport.exchangeRate);
-		currentSupport.receivedAmountDomestic = this.helperService.roundToTwoDecimals(currentSupport.receivedAmount / currentSupport.exchangeRate);
+		this.applyFinance(currentSupport, supportUpdateDto, currentSupport.activity);
+		currentSupport.documents = await this.updateDocumentList(
+			currentSupport.documents,
+			supportUpdateDto.newDocuments,
+			supportUpdateDto.removedDocuments
+		);
 		currentSupport.validated = false;
 
 		const sup = await this.entityManager

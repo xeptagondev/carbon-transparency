@@ -86,5 +86,6 @@
     "useImpactResults": "Use, impact and results",
     "useImpactEstResults": "Use, impact, and estimated results",
     "mostRecentYear": "Most recent year in the Party’s national inventory report (kt CO2 eq)",
-    "projectionsofGhg": "Projections of GHG emissions and removals (kt CO2 eq)"
+    "projectionsofGhg": "Projections of GHG emissions and removals (kt CO2 eq)",
+    "noData": "No data"
 }

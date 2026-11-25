@@ -12,7 +12,5 @@
   "users": "Utilisateurs",
   "emissions": "Émissions",
   "projections": "Projections",
-  "configurations": "Configurations",
-  "cmaConfigurations": "CMA configurations",
-  "nationalConfigurations": "National configurations"
+  "configurations": "Configurations"
 }

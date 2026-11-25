@@ -1,5 +1,13 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
-import { SupportDirection, FinanceNature, FinancingStatus } from "../enums/support.enum";
+import {
+  SupportDirection,
+  FinanceNature,
+  IntSupChannel,
+  IntFinInstrument,
+  NatFinInstrument,
+  FinancingStatus,
+  IntSource,
+} from "../enums/support.enum";
 import { ActivityEntity } from "./activity.entity";
 import { Sector } from "../enums/sector.enum";
 import { ActionType } from "../enums/action.enum";
@@ -15,20 +23,20 @@ export class SupportEntity {
   @Column({ type: "enum", enum: FinanceNature })
   financeNature: string;
 
-  @Column({ type: "varchar", nullable: true })
+  @Column({ type: "enum", enum: IntSupChannel, nullable: true })
   internationalSupportChannel: string;
 
-  @Column({ type: "varchar", nullable: true })
+  @Column({ type: "enum", enum: IntFinInstrument, nullable: true })
   internationalFinancialInstrument: string;
 
-  @Column({ type: "varchar", nullable: true })
+  @Column({ type: "enum", enum: NatFinInstrument, nullable: true })
   nationalFinancialInstrument: string;
 
   @Column({ type: "enum", enum: FinancingStatus, nullable: true })
   financingStatus: string;
 
   @Column("varchar", { array: true, nullable: true })
-  internationalSource: string[];
+  internationalSource: IntSource[];
 
   @Column({ nullable: true })
   nationalSource: string;

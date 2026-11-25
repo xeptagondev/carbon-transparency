@@ -1,5 +1,5 @@
-import { ActivityStatus, ImpleMeans, Measure } from "../enums/activity.enum";
-import { EntityType } from "../enums/shared.enum";
+import { ActivityStatus, ImpleMeans, Measure, TechnologyType } from "../enums/activity.enum";
+import { EntityType, IntImplementor, NatImplementor, Recipient } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
 
 export class ActivityResponseDto {
@@ -18,17 +18,17 @@ export class ActivityResponseDto {
 
 	status: ActivityStatus;
 
-	nationalImplementingEntity: string[]
+	nationalImplementingEntity: NatImplementor[]
 
-	recipientEntities: string[];
+	recipientEntities: Recipient[];
 
-	internationalImplementingEntity: string[]
+	internationalImplementingEntity: IntImplementor[]
 
 	anchoredInNationalStrategy: boolean;
 
 	meansOfImplementation: ImpleMeans;
 
-	technologyType: string;
+	technologyType: TechnologyType;
 
 	etfDescription: string;
 

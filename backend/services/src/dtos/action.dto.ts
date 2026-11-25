@@ -1,12 +1,10 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsString, IsOptional, ValidateNested, IsNumber, Min, Max, MaxLength, ArrayMinSize, IsArray } from "class-validator";
-import { ActionStatus, InstrumentType } from "../enums/action.enum";
+import { ActionStatus, InstrumentType, NatAnchor } from "../enums/action.enum";
 import { KpiDto } from "./kpi.dto";
 import { DocumentDto } from "./document.dto";
 import { Sector } from "../enums/sector.enum";
 import { ActionType } from "../enums/action.enum";
-import { IsReferenceValue } from "../util/referenceValue.decorator";
-import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ActionDto {
 
@@ -79,13 +77,17 @@ export class ActionDto {
 
 	@IsArray()
 	@ArrayMinSize(1)
-	@MaxLength(500, { each: true })
+	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
-	@IsReferenceValue(ReferenceDataList.NATIONAL_STRATEGY_ANCHOR, { each: true })
-	@ApiProperty({
-		type: [String]
+	@IsEnum(NatAnchor, {
+		each: true,
+		message: "Invalid Anchored National Strategy. Supported following strategies:" + Object.values(NatAnchor),
 	})
-	natAnchor: string[];
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(NatAnchor),
+	})
+	natAnchor: NatAnchor[];
 
 	@IsOptional()
 	@ApiPropertyOptional(

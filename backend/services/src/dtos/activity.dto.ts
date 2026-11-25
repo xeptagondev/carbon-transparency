@@ -1,10 +1,8 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
 import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, ValidateIf, Min, Max, } from "class-validator";
-import { ActivityStatus, ImpleMeans, Measure, SupportType } from "../enums/activity.enum";
-import { EntityType, GHGS, IpccSubSector } from "../enums/shared.enum";
+import { ActivityStatus, ImpleMeans, Measure, SupportType, TechnologyType } from "../enums/activity.enum";
+import { EntityType, GHGS, IntImplementor, IpccSubSector, NatImplementor, Recipient } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
-import { IsReferenceValue } from "../util/referenceValue.decorator";
-import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ActivityDto {
 
@@ -50,35 +48,47 @@ export class ActivityDto {
 	@IsOptional()
 	@IsArray()
 	@ArrayMinSize(1)
-	@MaxLength(500, { each: true })
+	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
-	@IsReferenceValue(ReferenceDataList.NATIONAL_IMPLEMENTING_ENTITY, { each: true })
-	@ApiPropertyOptional({
-		type: [String]
+	@IsEnum(NatImplementor, {
+		each: true,
+		message: 'Invalid National Implementing Entity. Supported following entities:' + Object.values(NatImplementor)
 	})
-	nationalImplementingEntity: string[]
+	@ApiPropertyOptional({
+		type: [String],
+		enum: Object.values(NatImplementor),
+	})
+	nationalImplementingEntity: NatImplementor[]
 
 	@ValidateIf((c) => c.internationalImplementingEntity)
 	@IsOptional()
 	@IsArray()
 	@ArrayMinSize(1)
-	@MaxLength(500, { each: true })
+	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
-	@IsReferenceValue(ReferenceDataList.INTERNATIONAL_IMPLEMENTING_ENTITY, { each: true })
-	@ApiPropertyOptional({
-		type: [String]
+	@IsEnum(IntImplementor, {
+		each: true,
+		message: 'Invalid International Implementing Entity. Supported following entities:' + Object.values(IntImplementor)
 	})
-	internationalImplementingEntity: string[];
+	@ApiPropertyOptional({
+		type: [String],
+		enum: Object.values(IntImplementor),
+	})
+	internationalImplementingEntity: IntImplementor[];
 
 	@IsArray()
 	@ArrayMinSize(1)
-	@MaxLength(500, { each: true })
+	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
-	@IsReferenceValue(ReferenceDataList.RECIPIENT_ENTITY, { each: true })
-	@ApiProperty({
-		type: [String]
+	@IsEnum(Recipient, {
+		each: true,
+		message: 'Invalid Recipient Entity. Supported following entities:' + Object.values(Recipient)
 	})
-	recipientEntities: string[];
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(Recipient),
+	})
+	recipientEntities: Recipient[];
 
 	@IsOptional()
 	@IsEnum(IpccSubSector, {
@@ -102,9 +112,11 @@ export class ActivityDto {
 
 	@ValidateIf((c) => c.technologyType)
 	@IsNotEmpty()
-	@ApiPropertyOptional()
-	@IsReferenceValue(ReferenceDataList.TYPE_OF_TECHNOLOGY)
-	technologyType: string;
+	@ApiPropertyOptional({ enum: TechnologyType })
+	@IsEnum(TechnologyType, {
+		message: "Invalid Technology Type. Supported following types:" + Object.values(TechnologyType),
+	})
+	technologyType: TechnologyType;
 
 	@IsOptional()
 	@IsString()

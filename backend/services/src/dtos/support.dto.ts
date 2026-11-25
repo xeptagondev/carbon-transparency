@@ -1,9 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { ArrayMinSize, IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, ValidateIf } from "class-validator";
-import { FinanceNature, FinancingStatus, SupportDirection } from "../enums/support.enum";
+import { FinanceNature, FinancingStatus, IntFinInstrument, IntSource, IntSupChannel, NatFinInstrument, SupportDirection } from "../enums/support.enum";
 import { IsTwoDecimalPoints } from "../util/twoDecimalPointNumber.decorator";
-import { IsReferenceValue } from "../util/referenceValue.decorator";
-import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class SupportDto {
 
@@ -37,27 +35,39 @@ export class SupportDto {
 	financeNature: FinanceNature;
 
 	@IsNotEmpty()
-	@IsReferenceValue(ReferenceDataList.CHANNEL_OF_SUPPORT, { each: true })
-	@ApiProperty({
-		type: [String]
+	@IsEnum(IntSupChannel, {
+		each: true,
+		message: 'Invalid Support Channel. Supported following types:' + Object.values(IntSupChannel)
 	})
-	internationalSupportChannel: string;
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(IntSupChannel),
+	})
+	internationalSupportChannel: IntSupChannel;
 
 	@ValidateIf((c) => c.financeNature == FinanceNature.INTERNATIONAL)
 	@IsNotEmpty()
-	@IsReferenceValue(ReferenceDataList.INTERNATIONAL_FINANCIAL_INSTRUMENT, { each: true })
-	@ApiProperty({
-		type: [String]
+	@IsEnum(IntFinInstrument, {
+		each: true,
+		message: 'Invalid International Financial Instrument. Supported following types:' + Object.values(IntFinInstrument)
 	})
-	internationalFinancialInstrument: string;
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(IntFinInstrument),
+	})
+	internationalFinancialInstrument: IntFinInstrument;
 
 	@ValidateIf((c) => c.financeNature == FinanceNature.NATIONAL)
 	@IsNotEmpty()
-	@IsReferenceValue(ReferenceDataList.NATIONAL_FINANCIAL_INSTRUMENT, { each: true })
-	@ApiProperty({
-		type: [String]
+	@IsEnum(NatFinInstrument, {
+		each: true,
+		message: 'Invalid National Financial Instrument. Supported following types:' + Object.values(NatFinInstrument)
 	})
-	nationalFinancialInstrument: string;
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(NatFinInstrument),
+	})
+	nationalFinancialInstrument: NatFinInstrument;
 
 	@ValidateIf((c) => c.direction == SupportDirection.RECEIVED)
 	@IsNotEmpty()
@@ -74,13 +84,17 @@ export class SupportDto {
 	@ValidateIf((c) => c.internationalSource && c.financeNature == FinanceNature.INTERNATIONAL)
 	@IsArray()
 	@ArrayMinSize(1)
-	@MaxLength(500, { each: true })
+	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
-	@IsReferenceValue(ReferenceDataList.INTERNATIONAL_SOURCE, { each: true })
-	@ApiProperty({
-		type: [String]
+	@IsEnum(IntSource, {
+		each: true,
+		message: 'Invalid International Source. Supported followings:' + Object.values(IntSource)
 	})
-	internationalSource: string[];
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(IntSource),
+	})
+	internationalSource: IntSource[];
 
 	@ValidateIf((c) => c.financeNature == FinanceNature.NATIONAL)
 	@IsOptional()

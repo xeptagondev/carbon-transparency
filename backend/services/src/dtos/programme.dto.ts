@@ -1,10 +1,9 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsArray, ArrayMinSize, MaxLength, Min, Max } from 'class-validator';
+import { SubSector, NatImplementor } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
 import { KpiDto } from "./kpi.dto";
 import { ProgrammeStatus } from "../enums/programme-status.enum";
-import { IsReferenceValue } from "../util/referenceValue.decorator";
-import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ProgrammeDto {
 
@@ -31,13 +30,17 @@ export class ProgrammeDto {
     
     @IsArray()
     @ArrayMinSize(1)
-    @MaxLength(500, { each: true })
+    @MaxLength(100, { each: true })
     @IsNotEmpty({ each: true })
-    @IsReferenceValue(ReferenceDataList.SUB_SECTOR, { each: true })
-    @ApiProperty({
-      type: [String]
+    @IsEnum(SubSector, {
+        each: true,
+        message: 'Invalid Sub sector. Supported following sub sectors:' + Object.values(SubSector)
     })
-    affectedSubSector: string[];
+    @ApiProperty({
+      type: [String],
+      enum: Object.values(SubSector),
+    })
+    affectedSubSector: SubSector[];
 
     @IsNotEmpty()
     @IsNumber()
@@ -48,13 +51,17 @@ export class ProgrammeDto {
 
     @IsArray()
     @ArrayMinSize(1)
-    @MaxLength(500, { each: true })
+    @MaxLength(100, { each: true })
     @IsNotEmpty({ each: true })
-    @IsReferenceValue(ReferenceDataList.NATIONAL_IMPLEMENTING_ENTITY, { each: true })
-    @ApiProperty({
-      type: [String]
+    @IsEnum(NatImplementor, {
+        each: true,
+        message: 'Invalid National Implementing Entity. Supported following entities:' + Object.values(NatImplementor)
     })
-    natImplementor: string[];
+    @ApiProperty({
+      type: [String],
+      enum: Object.values(NatImplementor),
+    })
+    natImplementor: NatImplementor[];
   
     // @IsNotEmpty()
     // @IsNumber()

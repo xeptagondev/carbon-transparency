@@ -36,8 +36,6 @@ import { ResourcesController } from './resource.controller';
 import { SystemResourceModule } from '../system.resource/system.resources.module';
 import { GHGCombinedReductionController } from './ghg.combined.controller';
 import { GhgCombinedReductionModule } from 'src/combined.reduction/combined.reduction.module';
-import { ReferenceDataModule } from '../reference-data/reference.data.module';
-import { ReferenceDataController } from './reference.data.controller';
 
 
 @Module({
@@ -66,8 +64,7 @@ import { ReferenceDataController } from './reference.data.controller';
     GhgEmissionModule,
     GhgProjectionModule,
     GhgCombinedReductionModule,
-		SystemResourceModule,
-    ReferenceDataModule
+		SystemResourceModule
   ],
   controllers: [ 
     NationalAPIController, 
@@ -85,8 +82,7 @@ import { ReferenceDataController } from './reference.data.controller';
     GHGEmissionController,
     GHGProjectionController,
     GHGCombinedReductionController,
-		ResourcesController,
-    ReferenceDataController
+		ResourcesController
   ],
   providers: [
     NationalAPIService, 

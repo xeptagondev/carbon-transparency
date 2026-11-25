@@ -1,7 +1,0 @@
-{
-    "invalidList": "{} is not a valid list",
-    "valueNotFound": "List value with id {} is not found",
-    "labelRequired": "The value cannot be empty",
-    "duplicateValue": "\"{}\" already exists in this list",
-    "addOnlyList": "Existing values of this list cannot be renamed or disabled"
-}

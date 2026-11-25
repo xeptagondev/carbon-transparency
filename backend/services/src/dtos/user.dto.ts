@@ -12,10 +12,9 @@ import {
 	ValidateIf,
 } from "class-validator";
 import { Role, SubRole } from "../casl/role.enum";
+import { Organisation } from "../enums/organisation.enum";
 import { Sector } from "../enums/sector.enum";
 import { GHGInventoryManipulate, SubRoleManipulate, ValidateEntity } from "../enums/user.enum";
-import { IsReferenceValue } from "../util/referenceValue.decorator";
-import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class UserDto {
   @IsNotEmpty()
@@ -77,9 +76,11 @@ export class UserDto {
     (c) => ![Role.Root, Role.Admin].includes(c.role)
   )
   @IsNotEmpty()
-  @ApiProperty()
-  @IsReferenceValue(ReferenceDataList.USER_ORGANISATION)
-  organisation: string;
+  @ApiProperty({ enum: Organisation })
+  @IsEnum(Organisation, {
+    message: "Invalid organisation. Supported following Organisations:" + Object.values(Organisation),
+  })
+  organisation: Organisation;
 
   password: string;
 

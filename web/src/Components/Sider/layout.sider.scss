@@ -87,11 +87,6 @@
       padding-top: 10px;
       padding-right: 8px;
 
-      // Third-level items (Configurations > CMA / National configurations) need the room for the full label
-      .ant-menu-sub .ant-menu-sub .ant-menu-item {
-        padding-left: 52px !important;
-      }
-
       .ant-menu-item-selected {
         background: linear-gradient(to right, variables.$gradient-background-start, variables.$gradient-background-end);
         color: variables.$dark-text-color;

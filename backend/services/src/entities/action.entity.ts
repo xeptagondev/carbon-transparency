@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ActionType, InstrumentType } from "../enums/action.enum";
 import { ActionStatus } from "../enums/action.enum";
+import { NatAnchor } from "../enums/action.enum";
 import { ProgrammeEntity } from "./programme.entity";
 import { Sector } from "../enums/sector.enum";
 import { ActivityEntity } from "./activity.entity";
@@ -30,7 +31,7 @@ export class ActionEntity {
   startYear: number;
 
   @Column("varchar", { array: true, nullable: false })
-  natAnchor: string[];
+  natAnchor: NatAnchor[];
 
   @Column({ type: 'jsonb', nullable: true })
   documents: any;

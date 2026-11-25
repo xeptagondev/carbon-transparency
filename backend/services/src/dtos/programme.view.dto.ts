@@ -1,4 +1,5 @@
 import { Sector } from "../enums/sector.enum";
+import { SubSector, NatImplementor } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
 
 export class ProgrammeViewDto {
@@ -19,7 +20,7 @@ export class ProgrammeViewDto {
 
   sector: Sector;
 
-  affectedSubSector: string[];
+  affectedSubSector: SubSector[];
 
   programmeStatus: string;
 
@@ -29,7 +30,7 @@ export class ProgrammeViewDto {
 
   interNationalImplementor: string[];
 
-  nationalImplementor: string[];
+  nationalImplementor: NatImplementor[];
 
   documents: DocumentDto[];
 

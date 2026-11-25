@@ -22,7 +22,6 @@ import { EmissionEntity } from "../entities/emission.entity";
 import { ProjectionEntity } from "../entities/projection.entity";
 import { ConfigurationSettingsEntity } from "../entities/configuration.settings.entity";
 import { SystemResourcesEntity } from "../entities/systemResource.entity";
-import { ReferenceDataEntity } from "../entities/reference.data.entity";
 
 type Subjects = InferSubjects<typeof EntitySubject> | "all";
 
@@ -103,11 +102,6 @@ export class CaslAbilityFactory {
         can(Action.Create, ConfigurationSettingsEntity);
         can(Action.Update, ConfigurationSettingsEntity);
 
-        // National configurations (reference data)
-        can(Action.Read, ReferenceDataEntity);
-        can(Action.Create, ReferenceDataEntity);
-        can(Action.Update, ReferenceDataEntity);
-
         // Settings
         can(Action.Read, SystemResourcesEntity);
         can(Action.Create, SystemResourcesEntity);
@@ -182,11 +176,6 @@ export class CaslAbilityFactory {
         can(Action.Read, ConfigurationSettingsEntity);
         cannot(Action.Create, ConfigurationSettingsEntity);
         cannot(Action.Update, ConfigurationSettingsEntity);
-
-        // National configurations (reference data)
-        can(Action.Read, ReferenceDataEntity);
-        can(Action.Create, ReferenceDataEntity);
-        can(Action.Update, ReferenceDataEntity);
 
         // Settings
         can(Action.Read, SystemResourcesEntity);
@@ -311,11 +300,6 @@ export class CaslAbilityFactory {
         cannot(Action.Create, ConfigurationSettingsEntity);
         cannot(Action.Update, ConfigurationSettingsEntity);
 
-        // National configurations (reference data)
-        can(Action.Read, ReferenceDataEntity);
-        cannot(Action.Create, ReferenceDataEntity);
-        cannot(Action.Update, ReferenceDataEntity);
-
         // Settings
         can(Action.Read, SystemResourcesEntity);
       }
@@ -435,11 +419,6 @@ export class CaslAbilityFactory {
         can(Action.Read, ConfigurationSettingsEntity);
         cannot(Action.Create, ConfigurationSettingsEntity);
         cannot(Action.Update, ConfigurationSettingsEntity);
-
-        // National configurations (reference data)
-        can(Action.Read, ReferenceDataEntity);
-        cannot(Action.Create, ReferenceDataEntity);
-        cannot(Action.Update, ReferenceDataEntity);
 
         // Settings
         can(Action.Read, SystemResourcesEntity);

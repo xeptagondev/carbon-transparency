@@ -14,8 +14,14 @@ import {
   ExpectedRows,
   ExpectedTimeline,
 } from '../../../Definitions/mtgTimeline.definition';
-import { ActivityStatus, ImplMeans, Measure } from '../../../Enums/activity.enum';
-import { GHGS, KPIAction } from '../../../Enums/shared.enum';
+import { ActivityStatus, ImplMeans, Measure, TechnologyType } from '../../../Enums/activity.enum';
+import {
+  GHGS,
+  IntImplementor,
+  KPIAction,
+  NatImplementor,
+  Recipient,
+} from '../../../Enums/shared.enum';
 import EntityIdCard from '../../../Components/EntityIdCard/entityIdCard';
 import { SupportData } from '../../../Definitions/supportDefinitions';
 import { ActivityMigratedData, ParentData } from '../../../Definitions/activityDefinitions';
@@ -53,8 +59,6 @@ import ConfirmPopup from '../../../Components/Popups/Confirmation/confirmPopup';
 import { DeleteOutlined } from '@ant-design/icons';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { IpccSubSector } from '../../../Enums/ipcc.subsector.enum';
-import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
-import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -78,12 +82,6 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
 
   const navigate = useNavigate();
   const { get, post, put, delete: del } = useConnection();
-  const natImplementorOptions = useReferenceOptions(ReferenceDataList.NATIONAL_IMPLEMENTING_ENTITY);
-  const intImplementorOptions = useReferenceOptions(
-    ReferenceDataList.INTERNATIONAL_IMPLEMENTING_ENTITY
-  );
-  const recipientOptions = useReferenceOptions(ReferenceDataList.RECIPIENT_ENTITY);
-  const technologyTypeOptions = useReferenceOptions(ReferenceDataList.TYPE_OF_TECHNOLOGY);
   const ability = useAbilityContext();
   const { isValidationAllowed, setIsValidationAllowed } = useUserContext();
   const { entId } = useParams();
@@ -1448,7 +1446,6 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                     name="nationalImplementingEntity"
                   >
                     <Select
-                      optionFilterProp="children"
                       mode="multiple"
                       size="large"
                       style={{ fontSize: inputFontSize }}
@@ -1456,9 +1453,9 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled={isView}
                       showSearch
                     >
-                      {natImplementorOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          {option.label}
+                      {Object.values(NatImplementor).map((implementer) => (
+                        <Option key={implementer} value={implementer}>
+                          {implementer}
                         </Option>
                       ))}
                     </Select>
@@ -1474,7 +1471,6 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                     name="internationalImplementingEntity"
                   >
                     <Select
-                      optionFilterProp="children"
                       mode="multiple"
                       size="large"
                       style={{ fontSize: inputFontSize }}
@@ -1482,9 +1478,9 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled={isView}
                       showSearch
                     >
-                      {intImplementorOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          {option.label}
+                      {Object.values(IntImplementor).map((implementer) => (
+                        <Option key={implementer} value={implementer}>
+                          {implementer}
                         </Option>
                       ))}
                     </Select>
@@ -1503,16 +1499,15 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                     rules={[validation.required]}
                   >
                     <Select
-                      optionFilterProp="children"
                       mode="multiple"
                       size="large"
                       style={{ fontSize: inputFontSize }}
                       disabled={isView}
                       showSearch
                     >
-                      {recipientOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          {option.label}
+                      {Object.values(Recipient).map((recipient) => (
+                        <Option key={recipient} value={recipient}>
+                          {recipient}
                         </Option>
                       ))}
                     </Select>
@@ -1785,16 +1780,15 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                     name="technologyType"
                   >
                     <Select
-                      optionFilterProp="children"
                       size="large"
                       style={{ fontSize: inputFontSize }}
                       allowClear
                       disabled={isView}
                       showSearch
                     >
-                      {technologyTypeOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          {option.label}
+                      {Object.values(TechnologyType).map((tech) => (
+                        <Option key={tech} value={tech}>
+                          {tech}
                         </Option>
                       ))}
                     </Select>

@@ -8,7 +8,9 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { SubSector } from "../enums/shared.enum";
 import { Sector } from "../enums/sector.enum";
+import { NatImplementor } from "../enums/shared.enum";
 import { ActionEntity } from "./action.entity";
 import { ProjectEntity } from "./project.entity";
 import { ActivityEntity } from "./activity.entity";
@@ -36,13 +38,13 @@ export class ProgrammeEntity {
   // type: string;
 
   @Column("varchar", { array: true, nullable: false })
-  affectedSubSector: string[];
+  affectedSubSector: SubSector[];
 
   @Column()
   startYear: number;
 
   @Column("varchar", { array: true, nullable: false })
-  natImplementor: string[];
+  natImplementor: NatImplementor[];
 
   // @Column({nullable: false, type: 'double precision' })
   // investment: number;

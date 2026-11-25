@@ -8,7 +8,7 @@ import UploadFileGrid from '../../../Components/Upload/uploadFiles';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
 import './projectForm.scss';
 import { ProjectStatus } from '../../../Enums/project.enum';
-import { KPIAction } from '../../../Enums/shared.enum';
+import { KPIAction, Recipient } from '../../../Enums/shared.enum';
 import EntityIdCard from '../../../Components/EntityIdCard/entityIdCard';
 import { CreatedKpiData, NewKpiData } from '../../../Definitions/kpiDefinitions';
 import { ProgrammeSelectData } from '../../../Definitions/programmeDefinitions';
@@ -43,8 +43,6 @@ import { displayErrorMessage } from '../../../Utils/errorMessageHandler';
 import { useUserContext } from '../../../Context/UserInformationContext/userInformationContext';
 import ConfirmPopup from '../../../Components/Popups/Confirmation/confirmPopup';
 import InfoKpi from '../../../Components/KPI/InfoKpi';
-import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
-import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -68,7 +66,6 @@ const ProjectForm: React.FC<FormLoadProps> = ({ method }) => {
 
   const navigate = useNavigate();
   const { get, post, put, delete: del } = useConnection();
-  const recipientOptions = useReferenceOptions(ReferenceDataList.RECIPIENT_ENTITY);
   const ability = useAbilityContext();
   const { isValidationAllowed, setIsValidationAllowed } = useUserContext();
   const { entId } = useParams();
@@ -1174,16 +1171,15 @@ const ProjectForm: React.FC<FormLoadProps> = ({ method }) => {
                     name="recipient"
                   >
                     <Select
-                      optionFilterProp="children"
                       size="large"
                       style={{ fontSize: inputFontSize }}
                       mode="multiple"
                       allowClear
                       disabled
                     >
-                      {recipientOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          {option.label}
+                      {Object.values(Recipient).map((recipient) => (
+                        <Option key={recipient} value={recipient}>
+                          {recipient}
                         </Option>
                       ))}
                     </Select>

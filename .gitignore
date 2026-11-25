@@ -17,3 +17,6 @@ web/public/locales/*
 .gitignore
 *.csv
 *.xlsx
+.cursor 
+Developer Onboarding - Vanuatu Release 1.md
+

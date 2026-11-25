@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { EmailService } from "../email/email.service";
+import { EmailHandlerInterface } from "../email/email.interface";
 import { AsyncActionType } from "../enums/async.action.type.enum";
 // import { RegistryClientService } from "../shared/registry-client/registry-client.service";
 // import { CadtApiService } from "../shared/cadt/cadt.api.service";
@@ -7,7 +7,7 @@ import { AsyncActionType } from "../enums/async.action.type.enum";
 @Injectable()
 export class AsyncOperationsHandlerService {
   constructor(
-    private emailService: EmailService,
+    private emailService: EmailHandlerInterface,
     // private registryClient: RegistryClientService,
     // private cadtService: CadtApiService,
     private logger: Logger

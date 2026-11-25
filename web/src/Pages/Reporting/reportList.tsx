@@ -202,10 +202,10 @@ const reportList = () => {
           tempReportSevenData.push({
             key: index,
             category: entry.category,
-            thisyear: entry.withM[projectionYearConfig.mostRecentYear - 2000] ?? 'N/A',
-            projection1: entry.withM[projectionYearConfig.projectionYear1 - 2000] ?? 'N/A',
-            projection2: entry.withM[projectionYearConfig.projectionYear2 - 2000] ?? 'N/A',
-            projection3: entry.withM[projectionYearConfig.projectionYear3 - 2000] ?? 'N/A',
+            thisyear: entry.withM?.[projectionYearConfig.mostRecentYear - 2000] ?? t('noData'),
+            projection1: entry.withM?.[projectionYearConfig.projectionYear1 - 2000] ?? t('noData'),
+            projection2: entry.withM?.[projectionYearConfig.projectionYear2 - 2000] ?? t('noData'),
+            projection3: entry.withM?.[projectionYearConfig.projectionYear3 - 2000] ?? t('noData'),
           });
         });
 
@@ -243,10 +243,10 @@ const reportList = () => {
           tempReportEightData.push({
             key: index,
             category: entry.category,
-            thisyear: entry.withAM[projectionYearConfig.mostRecentYear - 2000] ?? 'N/A',
-            projection1: entry.withAM[projectionYearConfig.projectionYear1 - 2000] ?? 'N/A',
-            projection2: entry.withAM[projectionYearConfig.projectionYear2 - 2000] ?? 'N/A',
-            projection3: entry.withAM[projectionYearConfig.projectionYear3 - 2000] ?? 'N/A',
+            thisyear: entry.withAM?.[projectionYearConfig.mostRecentYear - 2000] ?? t('noData'),
+            projection1: entry.withAM?.[projectionYearConfig.projectionYear1 - 2000] ?? t('noData'),
+            projection2: entry.withAM?.[projectionYearConfig.projectionYear2 - 2000] ?? t('noData'),
+            projection3: entry.withAM?.[projectionYearConfig.projectionYear3 - 2000] ?? t('noData'),
           });
         });
 
@@ -284,10 +284,13 @@ const reportList = () => {
           tempReportNineData.push({
             key: index,
             category: entry.category,
-            thisyear: entry.withoutM[projectionYearConfig.mostRecentYear - 2000] ?? 'N/A',
-            projection1: entry.withoutM[projectionYearConfig.projectionYear1 - 2000] ?? 'N/A',
-            projection2: entry.withoutM[projectionYearConfig.projectionYear2 - 2000] ?? 'N/A',
-            projection3: entry.withoutM[projectionYearConfig.projectionYear3 - 2000] ?? 'N/A',
+            thisyear: entry.withoutM?.[projectionYearConfig.mostRecentYear - 2000] ?? t('noData'),
+            projection1:
+              entry.withoutM?.[projectionYearConfig.projectionYear1 - 2000] ?? t('noData'),
+            projection2:
+              entry.withoutM?.[projectionYearConfig.projectionYear2 - 2000] ?? t('noData'),
+            projection3:
+              entry.withoutM?.[projectionYearConfig.projectionYear3 - 2000] ?? t('noData'),
           });
         });
 

@@ -41,13 +41,8 @@ export class User  implements EntitySubject{
     @Column({nullable: true})
     phoneNo: string;
 
-    @Column({
-			type: "enum",
-			enum: Organisation,
-			array: false,
-			nullable: true
-	  })
-    organisation: Organisation;
+    @Column({ type: "varchar", nullable: true })
+    organisation: string;
 
     @Column({nullable: true, select: false})
     apiKey: string;

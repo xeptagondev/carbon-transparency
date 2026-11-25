@@ -28,7 +28,9 @@ export default () => ({
     encodePassword: process.env.ENCODE_PASSWORD || false
   },
   email: {
-    source: process.env.SOURCE_EMAIL || "info@xeptagon.com", 
+    // Which transport EmailModule builds: SMTP (default) | GRAPH.
+    service: process.env.EMAIL_SERVICE || "SMTP",
+    source: process.env.SOURCE_EMAIL || "info@xeptagon.com",
     endpoint:
       process.env.SMTP_ENDPOINT ||
       "vpce-02cef9e74f152b675-b00ybiai.email-smtp.us-east-1.vpce.amazonaws.com",
@@ -38,7 +40,33 @@ export default () => ({
     disableLowPriorityEmails:
       process.env.DISABLE_LOW_PRIORITY_EMAIL === "true" ? true : false,
     getemailprefix: process.env.EMAILPREFIX || "",
-    adresss: process.env.HOST_ADDRESS || "Address <br>Region, Country Zipcode"
+    adresss: process.env.HOST_ADDRESS || "Address <br>Region, Country Zipcode",
+    // An SES construct, read only by SmtpEmailService. Empty means no header.
+    configSet: process.env.EMAIL_CONFIG_SET || "",
+    // Microsoft Graph backend (EMAIL_SERVICE=GRAPH). Presence of the three
+    // credentials is validated in GraphEmailService's constructor rather than
+    // here: this file is evaluated by ConfigModule.forRoot in 16 modules, so a
+    // throw here would abort every RUN_MODULE container, including the ones that
+    // send no mail.
+    graph: {
+      appName: process.env.EMAIL_SERVICE_GRAPH_APP_NAME || "",
+      tenantId: process.env.EMAIL_SERVICE_GRAPH_TENANT_ID,
+      clientId: process.env.EMAIL_SERVICE_GRAPH_CLIENT_ID,
+      clientSecret: process.env.EMAIL_SERVICE_GRAPH_CLIENT_SECRET,
+      loginHost:
+        process.env.EMAIL_SERVICE_GRAPH_LOGIN_HOST ||
+        "https://login.microsoftonline.com",
+      apiHost:
+        process.env.EMAIL_SERVICE_GRAPH_API_HOST || "https://graph.microsoft.com",
+      saveToSentItems:
+        process.env.EMAIL_SERVICE_GRAPH_SAVE_TO_SENT_ITEMS === "true",
+      maxAttachmentBytes:
+        parseInt(process.env.EMAIL_SERVICE_GRAPH_MAX_ATTACHMENT_BYTES) || 2500000,
+      attachmentFailureMode:
+        process.env.EMAIL_SERVICE_GRAPH_ATTACHMENT_FAILURE_MODE || "skip",
+      requestTimeoutMs:
+        parseInt(process.env.EMAIL_SERVICE_GRAPH_REQUEST_TIMEOUT_MS) || 20000,
+    },
   },
   s3CommonBucket: {
     name: process.env.S3_COMMON_BUCKET || "carbon-common-dev",

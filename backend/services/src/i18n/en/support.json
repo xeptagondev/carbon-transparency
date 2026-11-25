@@ -15,5 +15,6 @@
     "permissionDeniedForSector": "User does not have the permission for the sector",
     "deleteSupportSuccess": "Support deleted successfully",
     "supportDeleteFailed": "Support delete failed due to {}",
-    "parentNotValidated": "Parent activity with id {} should be validated."
+    "parentNotValidated": "Parent activity with id {} should be validated.",
+    "invalidBudgetYears": "The national budget year {} is outside the years of the activity or is entered twice"
 }

@@ -1,13 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
-import {
-  SupportDirection,
-  FinanceNature,
-  IntSupChannel,
-  IntFinInstrument,
-  NatFinInstrument,
-  FinancingStatus,
-  IntSource,
-} from "../enums/support.enum";
+import { SupportDirection, FinanceNature, FinancingStatus } from "../enums/support.enum";
 import { ActivityEntity } from "./activity.entity";
 import { Sector } from "../enums/sector.enum";
 import { ActionType } from "../enums/action.enum";
@@ -23,20 +15,20 @@ export class SupportEntity {
   @Column({ type: "enum", enum: FinanceNature })
   financeNature: string;
 
-  @Column({ type: "enum", enum: IntSupChannel, nullable: true })
+  @Column({ type: "varchar", nullable: true })
   internationalSupportChannel: string;
 
-  @Column({ type: "enum", enum: IntFinInstrument, nullable: true })
+  @Column({ type: "varchar", nullable: true })
   internationalFinancialInstrument: string;
 
-  @Column({ type: "enum", enum: NatFinInstrument, nullable: true })
+  @Column({ type: "varchar", nullable: true })
   nationalFinancialInstrument: string;
 
   @Column({ type: "enum", enum: FinancingStatus, nullable: true })
   financingStatus: string;
 
   @Column("varchar", { array: true, nullable: true })
-  internationalSource: IntSource[];
+  internationalSource: string[];
 
   @Column({ nullable: true })
   nationalSource: string;
@@ -55,6 +47,32 @@ export class SupportEntity {
 
   @Column({ type: 'decimal', precision: 15, scale: 2, nullable: false })
   receivedAmountDomestic: number;
+
+  /** Needed support only: how far the funding request has progressed (list "Pipeline status"). */
+  @Column({ type: "varchar", nullable: true })
+  pipelineStatus: string;
+
+  /** National finance only: whether the national budget contributes to the activity. */
+  @Column({ type: "boolean", nullable: true })
+  nationallyBudgetSupported: boolean;
+
+  /** National budget by year in the domestic currency: [{ year, amount }], one entry per year of the activity. */
+  @Column({ type: "jsonb", nullable: true })
+  nationalBudgetAllocation: { year: number; amount: number }[];
+
+  /** Sum of the yearly allocations, in the domestic currency. */
+  @Column({ type: "decimal", precision: 15, scale: 2, nullable: true })
+  nationalBudgetTotalDomestic: number;
+
+  /** The same total in US dollars (domestic total / exchange rate). */
+  @Column({ type: "decimal", precision: 15, scale: 2, nullable: true })
+  nationalBudgetTotal: number;
+
+  @Column({ type: "text", nullable: true })
+  comments: string;
+
+  @Column({ type: "jsonb", nullable: true })
+  documents: any;
 
   @Column({ nullable: true })
   sector: Sector;

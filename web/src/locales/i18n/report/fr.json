@@ -71,5 +71,6 @@
     "activityStatus": "Statut de l'activité",
     "expectedTimeFrame": "Période prévue",
     "timeFrame": "Période",
-    "additionalInfo": "Informations supplémentaires"
+    "additionalInfo": "Informations supplémentaires",
+    "noData": "Aucune donnée"
 }

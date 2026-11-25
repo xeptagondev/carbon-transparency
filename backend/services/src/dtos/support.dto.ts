@@ -1,7 +1,42 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ArrayMinSize, IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, ValidateIf } from "class-validator";
-import { FinanceNature, FinancingStatus, IntFinInstrument, IntSource, IntSupChannel, NatFinInstrument, SupportDirection } from "../enums/support.enum";
+import { Type } from "class-transformer";
+import {
+	ArrayMinSize,
+	IsArray,
+	IsBoolean,
+	IsEnum,
+	IsInt,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsPositive,
+	IsString,
+	Max,
+	MaxLength,
+	Min,
+	ValidateIf,
+	ValidateNested,
+} from "class-validator";
+import { FinanceNature, FinancingStatus, SupportDirection } from "../enums/support.enum";
 import { IsTwoDecimalPoints } from "../util/twoDecimalPointNumber.decorator";
+import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { ReferenceDataList } from "../enums/reference.data.enum";
+import { DocumentDto } from "./document.dto";
+
+/** One year of the national budget allocation, in the domestic currency. */
+export class NationalBudgetYearDto {
+	@IsInt()
+	@Min(1900)
+	@Max(2200)
+	@ApiProperty()
+	year: number;
+
+	@IsNumber()
+	@Min(0)
+	@IsTwoDecimalPoints()
+	@ApiProperty()
+	amount: number;
+}
 
 export class SupportDto {
 
@@ -34,40 +69,29 @@ export class SupportDto {
 	})
 	financeNature: FinanceNature;
 
+	@ValidateIf((c) => c.financeNature == FinanceNature.INTERNATIONAL)
 	@IsNotEmpty()
-	@IsEnum(IntSupChannel, {
-		each: true,
-		message: 'Invalid Support Channel. Supported following types:' + Object.values(IntSupChannel)
+	@IsReferenceValue(ReferenceDataList.CHANNEL_OF_SUPPORT, { each: true })
+	@ApiPropertyOptional({
+		type: [String]
 	})
-	@ApiProperty({
-		type: [String],
-		enum: Object.values(IntSupChannel),
-	})
-	internationalSupportChannel: IntSupChannel;
+	internationalSupportChannel: string;
 
 	@ValidateIf((c) => c.financeNature == FinanceNature.INTERNATIONAL)
 	@IsNotEmpty()
-	@IsEnum(IntFinInstrument, {
-		each: true,
-		message: 'Invalid International Financial Instrument. Supported following types:' + Object.values(IntFinInstrument)
+	@IsReferenceValue(ReferenceDataList.INTERNATIONAL_FINANCIAL_INSTRUMENT, { each: true })
+	@ApiPropertyOptional({
+		type: [String]
 	})
-	@ApiProperty({
-		type: [String],
-		enum: Object.values(IntFinInstrument),
-	})
-	internationalFinancialInstrument: IntFinInstrument;
+	internationalFinancialInstrument: string;
 
 	@ValidateIf((c) => c.financeNature == FinanceNature.NATIONAL)
 	@IsNotEmpty()
-	@IsEnum(NatFinInstrument, {
-		each: true,
-		message: 'Invalid National Financial Instrument. Supported following types:' + Object.values(NatFinInstrument)
+	@IsReferenceValue(ReferenceDataList.NATIONAL_FINANCIAL_INSTRUMENT, { each: true })
+	@ApiPropertyOptional({
+		type: [String]
 	})
-	@ApiProperty({
-		type: [String],
-		enum: Object.values(NatFinInstrument),
-	})
-	nationalFinancialInstrument: NatFinInstrument;
+	nationalFinancialInstrument: string;
 
 	@ValidateIf((c) => c.direction == SupportDirection.RECEIVED)
 	@IsNotEmpty()
@@ -75,49 +99,82 @@ export class SupportDto {
 		each: true,
 		message: 'Invalid Financing Status. Supported following:' + Object.values(FinancingStatus)
 	})
-	@ApiProperty({
+	@ApiPropertyOptional({
 		type: [String],
 		enum: Object.values(FinancingStatus),
 	})
 	financingStatus: FinancingStatus;
 
+	@ValidateIf((c) => c.direction == SupportDirection.NEEDED)
+	@IsNotEmpty()
+	@IsReferenceValue(ReferenceDataList.PIPELINE_STATUS)
+	@ApiPropertyOptional()
+	pipelineStatus: string;
+
 	@ValidateIf((c) => c.internationalSource && c.financeNature == FinanceNature.INTERNATIONAL)
 	@IsArray()
 	@ArrayMinSize(1)
-	@MaxLength(100, { each: true })
+	@MaxLength(500, { each: true })
 	@IsNotEmpty({ each: true })
-	@IsEnum(IntSource, {
-		each: true,
-		message: 'Invalid International Source. Supported followings:' + Object.values(IntSource)
-	})
+	@IsReferenceValue(ReferenceDataList.INTERNATIONAL_SOURCE, { each: true })
 	@ApiProperty({
-		type: [String],
-		enum: Object.values(IntSource),
+		type: [String]
 	})
-	internationalSource: IntSource[];
+	internationalSource: string[];
 
 	@ValidateIf((c) => c.financeNature == FinanceNature.NATIONAL)
-	@IsOptional()
 	@IsNotEmpty()
-	@IsString()
+	@IsBoolean()
 	@ApiPropertyOptional()
-	nationalSource: string;
+	nationallyBudgetSupported: boolean;
 
+	@ValidateIf((c) => c.financeNature == FinanceNature.NATIONAL && c.nationallyBudgetSupported === true)
+	@IsArray()
+	@ArrayMinSize(1)
+	@ValidateNested({ each: true })
+	@Type(() => NationalBudgetYearDto)
+	@ApiPropertyOptional({
+		type: [NationalBudgetYearDto],
+		description: "National budget by year in the domestic currency, one entry per year of the activity",
+	})
+	nationalBudgetAllocation: NationalBudgetYearDto[];
+
+	@ValidateIf((c) => c.direction == SupportDirection.NEEDED)
 	@IsNotEmpty()
 	@IsNumber()
-	@ApiProperty()
+	@Min(0)
+	@ApiPropertyOptional()
 	@IsTwoDecimalPoints()
 	requiredAmount: number;
 
+	@ValidateIf((c) => c.direction == SupportDirection.RECEIVED)
 	@IsNotEmpty()
 	@IsNumber()
-	@ApiProperty()
+	@Min(0)
+	@ApiPropertyOptional()
 	@IsTwoDecimalPoints()
-  	receivedAmount: number;
+	receivedAmount: number;
 
 	@IsNotEmpty()
 	@IsNumber()
+	@IsPositive()
 	@ApiProperty()
-  	exchangeRate: number;
-	
+	exchangeRate: number;
+
+	@IsOptional()
+	@IsString()
+	@MaxLength(2000)
+	@ApiPropertyOptional()
+	comments: string;
+
+	@IsOptional()
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => DocumentDto)
+	@ApiPropertyOptional({
+		type: "array",
+		example: [{ title: "Funding agreement", data: "base64 document string" }],
+	})
+	documents: DocumentDto[];
+
 }

@@ -4,6 +4,7 @@ import { Role, SubRole } from "../casl/role.enum";
 import { GHGInventoryManipulate, SubRoleManipulate, UserState, ValidateEntity } from "../enums/user.enum";
 import { Sector } from "../enums/sector.enum";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class UserUpdateDto {
@@ -72,6 +73,9 @@ export class UserUpdateDto {
 		@ApiProperty()
 		@IsReferenceValue(ReferenceDataList.USER_ORGANISATION)
 		organisation: string;
+
+		@OtherSpecify("organisation")
+		organisationOther?: string;
 
     @IsString()
     @IsOptional()

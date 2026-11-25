@@ -6,6 +6,7 @@ import { EntityManager, Repository } from "typeorm";
 import { ProgrammeDto } from "../dtos/programme.dto";
 import { User } from "../entities/user.entity";
 import { plainToClass } from "class-transformer";
+import { applyOtherText } from "../util/otherSpecify";
 import { ProgrammeEntity } from "../entities/programme.entity";
 import { CounterType } from "../enums/counter.type.enum";
 import { FileUploadService } from "../util/fileUpload.service";
@@ -54,6 +55,7 @@ export class ProgrammeService {
 	async createProgramme(programmeDto: ProgrammeDto, user: User) {
 
 		const programme: ProgrammeEntity = plainToClass(ProgrammeEntity, programmeDto);
+		applyOtherText(programme, "natImplementor", "natImplementorOther", "create");
 
 		const eventLog = [];
 
@@ -290,6 +292,7 @@ export class ProgrammeService {
 	//MARK: Update Programme
 	async updateProgramme(programmeUpdateDto: ProgrammeUpdateDto, user: User) {
 		const programmeUpdate: ProgrammeEntity = plainToClass(ProgrammeEntity, programmeUpdateDto);
+		applyOtherText(programmeUpdate, "natImplementor", "natImplementorOther");
 		const eventLog = [];
 		
 		this.addEventLogEntry(eventLog, LogEventType.PROGRAMME_UPDATED, EntityType.PROGRAMME, programmeUpdate.programmeId, user.id, programmeUpdateDto);
@@ -1033,6 +1036,7 @@ export class ProgrammeService {
 		programmeViewDto.startYear = programme.startYear;
 		programmeViewDto.interNationalImplementor = interNationalImplementor;
 		programmeViewDto.nationalImplementor = programme.natImplementor;
+		programmeViewDto.natImplementorOther = programme.natImplementorOther;
 		programmeViewDto.documents = programme.documents;
 		programmeViewDto.comments = programme.comments;
 		programmeViewDto.validated = programme.validated;

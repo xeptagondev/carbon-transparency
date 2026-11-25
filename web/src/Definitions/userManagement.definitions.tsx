@@ -5,6 +5,7 @@ export interface UserData {
   email: string;
   phoneNo: string;
   organisation: string;
+  organisationOther?: string;
   status: string;
   role: string;
   subRole: string;

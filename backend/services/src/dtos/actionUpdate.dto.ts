@@ -6,6 +6,7 @@ import { KpiUpdateDto } from "./kpi.update.dto";
 import { Sector } from "../enums/sector.enum";
 import { KPIAction } from "../enums/shared.enum";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ActionUpdateDto {
@@ -88,6 +89,9 @@ export class ActionUpdateDto {
 		type: [String]
 	})
 	natAnchor: string[];
+
+	@OtherSpecify("natAnchor")
+	natAnchorOther?: string;
 
 	@IsOptional()
 	@ApiPropertyOptional(

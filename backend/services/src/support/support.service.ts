@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectEntityManager, InjectRepository } from "@nestjs/typeorm";
 import { plainToClass } from "class-transformer";
+import { applyOtherText } from "../util/otherSpecify";
 import { ActivityService } from "../activity/activity.service";
 import { DataListResponseDto } from "../dtos/data.list.response";
 import { DataResponseMessageDto } from "../dtos/data.response.message";
@@ -72,6 +73,8 @@ export class SupportService {
 		support.nationalFinancialInstrument = international ? null : dto.nationalFinancialInstrument;
 		support.financingStatus = received ? dto.financingStatus : null;
 		support.pipelineStatus = received ? null : dto.pipelineStatus;
+		support.pipelineStatusOther = dto.pipelineStatusOther ?? null;
+		applyOtherText(support, "pipelineStatus", "pipelineStatusOther");
 		support.exchangeRate = dto.exchangeRate;
 		support.comments = dto.comments?.trim() ? dto.comments.trim() : null;
 		Object.assign(support, finance);

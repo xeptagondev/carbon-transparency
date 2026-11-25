@@ -651,7 +651,7 @@ describe('ActionService', () => {
 				save: jest.fn().mockResolvedValueOnce(actionUpdateDto),
 			};
 			const savedAction = await callback(emMock);
-			expect(emMock.save).toHaveBeenNthCalledWith(1, actionUpdateDto);
+			expect(emMock.save).toHaveBeenNthCalledWith(1, { ...actionUpdateDto, natAnchorOther: null });
 			expect(emMock.save).toHaveBeenCalledTimes(2);
 			return savedAction;
 		});

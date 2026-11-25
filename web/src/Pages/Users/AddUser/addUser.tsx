@@ -18,7 +18,7 @@ import { plainToClass } from 'class-transformer';
 import { User } from '../../../Entities/user';
 import ChangePasswordModel from '../../../Components/Models/changePasswordModel';
 import { Role } from '../../../Enums/role.enum';
-import { Sector } from '../../../Enums/sector.enum';
+import { getSectorSelectOptions } from '../../../Enums/sector.enum';
 import {
   GHGInventoryManipulate,
   SubRoleManipulate,
@@ -785,7 +785,7 @@ const AddUser = () => {
                         !ability.can(Action.Update, plainToClass(User, state?.record), 'sector')
                       }
                     >
-                      {Object.values(Sector).map((instrument) => (
+                      {getSectorSelectOptions().map((instrument) => (
                         <Select.Option key={instrument} value={instrument}>
                           {instrument}
                         </Select.Option>

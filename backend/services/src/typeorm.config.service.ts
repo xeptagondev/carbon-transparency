@@ -3,6 +3,9 @@ import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
 import configuration from "./configuration";
 import { DataSource, DataSourceOptions } from "typeorm";
+import { patchDataSourceToExtendSectorEnums } from "./util/sectorEnum.util";
+
+patchDataSourceToExtendSectorEnums();
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -15,6 +18,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
 
 const dbConfig = {
   ...configuration().database,
+  synchronize: false,
   migrations: [`src/migrations/*.{ts,js}`],
   migrationsRun: true,
 };

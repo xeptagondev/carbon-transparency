@@ -57,11 +57,23 @@ export async function addMissingSectorEnumValues(executor: QueryExecutor): Promi
   }
 }
 
+async function hasCoreApplicationSchema(executor: QueryExecutor): Promise<boolean> {
+  const rows: { exists: boolean }[] = await executor.query(`
+    SELECT EXISTS (
+      SELECT 1
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+        AND table_name = 'user'
+    ) AS exists
+  `);
+  return Boolean(rows[0]?.exists);
+}
+
 let patched = false;
 
 /**
- * TypeORM synchronize runs on DataSource.initialize() and recreates changed enums,
- * which fails when views depend on those columns. Extend the enums first, then sync.
+ * TypeORM synchronize on initialize recreates changed Postgres enums and fails when
+ * materialized views use sector columns. Extend enums first; run sync only on a fresh DB.
  */
 export function patchDataSourceToExtendSectorEnums(): void {
   if (patched) {
@@ -71,14 +83,17 @@ export function patchDataSourceToExtendSectorEnums(): void {
 
   const originalInitialize = DataSource.prototype.initialize;
   DataSource.prototype.initialize = async function (this: DataSource) {
-    const options = this.options as { synchronize?: boolean };
-    const shouldSync = options.synchronize === true;
-    options.synchronize = false;
+    const shouldSync = this.options.synchronize === true;
+    if (shouldSync) {
+      this.setOptions({ synchronize: false });
+    }
     await originalInitialize.call(this);
     await addMissingSectorEnumValues(this);
     if (shouldSync) {
-      options.synchronize = true;
-      await this.synchronize();
+      const schemaExists = await hasCoreApplicationSchema(this);
+      if (!schemaExists) {
+        await this.synchronize();
+      }
     }
     return this;
   };

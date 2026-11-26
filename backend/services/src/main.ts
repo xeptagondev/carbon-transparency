@@ -5,6 +5,9 @@ import { join } from "path";
 import { buildNestApp } from "./server";
 import { AnalyticsAPIModule } from "./analytics-api/analytics.api.module";
 import { existsSync, readFileSync } from "fs";
+import { patchDataSourceToExtendSectorEnums } from "./util/sectorEnum.util";
+
+patchDataSourceToExtendSectorEnums();
 
 async function bootstrap() {
   let module: any;

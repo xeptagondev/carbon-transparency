@@ -6,8 +6,8 @@ import { addMissingSectorEnumValues } from "../util/sectorEnum.util";
  * Uses ALTER TYPE ... ADD VALUE (no drop/recreate) so existing data and views stay valid.
  * Safe on a fresh DB where sync already created all enum labels (each ADD is skipped).
  *
- * yarn start:dev also applies the same ADD VALUE before synchronize (see TypeOrmConfigService),
- * because TypeORM sync runs before migrations and would otherwise fail on views.
+ * The DataSource initialize patch applies the same ADD VALUE on API boot when the schema
+ * already exists; synchronize runs only on a fresh DB (no user table).
  */
 export class AddVanuatuSectors1795600000000 implements MigrationInterface {
   name = "AddVanuatuSectors1795600000000";

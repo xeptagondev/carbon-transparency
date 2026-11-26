@@ -12,7 +12,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    return this.configService.get<any>("database");
+    return this.configService.get<TypeOrmModuleOptions>("database");
   }
 }
 

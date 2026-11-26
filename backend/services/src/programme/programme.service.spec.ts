@@ -62,6 +62,7 @@ describe('ProgrammeService', () => {
 
 		actionServiceMock = {
 			findActionById: jest.fn(),
+			findActionByIdWithAllLinkedChildren: jest.fn(),
 		};
 		counterServiceMock = {
 			incrementCount: jest.fn().mockResolvedValue(1),
@@ -192,7 +193,6 @@ describe('ProgrammeService', () => {
 		programmeDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeDto.startYear = 2024;
 		programmeDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeDto.investment = 1000;
 		programmeDto.comments = "test comment"
 
 		const programmeEntity = new ProgrammeEntity();
@@ -202,7 +202,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2024;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 1000;
 		programmeEntity.comments = "Test comment"
 		programmeEntity.programmeId = "P001";
 
@@ -216,7 +215,6 @@ describe('ProgrammeService', () => {
 			"natImplementor": [
 				"Agriculture Department"
 			],
-			"investment": 1000,
 			"startYear": 2024,
 			"comments": "Test comment",
 			"programmeId": "P001",
@@ -256,7 +254,6 @@ describe('ProgrammeService', () => {
 		programmeDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeDto.startYear = 2024;
 		programmeDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeDto.investment = 1000;
 		programmeDto.comments = "test comment";
 		programmeDto.actionId = "A001";
 
@@ -267,7 +264,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2024;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 1000;
 		programmeEntity.comments = "Test comment"
 		programmeEntity.programmeId = "P001";
 
@@ -281,7 +277,6 @@ describe('ProgrammeService', () => {
 			"natImplementor": [
 				"Agriculture Department"
 			],
-			"investment": 1000,
 			"startYear": 2024,
 			"comments": "Test comment",
 			"programmeId": "P001",
@@ -291,7 +286,7 @@ describe('ProgrammeService', () => {
 
 		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
 		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce("2");
-		jest.spyOn(actionServiceMock, 'findActionById').mockResolvedValueOnce(new ActionEntity());
+		jest.spyOn(actionServiceMock, 'findActionByIdWithAllLinkedChildren').mockResolvedValueOnce(new ActionEntity());
 		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);
 
 		entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
@@ -309,7 +304,7 @@ describe('ProgrammeService', () => {
 		expect(result.statusCode).toEqual(expectedResponse.statusCode);
 
 		expect(entityManagerMock.transaction).toHaveBeenCalledTimes(1);
-		expect(actionServiceMock.findActionById).toHaveBeenCalledTimes(1);
+		expect(actionServiceMock.findActionByIdWithAllLinkedChildren).toHaveBeenCalledTimes(1);
 		expect(fileUploadServiceMock.uploadDocument).toHaveBeenCalledTimes(0);
 		expect(helperServiceMock.refreshMaterializedViews).toBeCalledTimes(1);
 	});
@@ -325,7 +320,6 @@ describe('ProgrammeService', () => {
 		programmeDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeDto.startYear = 2024;
 		programmeDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeDto.investment = 1000;
 		programmeDto.comments = "test comment";
 		programmeDto.actionId = "A001";
 
@@ -336,7 +330,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2024;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 1000;
 		programmeEntity.comments = "Test comment"
 		programmeEntity.programmeId = "P001";
 
@@ -350,7 +343,6 @@ describe('ProgrammeService', () => {
 			"natImplementor": [
 				"Agriculture Department"
 			],
-			"investment": 1000,
 			"startYear": 2024,
 			"comments": "Test comment",
 			"programmeId": "P001",
@@ -360,7 +352,7 @@ describe('ProgrammeService', () => {
 
 		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
 		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce("2");
-		jest.spyOn(actionServiceMock, 'findActionById').mockResolvedValueOnce(null);
+		jest.spyOn(actionServiceMock, 'findActionByIdWithAllLinkedChildren').mockResolvedValueOnce(null);
 
 		entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
 			const emMock = {
@@ -380,7 +372,7 @@ describe('ProgrammeService', () => {
 		}
 
 		expect(entityManagerMock.transaction).toHaveBeenCalledTimes(0);
-		expect(actionServiceMock.findActionById).toHaveBeenCalledTimes(1);
+		expect(actionServiceMock.findActionByIdWithAllLinkedChildren).toHaveBeenCalledTimes(1);
 		expect(fileUploadServiceMock.uploadDocument).toHaveBeenCalledTimes(0);
 		expect(helperServiceMock.refreshMaterializedViews).toBeCalledTimes(0);
 	});
@@ -410,7 +402,6 @@ describe('ProgrammeService', () => {
 		programmeDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeDto.startYear = 2024;
 		programmeDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeDto.investment = 1000;
 		programmeDto.comments = "test comment";
 		programmeDto.kpis = [kpiDto1, kpiDto2];
 		programmeDto.documents = [documentDto];
@@ -423,7 +414,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2024;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 1000;
 		programmeEntity.comments = "Test comment"
 		programmeEntity.programmeId = "P001";
 
@@ -437,7 +427,6 @@ describe('ProgrammeService', () => {
 			"natImplementor": [
 				"Agriculture Department"
 			],
-			"investment": 1000,
 			"startYear": 2024,
 			"comments": "Test comment",
 			"programmeId": "P001",
@@ -467,7 +456,7 @@ describe('ProgrammeService', () => {
 
 		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
 		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce("2");
-		jest.spyOn(actionServiceMock, 'findActionById').mockResolvedValueOnce(new ActionEntity());
+		jest.spyOn(actionServiceMock, 'findActionByIdWithAllLinkedChildren').mockResolvedValueOnce(new ActionEntity());
 		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);
 
 		entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
@@ -501,13 +490,13 @@ describe('ProgrammeService', () => {
 		action.actionId = "A001";
 		action.sector = Sector.Agriculture;
 
-		jest.spyOn(actionServiceMock, 'findActionById').mockResolvedValueOnce(action);
+		jest.spyOn(actionServiceMock, 'findActionByIdWithAllLinkedChildren').mockResolvedValueOnce(action);
 		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(false);
 		jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("programme.cannotLinkToUnrelatedAction");
 
 		await expect(service.createProgramme(programmeDto, user)).rejects.toThrow(HttpException);
 
-		expect(actionServiceMock.findActionById).toHaveBeenCalledWith('A001');
+		expect(actionServiceMock.findActionByIdWithAllLinkedChildren).toHaveBeenCalledWith('A001');
 		expect(helperServiceMock.formatReqMessagesString).toHaveBeenCalledWith('programme.cannotLinkToUnrelatedAction', ['A001']);
 	});
 
@@ -796,13 +785,11 @@ describe('ProgrammeService', () => {
 		const programmeId = 'P001';
 		const abilityCondition = 'someCondition';
 
-		const project1 = new ProjectEntity();
-		project1.recipientEntities = [Recipient.MIN_EDU];
-		project1.internationalImplementingEntities = [IntImplementor.EBRD];
-
-		const project2 = new ProjectEntity();
-		project2.recipientEntities = [Recipient.MIN_FISH];
-		project2.internationalImplementingEntities = [IntImplementor.GIZ];
+		// the entities collected from the projects and activities under the programme come with the query
+		const migratedData = [
+			{ recipientEntities: ["Ministry of Education"], internationalImplementingEntities: ["EBRD"] },
+			{ recipientEntities: ["Ministry of Fisheries"], internationalImplementingEntities: ["GIZ"] },
+		];
 
 		const programmeEntity = new ProgrammeEntity();
 		programmeEntity.title = "test";
@@ -811,10 +798,9 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2024;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 1000;
 		programmeEntity.comments = "Test comment"
 		programmeEntity.programmeId = "P001";
-		programmeEntity.projects = [project1, project2]
+		(programmeEntity as any).migratedData = migratedData;
 
 
 		jest.spyOn(service, 'query').mockResolvedValueOnce({ data: [programmeEntity] });
@@ -844,7 +830,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2024;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 1000;
 		programmeEntity.comments = "Test comment"
 		programmeEntity.programmeId = "P001";
 
@@ -973,7 +958,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 
 		jest.spyOn(service, 'findProgrammeWithParentChildren').mockResolvedValueOnce(new ProgrammeEntity());
@@ -984,7 +968,7 @@ describe('ProgrammeService', () => {
 				save: jest.fn().mockResolvedValueOnce(programmeUpdateDto),
 			};
 			const savedAction = await callback(emMock);
-			expect(emMock.save).toHaveBeenNthCalledWith(1, programmeUpdateDto);
+			expect(emMock.save).toHaveBeenNthCalledWith(1, { ...programmeUpdateDto, natImplementorOther: null });
 			expect(emMock.save).toHaveBeenCalledTimes(2);
 			return savedAction;
 		});
@@ -1010,7 +994,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 		programmeUpdateDto.removedDocuments = ["www.test.com/doc1"];
 
@@ -1021,7 +1004,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateEntity.startYear = 2024;
 		programmeUpdateEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateEntity.investment = 1000;
 		programmeUpdateEntity.comments = "test comment"
 		programmeUpdateEntity.documents = null;
 
@@ -1036,7 +1018,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.documents = [documentDto];
 
@@ -1083,7 +1064,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 		programmeUpdateDto.newDocuments = [addedDocumentDto]
 
@@ -1094,7 +1074,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateEntity.startYear = 2024;
 		programmeUpdateEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateEntity.investment = 1000;
 		programmeUpdateEntity.comments = "test comment"
 		programmeUpdateEntity.documents = [documentDto, addedDocumentDto];
 
@@ -1106,7 +1085,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.documents = [documentDto];
 
@@ -1167,7 +1145,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 		programmeUpdateDto.kpis = [kpiDto1, kpiAdded]
 
@@ -1178,7 +1155,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateEntity.startYear = 2024;
 		programmeUpdateEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateEntity.investment = 1000;
 		programmeUpdateEntity.comments = "test comment"
 
 		const programmeEntity = new ProgrammeEntity();
@@ -1188,7 +1164,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 
 
@@ -1228,7 +1203,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 
 		const programmeEntity = new ProgrammeEntity();
@@ -1238,7 +1212,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.validated = true;
 
@@ -1276,7 +1249,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 
 		const programmeEntity = new ProgrammeEntity();
@@ -1286,7 +1258,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.validated = true;
 
@@ -1330,7 +1301,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 		programmeUpdateDto.actionId = "A2";
 
@@ -1341,7 +1311,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.validated = true;
 		programmeEntity.action = action1;
@@ -1390,7 +1359,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.actionId = "A2";
 
 		const programmeEntity = new ProgrammeEntity();
@@ -1400,7 +1368,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.validated = true;
 
@@ -1448,7 +1415,6 @@ describe('ProgrammeService', () => {
 		programmeUpdateDto.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeUpdateDto.startYear = 2024;
 		programmeUpdateDto.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeUpdateDto.investment = 1000;
 		programmeUpdateDto.comments = "test comment"
 
 		const programmeEntity = new ProgrammeEntity();
@@ -1458,7 +1424,6 @@ describe('ProgrammeService', () => {
 		programmeEntity.affectedSubSector = [SubSector.AGRICULTURE, SubSector.AGR_FORESTRY];
 		programmeEntity.startYear = 2020;
 		programmeEntity.natImplementor = [NatImplementor.AGRI_DEPT];
-		programmeEntity.investment = 100;
 		programmeEntity.comments = "test comment"
 		programmeEntity.validated = true;
 		programmeEntity.action = action1;
@@ -1502,6 +1467,11 @@ describe('ProgrammeService', () => {
 		programme.programmeId = 'P001';
 		programme.sector = Sector.Forestry;
 		programme.validated = false;
+		// the parent action must exist (and be validated to validate the programme)
+		const action = new ActionEntity();
+		action.actionId = 'A001';
+		action.validated = true;
+		programme.action = action;
 	
 		jest.spyOn(service, 'findProgrammeById').mockResolvedValueOnce(programme);
 		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);
@@ -1531,6 +1501,11 @@ describe('ProgrammeService', () => {
 			programme.programmeId = 'P001';
 			programme.sector = Sector.Forestry;
 			programme.validated = true;
+			// the parent action must exist (and be validated to validate the programme)
+			const action = new ActionEntity();
+			action.actionId = 'A001';
+			action.validated = true;
+			programme.action = action;
 		
 			jest.spyOn(service, 'findProgrammeById').mockResolvedValueOnce(programme);
 			jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);

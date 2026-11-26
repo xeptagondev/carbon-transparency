@@ -1114,7 +1114,7 @@ describe('ActivityService', () => {
 				expect(error.status).toBe(HttpStatus.FORBIDDEN);
 			}
 
-			expect(helperServiceMock.formatReqMessagesString).toHaveBeenCalledWith('activity.parentNotValidated', []);
+			expect(helperServiceMock.formatReqMessagesString).toHaveBeenCalledWith('activity.parentNotValidated', ['action', 'A001']);
 	
 		});
 

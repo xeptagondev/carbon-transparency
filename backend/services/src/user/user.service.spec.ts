@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { AsyncOperationsInterface } from '../async-operations/async-operations.interface';
 import { User } from '../entities/user.entity';
 import { HelperService } from '../util/helpers.service';
-import { HttpUtilService } from '../util/http.util.service';
 import { PasswordHashService } from '../util/passwordHash.service';
 import { Repository, EntityManager, SelectQueryBuilder, UpdateResult } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -23,7 +22,6 @@ describe('UserService', () => {
 	let entityManagerMock:  Partial<EntityManager>;
 	let asyncOperationsInterfaceMock:  Partial<AsyncOperationsInterface>;
 	let passwordHashServiceMock:  Partial<PasswordHashService>;
-	let httpUtilServiceMock:  Partial<HttpUtilService>;
 
   beforeEach(async () => {
 		entityManagerMock = {
@@ -106,10 +104,6 @@ describe('UserService', () => {
         {
           provide: PasswordHashService,
           useValue: passwordHashServiceMock
-        },
-        {
-          provide: HttpUtilService,
-          useValue: httpUtilServiceMock
         }
 			],
     }).compile();

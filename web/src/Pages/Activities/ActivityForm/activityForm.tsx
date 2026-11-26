@@ -39,6 +39,7 @@ import { CreatedKpiData } from '../../../Definitions/kpiDefinitions';
 import { ViewKpi } from '../../../Components/KPI/viewKpi';
 import { EditKpi } from '../../../Components/KPI/editKpi';
 import { processOptionalFields } from '../../../Utils/optionalValueHandler';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import {
   halfColumnBps,
   mtgHalfColumnBps,
@@ -963,6 +964,10 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
             nationalImplementingEntity: entityData.nationalImplementingEntity ?? undefined,
             internationalImplementingEntity:
               entityData.internationalImplementingEntity ?? undefined,
+            nationalImplementingEntityOther:
+              entityData.nationalImplementingEntityOther ?? undefined,
+            internationalImplementingEntityOther:
+              entityData.internationalImplementingEntityOther ?? undefined,
             anchoredInNationalStrategy: entityData.anchoredInNationalStrategy ?? undefined,
             meansOfImplementation: entityData.meansOfImplementation ?? undefined,
             technologyType: entityData.technologyType ?? undefined,
@@ -1489,6 +1494,22 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                       ))}
                     </Select>
                   </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <OtherSpecify
+                    valueName="nationalImplementingEntity"
+                    textName="nationalImplementingEntityOther"
+                    isView={isView}
+                  />
+                </Col>
+                <Col {...halfColumnBps}>
+                  <OtherSpecify
+                    valueName="internationalImplementingEntity"
+                    textName="internationalImplementingEntityOther"
+                    isView={isView}
+                  />
                 </Col>
               </Row>
               <Row gutter={gutterSize}>

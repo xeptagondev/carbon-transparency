@@ -4,6 +4,7 @@ import { ActivityStatus, ImpleMeans, Measure, SupportType } from "../enums/activ
 import { EntityType, GHGS, IpccSubSector } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ActivityDto {
@@ -56,7 +57,10 @@ export class ActivityDto {
 	@ApiPropertyOptional({
 		type: [String]
 	})
-	nationalImplementingEntity: string[]
+	nationalImplementingEntity: string[];
+
+	@OtherSpecify("nationalImplementingEntity")
+	nationalImplementingEntityOther?: string;
 
 	@ValidateIf((c) => c.internationalImplementingEntity)
 	@IsOptional()
@@ -69,6 +73,9 @@ export class ActivityDto {
 		type: [String]
 	})
 	internationalImplementingEntity: string[];
+
+	@OtherSpecify("internationalImplementingEntity")
+	internationalImplementingEntityOther?: string;
 
 	@IsArray()
 	@ArrayMinSize(1)

@@ -1150,8 +1150,16 @@ describe('LinkUnlinkService', () => {
 			jest.spyOn(activityRepositoryMock, 'createQueryBuilder').mockReturnValue(queryBuilderActivityMock as SelectQueryBuilder<ActivityEntity>);
 
 			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const updateQb = {
+					update: jest.fn().mockReturnThis(),
+					set: jest.fn().mockReturnThis(),
+					whereInIds: jest.fn().mockReturnThis(),
+					execute: jest.fn(),
+				};
 				const emMock = {
 					save: jest.fn().mockResolvedValue([new ProgrammeEntity()]),
+					update: jest.fn(),
+					createQueryBuilder: jest.fn(() => updateQb),
 				};
 				const updatedProgrammes = await callback(emMock);
 
@@ -1160,7 +1168,14 @@ describe('LinkUnlinkService', () => {
 				expect(activity.validated).toBe(false);
 				expect(support.validated).toBe(false);
 
-				expect(emMock.save).toHaveBeenCalledTimes(5);
+				// each kind of child is unvalidated with one bulk update; the logs are saved once
+				expect(updateQb.update).toHaveBeenCalledTimes(4);
+				expect(updateQb.update).toHaveBeenCalledWith(ProgrammeEntity);
+				expect(updateQb.update).toHaveBeenCalledWith(ProjectEntity);
+				expect(updateQb.update).toHaveBeenCalledWith(SupportEntity);
+				expect(updateQb.update).toHaveBeenCalledWith(ActivityEntity);
+				expect(updateQb.set).toHaveBeenCalledWith({ validated: false });
+				expect(emMock.save).toHaveBeenCalledTimes(1);
 
 				return updatedProgrammes;
 			});
@@ -1226,8 +1241,16 @@ describe('LinkUnlinkService', () => {
 			jest.spyOn(activityRepositoryMock, 'createQueryBuilder').mockReturnValue(queryBuilderActivityMock as SelectQueryBuilder<ActivityEntity>);
 
 			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const updateQb = {
+					update: jest.fn().mockReturnThis(),
+					set: jest.fn().mockReturnThis(),
+					whereInIds: jest.fn().mockReturnThis(),
+					execute: jest.fn(),
+				};
 				const emMock = {
 					save: jest.fn().mockResolvedValue([new ProgrammeEntity()]),
+					update: jest.fn(),
+					createQueryBuilder: jest.fn(() => updateQb),
 				};
 				const updatedProgrammes = await callback(emMock);
 
@@ -1235,7 +1258,11 @@ describe('LinkUnlinkService', () => {
 				expect(activity.validated).toBe(false);
 				expect(support.validated).toBe(false);
 
-				expect(emMock.save).toHaveBeenCalledTimes(4);
+				// the parent is left alone; project, support and activity are unvalidated in bulk, the logs are saved once
+				expect(updateQb.update).toHaveBeenCalledTimes(3);
+				expect(updateQb.update).not.toHaveBeenCalledWith(ProgrammeEntity);
+				expect(emMock.update).not.toHaveBeenCalled();
+				expect(emMock.save).toHaveBeenCalledTimes(1);
 
 				return updatedProgrammes;
 			});
@@ -1300,14 +1327,25 @@ describe('LinkUnlinkService', () => {
 			jest.spyOn(service, 'updateAllValidatedChildrenStatusByActionId').mockResolvedValue(null);
 
 			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const updateQb = {
+					update: jest.fn().mockReturnThis(),
+					set: jest.fn().mockReturnThis(),
+					whereInIds: jest.fn().mockReturnThis(),
+					execute: jest.fn(),
+				};
 				const emMock = {
 					save: jest.fn().mockResolvedValue([new ProgrammeEntity()]),
+					update: jest.fn(),
+					createQueryBuilder: jest.fn(() => updateQb),
 				};
 				const updatedProgrammes = await callback(emMock);
 
 				expect(action.validated).toBe(false);
 
-				expect(emMock.save).toHaveBeenCalledTimes(2);
+				// the parent action is unvalidated and its other children are left to updateAllValidatedChildrenStatusByActionId (mocked here), so no bulk update runs; the logs are saved once
+				expect(emMock.update).toHaveBeenCalledWith(ActionEntity, 'A001', { validated: false });
+				expect(updateQb.update).not.toHaveBeenCalled();
+				expect(emMock.save).toHaveBeenCalledTimes(1);
 
 				return updatedProgrammes;
 			});

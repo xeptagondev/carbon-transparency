@@ -505,7 +505,7 @@ describe('ActivityService', () => {
 					save: jest.fn().mockResolvedValueOnce(activityUpdated),
 				};
 				const savedAction = await callback(emMock);
-				expect(emMock.save).toHaveBeenNthCalledWith(1, activityUpdated);
+				expect(emMock.save).toHaveBeenNthCalledWith(1, { ...activityUpdated, nationalImplementingEntityOther: null, internationalImplementingEntityOther: null });
 				expect(emMock.save).toHaveBeenCalledTimes(2);
 				return savedAction;
 			});
@@ -1114,7 +1114,7 @@ describe('ActivityService', () => {
 				expect(error.status).toBe(HttpStatus.FORBIDDEN);
 			}
 
-			expect(helperServiceMock.formatReqMessagesString).toHaveBeenCalledWith('activity.parentNotValidated', []);
+			expect(helperServiceMock.formatReqMessagesString).toHaveBeenCalledWith('activity.parentNotValidated', ['action', 'A001']);
 	
 		});
 

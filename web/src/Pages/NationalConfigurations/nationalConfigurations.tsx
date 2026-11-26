@@ -10,6 +10,9 @@ import './nationalConfigurations.scss';
 
 const { Panel } = Collapse;
 
+const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE_OPTIONS = ['10', '20', '50', '100'];
+
 type EditLevel = 'FULL_EDIT' | 'ADD_ONLY';
 
 interface ReferenceValue {
@@ -226,7 +229,16 @@ const NationalConfigurations = () => {
               loading={loading}
               dataSource={list.values}
               columns={columnsFor(list)}
-              pagination={list.values.length > 10 ? { pageSize: 10 } : false}
+              pagination={
+                list.values.length > DEFAULT_PAGE_SIZE
+                  ? {
+                      // defaultPageSize, not pageSize: a fixed pageSize ignores the page size selector
+                      defaultPageSize: DEFAULT_PAGE_SIZE,
+                      showSizeChanger: true,
+                      pageSizeOptions: PAGE_SIZE_OPTIONS,
+                    }
+                  : false
+              }
               locale={{ emptyText: t('nationalConfiguration:noValues') as string }}
               rowClassName={(value) => (value.isActive ? '' : 'disabled-row')}
             />

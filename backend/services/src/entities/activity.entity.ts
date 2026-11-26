@@ -42,6 +42,13 @@ export class ActivityEntity implements EntitySubject {
   @Column("varchar", { array: true, nullable: true })
   nationalImplementingEntity: string[];
 
+  /** What "Others" means when it is one of the selected implementing entities. */
+  @Column({ type: "varchar", nullable: true })
+  internationalImplementingEntityOther: string;
+
+  @Column({ type: "varchar", nullable: true })
+  nationalImplementingEntityOther: string;
+
   @Column("varchar", { array: true, nullable: false })
   recipientEntities: string[];
 

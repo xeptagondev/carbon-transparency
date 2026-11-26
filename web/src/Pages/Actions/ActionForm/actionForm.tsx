@@ -29,7 +29,7 @@ import { useAbilityContext } from '../../../Casl/Can';
 import { ActionEntity } from '../../../Entities/action';
 import UpdatesTimeline from '../../../Components/UpdateTimeline/updates';
 import { useUserContext } from '../../../Context/UserInformationContext/userInformationContext';
-import { Sector } from '../../../Enums/sector.enum';
+import { getSectorSelectOptions } from '../../../Enums/sector.enum';
 import { NewKpi } from '../../../Components/KPI/newKpi';
 import { ViewKpi } from '../../../Components/KPI/viewKpi';
 import { EditKpi } from '../../../Components/KPI/editKpi';
@@ -45,6 +45,7 @@ import {
 import { displayErrorMessage } from '../../../Utils/errorMessageHandler';
 import InfoKpi from '../../../Components/KPI/InfoKpi';
 import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const { Option } = Select;
@@ -142,7 +143,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
   }
 
   if (userInfoState?.userRole === Role.Root || userInfoState?.userRole === Role.Admin) {
-    Object.values(Sector).map((sector) => availableSectors.push(sector));
+    getSectorSelectOptions().map((sector) => availableSectors.push(sector));
   } else {
     userSectors.map((sector) => availableSectors.push(sector));
   }
@@ -465,6 +466,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
             status: entityData.status,
             startYear: entityData.startYear,
             natAnchor: entityData.natAnchor,
+            natAnchorOther: entityData.natAnchorOther ?? undefined,
           });
 
           setIsValidated(entityData.validated ?? false);
@@ -939,6 +941,11 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                       ))}
                     </Select>
                   </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <OtherSpecify valueName="natAnchor" textName="natAnchorOther" isView={isView} />
                 </Col>
               </Row>
               <div

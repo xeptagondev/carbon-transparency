@@ -20,6 +20,7 @@ import {
 import { FinanceNature, FinancingStatus, SupportDirection } from "../enums/support.enum";
 import { IsTwoDecimalPoints } from "../util/twoDecimalPointNumber.decorator";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 import { DocumentDto } from "./document.dto";
 
@@ -110,6 +111,9 @@ export class SupportDto {
 	@IsReferenceValue(ReferenceDataList.PIPELINE_STATUS)
 	@ApiPropertyOptional()
 	pipelineStatus: string;
+
+	@OtherSpecify("pipelineStatus")
+	pipelineStatusOther?: string;
 
 	@ValidateIf((c) => c.internationalSource && c.financeNature == FinanceNature.INTERNATIONAL)
 	@IsArray()

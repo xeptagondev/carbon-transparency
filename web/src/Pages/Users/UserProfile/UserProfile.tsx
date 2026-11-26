@@ -221,7 +221,13 @@ const UserProfile = () => {
                           {t('userProfile:organisation')}
                         </Col>
                         <Col span={12} className="field-value">
-                          {userDetails.organisation ? userDetails.organisation : '-'}
+                          {userDetails.organisation
+                            ? `${userDetails.organisation}${
+                                userDetails.organisationOther
+                                  ? ` – ${userDetails.organisationOther}`
+                                  : ''
+                              }`
+                            : '-'}
                         </Col>
                       </Row>
                     )}

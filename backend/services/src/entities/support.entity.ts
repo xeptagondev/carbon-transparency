@@ -52,6 +52,10 @@ export class SupportEntity {
   @Column({ type: "varchar", nullable: true })
   pipelineStatus: string;
 
+  /** What "Others" means when it is the selected pipeline status. */
+  @Column({ type: "varchar", nullable: true })
+  pipelineStatusOther: string;
+
   /** National finance only: whether the national budget contributes to the activity. */
   @Column({ type: "boolean", nullable: true })
   nationallyBudgetSupported: boolean;

@@ -18,7 +18,7 @@ import { plainToClass } from 'class-transformer';
 import { User } from '../../../Entities/user';
 import ChangePasswordModel from '../../../Components/Models/changePasswordModel';
 import { Role } from '../../../Enums/role.enum';
-import { Sector } from '../../../Enums/sector.enum';
+import { getSectorSelectOptions } from '../../../Enums/sector.enum';
 import {
   GHGInventoryManipulate,
   SubRoleManipulate,
@@ -39,6 +39,7 @@ import {
   ghgInventoryPermitColor,
 } from '../../../Styles/role.color.constants';
 import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const AddUser = () => {
@@ -162,6 +163,7 @@ const AddUser = () => {
         name: formOneValues?.name,
         phoneNo: formOneValues?.phoneNo,
         organisation: formOneValues?.organisation,
+        organisationOther: formOneValues?.organisationOther,
         validatePermission: formOneValues?.validatePermission,
         subRolePermission: formOneValues?.subRolePermission,
         ghgInventoryPermission: formOneValues?.ghgInventoryPermission,
@@ -761,6 +763,13 @@ const AddUser = () => {
                   </Form.Item>
                 )}
                 {(role === Role.GovernmentUser || role === Role.Observer) && (
+                  <OtherSpecify
+                    valueName="organisation"
+                    textName="organisationOther"
+                    initialValue={state?.record?.organisationOther}
+                  />
+                )}
+                {(role === Role.GovernmentUser || role === Role.Observer) && (
                   <Form.Item
                     label={t('addUser:sectors')}
                     initialValue={
@@ -785,7 +794,7 @@ const AddUser = () => {
                         !ability.can(Action.Update, plainToClass(User, state?.record), 'sector')
                       }
                     >
-                      {Object.values(Sector).map((instrument) => (
+                      {getSectorSelectOptions().map((instrument) => (
                         <Select.Option key={instrument} value={instrument}>
                           {instrument}
                         </Select.Option>

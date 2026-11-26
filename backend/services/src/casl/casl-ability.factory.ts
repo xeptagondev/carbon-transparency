@@ -23,6 +23,7 @@ import { ProjectionEntity } from "../entities/projection.entity";
 import { ConfigurationSettingsEntity } from "../entities/configuration.settings.entity";
 import { SystemResourcesEntity } from "../entities/systemResource.entity";
 import { ReferenceDataEntity } from "../entities/reference.data.entity";
+import { ConfigurationSettingsType } from "../enums/configuration.settings.type.enum";
 
 type Subjects = InferSubjects<typeof EntitySubject> | "all";
 
@@ -178,10 +179,15 @@ export class CaslAbilityFactory {
         can(Action.Delete, ProjectionEntity);
         can(Action.Validate, ProjectionEntity);
 
-        // Settings
+        // Settings: only Root changes them, except the sector years (most recent year and projection
+        // years), which the Configurations page lets an Admin edit. The later rule wins, and it only
+        // matches that one setting.
         can(Action.Read, ConfigurationSettingsEntity);
         cannot(Action.Create, ConfigurationSettingsEntity);
         cannot(Action.Update, ConfigurationSettingsEntity);
+        can(Action.Update, ConfigurationSettingsEntity, {
+          id: ConfigurationSettingsType.SECTOR_YEAR_CONFIGURATION,
+        } as MongoQuery<ConfigurationSettingsEntity>);
 
         // National configurations (reference data)
         can(Action.Read, ReferenceDataEntity);

@@ -17,6 +17,3 @@ web/public/locales/*
 .gitignore
 *.csv
 *.xlsx
-.cursor 
-
-

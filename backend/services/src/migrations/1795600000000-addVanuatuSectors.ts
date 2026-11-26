@@ -3,20 +3,24 @@ import { addMissingSectorEnumValues } from "../util/sectorEnum.util";
 
 /**
  * TRAN-257: Extend Postgres sector enums with Vanuatu's 12 additional sectors.
- * Uses ALTER TYPE ... ADD VALUE (no drop/recreate) so existing data and views stay valid.
- * Safe on a fresh DB where sync already created all enum labels (each ADD is skipped).
+ * Uses ALTER TYPE ... ADD VALUE IF NOT EXISTS (no drop/recreate) so existing data and
+ * views stay valid.
  *
- * The DataSource initialize patch applies the same ADD VALUE on API boot when the schema
- * already exists; synchronize runs only on a fresh DB (no user table).
+ * transaction = false: ADD VALUE cannot run inside a transaction on Postgres < 12,
+ * and even on 12+ the new value cannot be used in the same transaction.
+ *
+ * down() is a no-op: Postgres cannot remove enum values without recreating the type,
+ * so a rollback leaves the 12 labels in place.
  */
 export class AddVanuatuSectors1795600000000 implements MigrationInterface {
   name = "AddVanuatuSectors1795600000000";
+  transaction = false;
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await addMissingSectorEnumValues(queryRunner);
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
-    // Postgres does not support removing enum values without recreating the type.
+    // Postgres cannot drop individual enum values; rollback does not remove these labels.
   }
 }

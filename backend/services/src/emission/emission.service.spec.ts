@@ -114,7 +114,6 @@ describe('GhgEmissionsService', () => {
 
 			const emissionDto = new EmissionDto;
 			emissionDto.year = "2022";
-			emissionDto.totalCo2WithLand = { co2: 100, ch4: 20, n2o: 35, co2eq: 90 };
 
 			user.ghgInventoryPermission = GHGInventoryManipulate.CAN;
 			jest.spyOn(emissionRepoMock, "find").mockResolvedValue([]);
@@ -146,7 +145,7 @@ describe('GhgEmissionsService', () => {
 			jest.spyOn(helperServiceMock, "formatReqMessagesString").mockReturnValue('Emission save failed');
 
 			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
-				throw new QueryFailedError('This is a test transaction error. This is expected', ["null"], "null");
+				throw new QueryFailedError('This is a test transaction error. This is expected', ["null"], new Error("null"));
 			});
 
 			await expect(service.create(emissionDto, user)).rejects.toThrow(HttpException);
@@ -183,7 +182,6 @@ describe('GhgEmissionsService', () => {
 
 			const emissionDto = new EmissionDto;
 			emissionDto.year = "2022";
-			emissionDto.totalCo2WithLand = { co2: 100, ch4: 20, n2o: 35, co2eq: 90 };
 
 			user.ghgInventoryPermission = GHGInventoryManipulate.CAN;
 
@@ -214,7 +212,6 @@ describe('GhgEmissionsService', () => {
 
 			const emissionDto = new EmissionDto;
 			emissionDto.year = "2022";
-			emissionDto.totalCo2WithLand = { co2: 100, ch4: 20, n2o: 35, co2eq: 90 };
 
 			jest.spyOn(emissionRepoMock, "find").mockResolvedValue([emissionEntity]);
 			jest.spyOn(helperServiceMock, "isValidYear").mockReturnValue(true);
@@ -237,7 +234,6 @@ describe('GhgEmissionsService', () => {
 
 			const emissionDto = new EmissionDto;
 			emissionDto.year = "2022";
-			emissionDto.totalCo2WithLand = { co2: 100, ch4: 20, n2o: 35, co2eq: 90 };
 
 			user.ghgInventoryPermission = GHGInventoryManipulate.CAN;
 

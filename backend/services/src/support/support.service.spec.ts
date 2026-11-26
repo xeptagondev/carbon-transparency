@@ -19,6 +19,7 @@ import { LinkUnlinkService } from "../util/linkUnlink.service";
 import { Role } from "../casl/role.enum";
 import { EntityType } from "../enums/shared.enum";
 import { ProjectEntity } from "../entities/project.entity";
+import { FileUploadService } from "../util/fileUpload.service";
 
 describe('SupportService', () => {
 	let service: SupportService;
@@ -28,6 +29,7 @@ describe('SupportService', () => {
 	let helperServiceMock: Partial<HelperService>;
 	let activityServiceMock: Partial<ActivityService>;
 	let linkUnlinkServiceMock: Partial<LinkUnlinkService>;
+	let fileUploadServiceMock: Partial<FileUploadService>;
 
 
 	beforeEach(async () => {
@@ -60,6 +62,9 @@ describe('SupportService', () => {
 			findActivityById: jest.fn(),
 			isProjectValid: jest.fn()
 		}
+		fileUploadServiceMock = {
+			uploadDocument: jest.fn(),
+		};
 		linkUnlinkServiceMock = {
 			updateAllValidatedChildrenAndParentStatusByActivityId: jest.fn(),
 			updateAllValidatedChildrenAndParentStatusByProject: jest.fn(),
@@ -91,6 +96,10 @@ describe('SupportService', () => {
 				{
 					provide: LinkUnlinkService,
 					useValue: linkUnlinkServiceMock,
+				},
+				{
+					provide: FileUploadService,
+					useValue: fileUploadServiceMock,
 				},
 			],
 		}).compile();

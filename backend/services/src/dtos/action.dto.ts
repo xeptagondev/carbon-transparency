@@ -6,6 +6,7 @@ import { DocumentDto } from "./document.dto";
 import { Sector } from "../enums/sector.enum";
 import { ActionType } from "../enums/action.enum";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ActionDto {
@@ -86,6 +87,9 @@ export class ActionDto {
 		type: [String]
 	})
 	natAnchor: string[];
+
+	@OtherSpecify("natAnchor")
+	natAnchorOther?: string;
 
 	@IsOptional()
 	@ApiPropertyOptional(

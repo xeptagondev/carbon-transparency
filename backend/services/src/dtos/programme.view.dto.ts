@@ -31,6 +31,8 @@ export class ProgrammeViewDto {
 
   nationalImplementor: string[];
 
+  natImplementorOther: string;
+
   documents: DocumentDto[];
 
   comments: string;

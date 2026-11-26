@@ -39,6 +39,7 @@ import {
   ghgInventoryPermitColor,
 } from '../../../Styles/role.color.constants';
 import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 
 const AddUser = () => {
@@ -162,6 +163,7 @@ const AddUser = () => {
         name: formOneValues?.name,
         phoneNo: formOneValues?.phoneNo,
         organisation: formOneValues?.organisation,
+        organisationOther: formOneValues?.organisationOther,
         validatePermission: formOneValues?.validatePermission,
         subRolePermission: formOneValues?.subRolePermission,
         ghgInventoryPermission: formOneValues?.ghgInventoryPermission,
@@ -759,6 +761,13 @@ const AddUser = () => {
                       ))}
                     </Select>
                   </Form.Item>
+                )}
+                {(role === Role.GovernmentUser || role === Role.Observer) && (
+                  <OtherSpecify
+                    valueName="organisation"
+                    textName="organisationOther"
+                    initialValue={state?.record?.organisationOther}
+                  />
                 )}
                 {(role === Role.GovernmentUser || role === Role.Observer) && (
                   <Form.Item

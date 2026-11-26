@@ -3,11 +3,16 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
 import { ConfigurationSettingsType } from '../../../Enums/configuration.enum';
+import { useUserContext } from '../../../Context/UserInformationContext/userInformationContext';
+import { Role } from '../../../Enums/role.enum';
 
 const SectorYearConfiguration = () => {
   const { t } = useTranslation(['configuration']);
   const [form] = Form.useForm();
   const { get, post } = useConnection();
+  const { userInfoState } = useUserContext();
+  // The server lets only Root and Admin save the sector years; the others see the values only
+  const canEdit = userInfoState?.userRole === Role.Root || userInfoState?.userRole === Role.Admin;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +78,12 @@ const SectorYearConfiguration = () => {
           }
           name="mostRecentYear"
         >
-          <InputNumber min={2000} max={2050} className="form-input-box" />
+          <InputNumber
+            min={2000}
+            max={2050}
+            className="form-input-box sector-year-input"
+            disabled={!canEdit}
+          />
         </Form.Item>
         <Form.Item
           label={
@@ -83,7 +93,12 @@ const SectorYearConfiguration = () => {
           }
           name="projectionYear1"
         >
-          <InputNumber min={2000} max={2050} className="form-input-box" />
+          <InputNumber
+            min={2000}
+            max={2050}
+            className="form-input-box sector-year-input"
+            disabled={!canEdit}
+          />
         </Form.Item>
         <Form.Item
           label={
@@ -93,7 +108,12 @@ const SectorYearConfiguration = () => {
           }
           name="projectionYear2"
         >
-          <InputNumber min={2000} max={2050} className="form-input-box" />
+          <InputNumber
+            min={2000}
+            max={2050}
+            className="form-input-box sector-year-input"
+            disabled={!canEdit}
+          />
         </Form.Item>
         <Form.Item
           label={
@@ -103,13 +123,20 @@ const SectorYearConfiguration = () => {
           }
           name="projectionYear3"
         >
-          <InputNumber min={2000} max={2050} className="form-input-box" />
+          <InputNumber
+            min={2000}
+            max={2050}
+            className="form-input-box sector-year-input"
+            disabled={!canEdit}
+          />
         </Form.Item>
-        <Form.Item className="form-item-submit">
-          <Button type="primary" block htmlType="submit" className="sector-years-save-button">
-            {t('entityAction:update')}
-          </Button>
-        </Form.Item>
+        {canEdit && (
+          <Form.Item className="form-item-submit">
+            <Button type="primary" block htmlType="submit" className="sector-years-save-button">
+              {t('entityAction:update')}
+            </Button>
+          </Form.Item>
+        )}
       </Form>
     </div>
   );

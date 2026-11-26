@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsString, IsOptional, ValidateNested, IsNumber, Min, Max, ArrayMinSize, MaxLength, IsArray } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, IsOptional, ValidateNested, ValidateIf, IsNumber, Min, Max, ArrayMinSize, MaxLength, IsArray } from "class-validator";
+import { IsExclusiveInformationNotAvailable } from "../util/informationNotAvailable";
 import { ActionStatus, ActionType, InstrumentType } from "../enums/action.enum";
 import { DocumentDto } from "./document.dto";
 import { KpiUpdateDto } from "./kpi.update.dto";
@@ -56,6 +57,7 @@ export class ActionUpdateDto {
 	@ArrayMinSize(1)
 	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
+	@IsExclusiveInformationNotAvailable()
 	@IsEnum(InstrumentType, {
 		each: true,
 		message: "Invalid instrument type. Supported following instrument types:" + Object.values(InstrumentType),
@@ -73,17 +75,20 @@ export class ActionUpdateDto {
 	})
 	status: ActionStatus;
 
+	// null means "Information not available"
+	@ValidateIf((o) => o.startYear !== null)
 	@IsNotEmpty()
 	@IsNumber()
 	@Min(2013)
 	@Max(2049)
-	@ApiProperty()
-	startYear: number;
+	@ApiProperty({ nullable: true, description: "null means Information not available" })
+	startYear: number | null;
 	
 	@IsArray()
 	@ArrayMinSize(1)
 	@MaxLength(500, { each: true })
 	@IsNotEmpty({ each: true })
+	@IsExclusiveInformationNotAvailable()
 	@IsReferenceValue(ReferenceDataList.NATIONAL_STRATEGY_ANCHOR, { each: true })
 	@ApiProperty({
 		type: [String]

@@ -26,6 +26,7 @@
   "mtgDocUploadOne": "Documentation de la méthodologie de mitigation",
   "mtgDocUploadTwo": "Documentation des résultats de la mitigation",
   "mitigationTimelineTitle": "Chronologie de la mitigation",
+  "mitigationTimelineNeedsYears": "Sélectionnez l'année de début et de fin de l'activité pour saisir les réductions de GES par année",
   "deletePrimaryMsg": "Êtes-vous sûr de vouloir supprimer activité",
   "deleteSecondaryMsg": "Vous ne pouvez pas annuler cette action"
 }

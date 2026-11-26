@@ -23,6 +23,7 @@ import { SupportDirection } from "../enums/support.enum";
 import { ActionType } from "../enums/action.enum";
 import { AnnexTwoViewEntity } from "../entities/annexTwo.view.entity";
 import { DataExportAnnexTwoReportSevenDto } from "src/dtos/data.export.annexTwo.reportSeven.dto";
+import { yearOrNotAvailable } from "../util/informationNotAvailable";
 
 export class ReportService {
   constructor(
@@ -379,7 +380,7 @@ export class ReportService {
       dto.status = report.status;
       dto.sector = report.sector;
       dto.ghgsAffected = report.ghgsAffected;
-      dto.startYear = report.startYear;
+      dto.startYear = yearOrNotAvailable(report.startYear);
       dto.implementingEntities = report.implementingEntities;
       dto.achievedGHGReduction = report.achievedGHGReduction;
       dto.expectedGHGReduction = report.expectedGHGReduction;
@@ -402,8 +403,8 @@ export class ReportService {
         description: report.description,
         requiredAmountDomestic: report.requiredAmountDomestic,
         requiredAmount: report.requiredAmount,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         financialInstrument: report.internationalFinancialInstrument,
         type: report.type,
         techDevelopment:
@@ -443,8 +444,8 @@ export class ReportService {
           report.internationalImplementingEntity,
         receivedAmountDomestic: report.receivedAmountDomestic,
         receivedAmount: report.receivedAmount,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         financialInstrument: report.internationalFinancialInstrument,
         financingStatus: report.financingStatus,
         type: report.type,
@@ -481,8 +482,8 @@ export class ReportService {
         description: report.description,
         type: report.type,
         technologyType: report.technologyType,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         achievedGHGReduction:
           report.achievedGHGReductionAlternate ||
           report.achievedGHGReduction ||
@@ -505,8 +506,8 @@ export class ReportService {
         titleOfActivity: report.title,
         description: report.description,
         technologyType: report.technologyType,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         recipientEntities: report.recipientEntities,
         nationalImplementingEntities: report.nationalImplementingEntity,
         internationalImplementingEntities:
@@ -539,8 +540,8 @@ export class ReportService {
         titleOfActivity: report.title,
         description: report.description,
         type: report.type,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         achievedGHGReduction:
           report.achievedGHGReductionAlternate ||
           report.achievedGHGReduction ||
@@ -562,8 +563,8 @@ export class ReportService {
         activityId: report.activityId,
         titleOfActivity: report.title,
         description: report.description,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         recipientEntities: report.recipientEntities,
         nationalImplementingEntities: report.nationalImplementingEntity,
         internationalImplementingEntities:
@@ -592,8 +593,8 @@ export class ReportService {
         activityId: report.activityId,
         titleOfActivity: report.title,
         description: report.description,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         recipientEntities: report.recipientEntities,
         supportChannel: report.internationalSupportChannel,
         requiredAmountDomestic: report.requiredAmountDomestic,
@@ -620,8 +621,8 @@ export class ReportService {
         activityId: report.activityId,
         titleOfActivity: report.title,
         description: report.description,
-        startYear: report.startYear,
-        endYear: report.endYear,
+        startYear: yearOrNotAvailable(report.startYear),
+        endYear: yearOrNotAvailable(report.endYear),
         recipientEntities: report.recipientEntities,
         supportChannel: report.internationalSupportChannel,
         receivedAmountDomestic: report.receivedAmountDomestic,

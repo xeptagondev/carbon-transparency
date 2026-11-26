@@ -15,6 +15,7 @@ export enum ActivityStatus {
   PLANNED = 'Planned',
   ONGOING = 'Ongoing',
   COMPLETED = 'Completed',
+  INFORMATION_NOT_AVAILABLE = 'Information not available',
 }
 
 export enum ImplMeans {

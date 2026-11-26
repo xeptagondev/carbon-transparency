@@ -28,6 +28,7 @@
     "mtgDocUploadOne": "Mitigation Methodology Documentation",
     "mtgDocUploadTwo": "Mitigation Results Documentation",
     "mitigationTimelineTitle" : "Mitigation Timeline",
+    "mitigationTimelineNeedsYears": "Select the activity Start Year and End Year to enter the GHG reductions by year",
     "saveMtgFirst": "Please save the Mitigation timeline first",
     "mtgUpdateSuccess": "Mitigation Timeline Successfully Updated",
     "deletePrimaryMsg": "Are you sure you want to remove the Activity",

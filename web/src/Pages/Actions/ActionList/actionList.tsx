@@ -14,6 +14,7 @@ import StatusChip from '../../../Components/StatusChip/statusChip';
 import ScrollableList from '../../../Components/ScrollableList/scrollableList';
 import { actionMenuWithAttaching } from '../../../Components/Popups/tableAction';
 import { displayErrorMessage } from '../../../Utils/errorMessageHandler';
+import { INFORMATION_NOT_AVAILABLE } from '../../../Utils/informationNotAvailable';
 import {
   addActionBps,
   filterDropdownBps,
@@ -45,7 +46,13 @@ const actionList = () => {
   const { post } = useConnection();
   const ability = useAbilityContext();
 
-  const { t } = useTranslation(['actionList', 'tableAction', 'columnHeader', 'entityAction']);
+  const { t } = useTranslation([
+    'actionList',
+    'tableAction',
+    'columnHeader',
+    'entityAction',
+    'common',
+  ]);
 
   // General Page State
 
@@ -332,6 +339,7 @@ const actionList = () => {
               <Radio value="Planned">Planned</Radio>
               <Radio value="Adopted">Adopted</Radio>
               <Radio value="Implemented">Implemented</Radio>
+              <Radio value={INFORMATION_NOT_AVAILABLE}>{t('common:informationNotAvailable')}</Radio>
             </Space>
           </Radio.Group>
         </div>

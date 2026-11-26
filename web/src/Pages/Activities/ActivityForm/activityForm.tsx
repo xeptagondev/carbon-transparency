@@ -15,6 +15,12 @@ import {
   ExpectedTimeline,
 } from '../../../Definitions/mtgTimeline.definition';
 import { ActivityStatus, ImplMeans, Measure } from '../../../Enums/activity.enum';
+import {
+  INFORMATION_NOT_AVAILABLE,
+  isYearNotAvailable,
+  yearToFormValue,
+  yearToPayload,
+} from '../../../Utils/informationNotAvailable';
 import { GHGS, KPIAction } from '../../../Enums/shared.enum';
 import EntityIdCard from '../../../Components/EntityIdCard/entityIdCard';
 import { SupportData } from '../../../Definitions/supportDefinitions';
@@ -72,6 +78,7 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
     'entityAction',
     'error',
     'timelineTable',
+    'common',
   ]);
 
   const isView: boolean = method === 'view' ? true : false;
@@ -170,8 +177,8 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
   const [gwpSettings, setGwpSettings] = useState<{ CH4: number; N2O: number }>();
 
   // ML: Set the activity start and end year
-  const [startYear1, setStartYear] = useState<number>();
-  const [endYear1, setEndYear] = useState<number>();
+  const [startYear1, setStartYear] = useState<number | string>();
+  const [endYear1, setEndYear] = useState<number | string>();
 
   // KL: Achieved GHG Reduction Alternate
   const [isAchievedAlternate, setIsAchievedAlternate] = useState<boolean>(false);
@@ -686,9 +693,13 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
         payload.parentId = '';
       }
       // ML - add the user input startYear and endYear and the calculated expectedTimeFrame to payload
-      payload.startYear = parseInt(payload.startYear1);
-      payload.endYear = parseInt(payload.endYear1);
-      payload.expectedTimeFrame = parseInt(payload.expectedTimeFrame);
+      // An empty year is "Information not available": it is sent as null, and so is the time frame
+      payload.startYear = yearToPayload(payload.startYear1);
+      payload.endYear = yearToPayload(payload.endYear1);
+      payload.expectedTimeFrame =
+        payload.startYear === null || payload.endYear === null
+          ? null
+          : parseInt(payload.expectedTimeFrame);
 
       payload.achievedGHGReduction = parseFloat(payload.achievedGHGReduction);
       payload.expectedGHGReduction = parseFloat(payload.expectedGHGReduction);
@@ -702,7 +713,8 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
         resultDocuments: [],
       };
 
-      if (method === 'create' && selectedGhg) {
+      // The timeline needs the activity years: without them the activity is saved without one
+      if (method === 'create' && selectedGhg && mtgStartYear) {
         payload.mitigationTimeline = {
           expected: {
             baselineEmissions: expectedTimeline[0].values,
@@ -979,15 +991,19 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
             expectedGHGReduction: entityData.expectedGHGReduction,
             recipientEntities: entityData.recipientEntities ?? [],
             // ML - we now get the startYear and endYear directly from activity
-            startYear1: entityData.startYear ?? undefined,
-            endYear1: entityData.endYear ?? undefined,
-            expectedTimeFrame: entityData.expectedTimeFrame ?? undefined,
+            startYear1: yearToFormValue(entityData.startYear),
+            endYear1: yearToFormValue(entityData.endYear),
+            expectedTimeFrame:
+              entityData.expectedTimeFrame ??
+              (isYearNotAvailable(entityData.startYear) || isYearNotAvailable(entityData.endYear)
+                ? t('common:informationNotAvailable')
+                : undefined),
             ipccSubSector: entityData.ipccSubSector ?? undefined,
           });
 
           // ML - Just to be safe - set the original startYear and endYear with the values from activity entity
-          setStartYear(entityData.startYear);
-          setEndYear(entityData.endYear);
+          setStartYear(yearToFormValue(entityData.startYear));
+          setEndYear(yearToFormValue(entityData.endYear));
 
           // Populating Mitigation data fields
           form.setFieldsValue({
@@ -1143,13 +1159,19 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
   };
 
   // ML we need a new function to set the startYear and mtgStartYear states when the user change the it on the form
-  const handleStartYearChanges = (value: number | undefined) => {
-    if (value) {
+  const handleStartYearChanges = (value: number | string | undefined) => {
+    if (value === INFORMATION_NOT_AVAILABLE) {
+      // No year: no mitigation timeline can be built for a new activity
       setStartYear(value);
-      setMtgStartYear(value);
+      if (method === 'create') {
+        setMtgStartYear(0);
+      }
+    } else if (value) {
+      setStartYear(value);
+      setMtgStartYear(value as number);
       // ML, we set the  mtgStartYear only when the user first create the activity record
       if (method === 'create') {
-        setMtgStartYear(value);
+        setMtgStartYear(value as number);
       }
     }
   };
@@ -1182,7 +1204,7 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
   }, [mtgStartYear, selectedGhg]);
 
   useEffect(() => {
-    if (method === 'update' && mtgStartYear === 0 && startYear1) {
+    if (method === 'update' && mtgStartYear === 0 && typeof startYear1 === 'number') {
       setMtgStartYear(startYear1);
     }
   }, [selectedGhg]);
@@ -1274,9 +1296,13 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
 
   // ML - let calculate expectedTimeFrame which is a new field in activity
   useEffect(() => {
-    if (startYear1 && endYear1 && endYear1 >= startYear1) {
+    if (typeof startYear1 === 'number' && typeof endYear1 === 'number' && endYear1 >= startYear1) {
       form.setFieldsValue({
         expectedTimeFrame: endYear1 - startYear1,
+      });
+    } else if (startYear1 === INFORMATION_NOT_AVAILABLE || endYear1 === INFORMATION_NOT_AVAILABLE) {
+      form.setFieldsValue({
+        expectedTimeFrame: t('common:informationNotAvailable'),
       });
     } else {
       form.setFieldsValue({
@@ -1630,7 +1656,11 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                           ({ getFieldValue }) => ({
                             // eslint-disable-next-line no-unused-vars
                             validator(_, value) {
-                              if (!value || getFieldValue('endYear1') >= value) {
+                              if (
+                                isYearNotAvailable(value) ||
+                                isYearNotAvailable(getFieldValue('endYear1')) ||
+                                getFieldValue('endYear1') >= value
+                              ) {
                                 return Promise.resolve();
                               }
                               return Promise.reject('Cannot be greater than End Year!');
@@ -1649,6 +1679,9 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                             handleStartYearChanges(value);
                           }}
                         >
+                          <Option key={INFORMATION_NOT_AVAILABLE} value={INFORMATION_NOT_AVAILABLE}>
+                            {t('common:informationNotAvailable')}
+                          </Option>
                           {yearsList.slice(1).map((year) => (
                             <Option key={year} value={year}>
                               {year}
@@ -1668,7 +1701,11 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                           ({ getFieldValue }) => ({
                             // eslint-disable-next-line no-unused-vars
                             validator(_, value) {
-                              if (!value || getFieldValue('startYear1') <= value) {
+                              if (
+                                isYearNotAvailable(value) ||
+                                isYearNotAvailable(getFieldValue('startYear1')) ||
+                                getFieldValue('startYear1') <= value
+                              ) {
                                 return Promise.resolve();
                               }
                               return Promise.reject('Cannot be lower than Start Year!');
@@ -1687,6 +1724,9 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                             setEndYear(value);
                           }}
                         >
+                          <Option key={INFORMATION_NOT_AVAILABLE} value={INFORMATION_NOT_AVAILABLE}>
+                            {t('common:informationNotAvailable')}
+                          </Option>
                           {yearsList.slice(1).map((year) => (
                             <Option key={year} value={year}>
                               {year}
@@ -1704,7 +1744,7 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                         }
                         name="expectedTimeFrame"
                       >
-                        <Input type="number" className="form-input-box" disabled />
+                        <Input className="form-input-box" disabled />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -2126,6 +2166,15 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                     />
                   </Col>
                 </Row>
+              </div>
+            ) : isGasFlow && selectedGhg ? (
+              <div className="form-section-card">
+                <div className="form-section-header">{t('mitigationTimelineTitle')}</div>
+                <div
+                  style={{ color: '#3A3541', opacity: 0.6, fontSize: '13px', marginTop: '10px' }}
+                >
+                  {t('mitigationTimelineNeedsYears')}
+                </div>
               </div>
             ) : null}
             {method !== 'create' && (

@@ -29,7 +29,7 @@ import { useAbilityContext } from '../../../Casl/Can';
 import { ActionEntity } from '../../../Entities/action';
 import UpdatesTimeline from '../../../Components/UpdateTimeline/updates';
 import { useUserContext } from '../../../Context/UserInformationContext/userInformationContext';
-import { Sector } from '../../../Enums/sector.enum';
+import { getSectorSelectOptions } from '../../../Enums/sector.enum';
 import { NewKpi } from '../../../Components/KPI/newKpi';
 import { ViewKpi } from '../../../Components/KPI/viewKpi';
 import { EditKpi } from '../../../Components/KPI/editKpi';
@@ -142,7 +142,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
   }
 
   if (userInfoState?.userRole === Role.Root || userInfoState?.userRole === Role.Admin) {
-    Object.values(Sector).map((sector) => availableSectors.push(sector));
+    getSectorSelectOptions().map((sector) => availableSectors.push(sector));
   } else {
     userSectors.map((sector) => availableSectors.push(sector));
   }

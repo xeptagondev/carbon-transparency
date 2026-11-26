@@ -1,6 +1,4 @@
 version: "3.3"
-# Env file for all services and for ${DB_*} substitution: ./backend/services/.env
-# (Compose also reads repo-root .env for interpolation — keep it in sync or hard-link to this file.)
 volumes:
   data:
     driver: local
@@ -15,33 +13,31 @@ services:
     image: postgres
     restart: always
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${DB_PORT}:5433
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PWD}
       POSTGRES_USER: ${DB_USER}
       PGPORT: ${DB_PORT}
       PSQL_USERNAME: ${DB_USER}
       PGDATA: /data/postgres
     volumes:
-      - ./init-databases.sh:/docker-entrypoint-initdb.d/01-init-databases.sh
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql.template:ro
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - data:/data/postgres
     env_file:
-      - ./backend/services/.env
+      - .env
 
-  # pgadmin:
-  #   container_name: pgadmin4
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PWD}
-  #   ports:
-  #     - 5050:80
-  #   volumes:
-  #     - pgadmin_data:/var/lib/pgadmin  
-  #   env_file:
-  #     - ./backend/services/.env
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PWD}
+    ports:
+      - 5050:80
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin  
+    env_file:
+      - .env
 
   migration:
     build:
@@ -55,10 +51,10 @@ services:
       DB_HOST: dbmrv
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PASSWORD: ${DB_PWD}
       DB_NAME: ${DB_NAME}
     env_file:
-      - ./backend/services/.env
+      - .env
 
   national:
     build:
@@ -71,7 +67,7 @@ services:
     environment:
       DB_HOST: dbmrv
       DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PASSWORD: ${DB_PWD}
       RUN_MODULE: national-api
       rootEmail: <ROOT EMAIL>
       systemCountryCode: "NG"
@@ -95,7 +91,7 @@ services:
       - ./users.csv:/app/backend/services/users.csv
       - ./organisations.csv:/app/backend/services/organisations.csv
     env_file:
-      - ./backend/services/.env
+      - .env
 
   stats:
     build:
@@ -109,7 +105,7 @@ services:
     environment:
       DB_HOST: dbmrv
       DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PASSWORD: ${DB_PWD}
       RUN_PORT: 3100
       RUN_MODULE: analytics-api
       DOMAIN_MAP: "true"
@@ -119,38 +115,39 @@ services:
       FILE_SERVICE: local
       S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
     env_file:
-      - ./backend/services/.env
+      - .env
 
-  # async-operations-handler:
-  #   build:
-  #     context: .
-  #     dockerfile: ./backend/services/Dockerfile
-  #   depends_on:
-  #     - dbmrv
-  #     - national
-  #   environment:
-  #     DB_HOST: dbmrv
-  #     DB_USER: ${DB_USER}
-  #     DB_PASSWORD: ${DB_PASSWORD}
-  #     RUN_MODULE: async-operations-handler,data-importer
-  #     LOCATION_SERVICE: https://mrv-common-dev.s3.amazonaws.com/flag.png
-  #     CERTIFIER_IMAGE : "https://mrv-common-dev.s3.amazonaws.com/flag.png"
-  #     SMTP_ENDPOINT: email-smtp.us-east-1.amazonaws.com
-  #     SMTP_PASSWORD: ""
-  #     SMTP_USERNAME: AKIAUMXKTXDJPDYDJ76J
-  #     IS_EMAIL_DISABLED: "true"
-  #     ASYNC_OPERATIONS_TYPE: Database
-  #     ITMO_API_KEY: ""
-  #     ITMO_EMAIL: ""                      
-  #     ITMO_PASSWORD: ""
-  #     DB_PORT: ${DB_PORT}
-  #     DB_NAME: ${DB_NAME}
-  #     REGISTRY_SYNC_ENABLE: true
-  #     NODE_ENV: 'dev'
-  #     FILE_SERVICE: local
-  #     S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
-  #     DISABLE_LOW_PRIORITY_EMAIL: "true"
-  #     SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
-  #     BACKEND_HOST: http://localhost:9000
-  #   env_file:
-  #     - ./backend/services/.env
+  async-operations-handler:
+    build:
+      context: .
+      dockerfile: ./backend/services/Dockerfile
+    depends_on:
+      - dbmrv
+      - national
+    environment:
+      DB_HOST: dbmrv
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PWD}
+      RUN_MODULE: async-operations-handler,data-importer
+      LOCATION_SERVICE: https://mrv-common-dev.s3.amazonaws.com/flag.png
+      CERTIFIER_IMAGE : "https://mrv-common-dev.s3.amazonaws.com/flag.png"
+      EMAIL_SERVICE: ${EMAIL_SERVICE:-SMTP}
+      SMTP_ENDPOINT: email-smtp.us-east-1.amazonaws.com
+      SMTP_PASSWORD: ""
+      SMTP_USERNAME: AKIAUMXKTXDJPDYDJ76J
+      IS_EMAIL_DISABLED: ${IS_EMAIL_DISABLED:-true}
+      ASYNC_OPERATIONS_TYPE: Database
+      ITMO_API_KEY: ""
+      ITMO_EMAIL: ""                      
+      ITMO_PASSWORD: ""
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      REGISTRY_SYNC_ENABLE: true
+      NODE_ENV: 'dev'
+      FILE_SERVICE: local
+      S3_COMMON_BUCKET: "<Set when FILE_SERVICE is S3 instead of LOCAL>"
+      DISABLE_LOW_PRIORITY_EMAIL: ${DISABLE_LOW_PRIORITY_EMAIL:-true}
+      SYSTEM_TYPE: CARBON_TRANSPARENCY_SYSTEM
+      BACKEND_HOST: http://localhost:9000
+    env_file:
+      - .env

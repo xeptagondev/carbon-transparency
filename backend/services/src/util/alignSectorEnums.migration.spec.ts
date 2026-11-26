@@ -1,4 +1,4 @@
-import { AlignSectorEnums1795690000000 } from "./1795690000000-alignSectorEnums";
+import { AlignSectorEnums1795690000000 } from "../migrations/1795690000000-alignSectorEnums";
 import { Sector } from "../enums/sector.enum";
 
 const ALL = Object.values(Sector) as string[];

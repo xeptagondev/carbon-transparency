@@ -20,9 +20,13 @@ export class ActivityResponseDto {
 
 	nationalImplementingEntity: string[]
 
+	nationalImplementingEntityOther: string;
+
 	recipientEntities: string[];
 
 	internationalImplementingEntity: string[]
+
+	internationalImplementingEntityOther: string;
 
 	anchoredInNationalStrategy: boolean;
 

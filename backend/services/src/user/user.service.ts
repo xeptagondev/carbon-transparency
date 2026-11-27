@@ -22,6 +22,7 @@ import { nanoid } from "nanoid";
 import { ConfigService } from "@nestjs/config";
 import { Organisation } from "../enums/organisation.enum";
 import { plainToClass } from "class-transformer";
+import { applyOtherText } from "../util/otherSpecify";
 import { GHGInventoryManipulate, SubRoleManipulate, UserState, ValidateEntity } from "../enums/user.enum";
 import { HelperService } from "../util/helpers.service";
 import { AsyncAction, AsyncOperationsInterface } from "../async-operations/async-operations.interface";
@@ -131,6 +132,7 @@ export class UserService {
 		await this.validateUserCreatePayload(userDto)
 
 		const u: User = plainToClass(User, userDto);
+		applyOtherText(u, "organisation", "organisationOther", "create");
 		u.country = this.configService.get("systemCountry");
 
 		let generatedPassword = this.helperService.generateRandomPassword();
@@ -402,6 +404,8 @@ export class UserService {
 			this.validateSectorUpdate(userDto.sector, user.sector, requestingUser);
 		}
 		
+
+		applyOtherText(update, "organisation", "organisationOther");
 
 		const result = await this.userRepo
 			.createQueryBuilder()

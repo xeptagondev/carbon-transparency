@@ -1,11 +1,13 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsString, IsOptional, ValidateNested, IsNumber, Min, Max, MaxLength, ArrayMinSize, IsArray } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, IsOptional, ValidateNested, ValidateIf, IsNumber, Min, Max, MaxLength, ArrayMinSize, IsArray } from "class-validator";
+import { IsExclusiveInformationNotAvailable } from "../util/informationNotAvailable";
 import { ActionStatus, ConSDGs, InstrumentType } from "../enums/action.enum";
 import { KpiDto } from "./kpi.dto";
 import { DocumentDto } from "./document.dto";
 import { Sector } from "../enums/sector.enum";
 import { ActionType } from "../enums/action.enum";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ActionDto {
@@ -53,6 +55,7 @@ export class ActionDto {
 	@ArrayMinSize(1)
 	@MaxLength(100, { each: true })
 	@IsNotEmpty({ each: true })
+	@IsExclusiveInformationNotAvailable()
 	@IsEnum(InstrumentType, {
 		each: true,
 		message: "Invalid instrument type. Supported following instrument types:" + Object.values(InstrumentType),
@@ -70,12 +73,14 @@ export class ActionDto {
 	})
 	status: ActionStatus;
 
+	// null means "Information not available"
+	@ValidateIf((o) => o.startYear !== null)
 	@IsNotEmpty()
 	@IsNumber()
 	@Min(2013)
 	@Max(2049)
-	@ApiProperty()
-	startYear: number;
+	@ApiProperty({ nullable: true, description: "null means Information not available" })
+	startYear: number | null;
 
 	@IsNotEmpty()
 	@IsNumber()
@@ -136,11 +141,15 @@ export class ActionDto {
 	@ArrayMinSize(1)
 	@MaxLength(500, { each: true })
 	@IsNotEmpty({ each: true })
+	@IsExclusiveInformationNotAvailable()
 	@IsReferenceValue(ReferenceDataList.NATIONAL_STRATEGY_ANCHOR, { each: true })
 	@ApiProperty({
 		type: [String]
 	})
 	natAnchor: string[];
+
+	@OtherSpecify("natAnchor")
+	natAnchorOther?: string;
 
 	@IsOptional()
 	@ApiPropertyOptional(

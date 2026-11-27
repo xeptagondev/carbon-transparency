@@ -44,6 +44,10 @@ export class User  implements EntitySubject{
     @Column({ type: "varchar", nullable: true })
     organisation: string;
 
+    /** What "Others" means when it is the selected organisation. */
+    @Column({ type: "varchar", nullable: true })
+    organisationOther: string;
+
     @Column({nullable: true, select: false})
     apiKey: string;
 

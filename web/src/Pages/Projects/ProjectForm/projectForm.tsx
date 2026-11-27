@@ -33,6 +33,7 @@ import { NewKpi } from '../../../Components/KPI/newKpi';
 import { ViewKpi } from '../../../Components/KPI/viewKpi';
 import { EditKpi } from '../../../Components/KPI/editKpi';
 import { processOptionalFields } from '../../../Utils/optionalValueHandler';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import {
   attachTableHeaderBps,
   halfColumnBps,
@@ -678,6 +679,7 @@ const ProjectForm: React.FC<FormLoadProps> = ({ method }) => {
             type: actionData.type,
             actionTitle: actionData.title,
             natAnchor: actionData.natAnchor,
+            natAnchorOther: actionData.natAnchorOther ?? undefined,
           });
 
           // Setting Gas Flow
@@ -692,6 +694,7 @@ const ProjectForm: React.FC<FormLoadProps> = ({ method }) => {
       form.setFieldsValue({
         actionTitle: undefined,
         natAnchor: undefined,
+        natAnchorOther: undefined,
       });
     }
   };
@@ -966,6 +969,11 @@ const ProjectForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled
                     ></Select>
                   </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <OtherSpecify valueName="natAnchor" textName="natAnchorOther" isView />
                 </Col>
               </Row>
               <Row gutter={gutterSize}>

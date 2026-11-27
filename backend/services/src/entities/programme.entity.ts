@@ -44,6 +44,10 @@ export class ProgrammeEntity {
   @Column("varchar", { array: true, nullable: false })
   natImplementor: string[];
 
+  /** What "Others" means when it is one of the selected national implementing entities. */
+  @Column({ type: "varchar", nullable: true })
+  natImplementorOther: string;
+
   // @Column({nullable: false, type: 'double precision' })
   // investment: number;
 

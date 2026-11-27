@@ -4,6 +4,7 @@ import { DocumentDto } from "./document.dto";
 import { KpiDto } from "./kpi.dto";
 import { ProgrammeStatus } from "../enums/programme-status.enum";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class ProgrammeDto {
@@ -55,6 +56,9 @@ export class ProgrammeDto {
       type: [String]
     })
     natImplementor: string[];
+
+    @OtherSpecify("natImplementor")
+    natImplementorOther?: string;
   
     // @IsNotEmpty()
     // @IsNumber()

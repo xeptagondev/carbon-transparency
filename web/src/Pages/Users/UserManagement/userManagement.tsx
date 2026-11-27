@@ -503,6 +503,7 @@ const UserManagement = () => {
             email: availableUsers[i].email,
             phoneNo: availableUsers[i].phoneNo,
             organisation: availableUsers[i].organisation,
+            organisationOther: availableUsers[i].organisationOther,
             status: availableUsers[i].state,
             role: availableUsers[i].role,
             subRole: availableUsers[i].subRole,

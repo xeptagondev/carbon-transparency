@@ -17,5 +17,8 @@
   "networkError": "Erreur réseau. Veuillez vérifier votre connexion Internet et réessayer.",
   "systemError": "Quelque chose s'est mal passé. Veuillez réessayer.",
   "approve": "APPROUVER",
-  "reject": "REJETER"
+  "reject": "REJETER",
+  "otherSpecify": "Autre – veuillez préciser",
+  "otherSpecifyRequired": "Veuillez préciser la valeur pour « Autre »",
+  "informationNotAvailable": "Information non disponible"
 }

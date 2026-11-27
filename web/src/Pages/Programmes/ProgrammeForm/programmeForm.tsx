@@ -31,6 +31,7 @@ import { ViewKpi } from '../../../Components/KPI/viewKpi';
 import { NewKpi } from '../../../Components/KPI/newKpi';
 import { EditKpi } from '../../../Components/KPI/editKpi';
 import { processOptionalFields } from '../../../Utils/optionalValueHandler';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ActivityData } from '../../../Definitions/activityDefinitions';
 import { SupportData } from '../../../Definitions/supportDefinitions';
 import { getActivityTableColumns } from '../../../Definitions/columns/activityColumns';
@@ -531,6 +532,7 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
             sector: entityData.sector,
             affectedSubSector: entityData.affectedSubSector,
             natImplementor: entityData.nationalImplementor,
+            natImplementorOther: entityData.natImplementorOther ?? undefined,
             investment: entityData.estimatedAmount ?? 0,
             comments: entityData.comments ?? undefined,
           });
@@ -1090,6 +1092,15 @@ const ProgrammeForm: React.FC<FormLoadProps> = ({ method }) => {
                   >
                     <Input className="form-input-box" disabled={true} />
                   </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <OtherSpecify
+                    valueName="natImplementor"
+                    textName="natImplementorOther"
+                    isView={isView}
+                  />
                 </Col>
               </Row>
               <div className="form-section-sub-header">{t('formHeader:documentsHeader')}</div>

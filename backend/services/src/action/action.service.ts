@@ -3,6 +3,7 @@ import { PG_UNIQUE_VIOLATION } from "@drdgvhbh/postgres-error-codes";
 import { QueryFailedError } from "typeorm";
 import { InjectEntityManager, InjectRepository } from "@nestjs/typeorm";
 import { plainToClass } from "class-transformer";
+import { applyOtherText } from "../util/otherSpecify";
 import { ActionDto } from "../dtos/action.dto";
 import { DataResponseMessageDto } from "../dtos/data.response.message";
 import { DocumentEntityDto } from "../dtos/document.entity.dto";
@@ -52,6 +53,7 @@ export class ActionService {
 	async createAction(actionDto: ActionDto, user: User) {
 
 		const action: ActionEntity = plainToClass(ActionEntity, actionDto);
+		applyOtherText(action, "natAnchor", "natAnchorOther", "create");
 		const eventLog = [];
 
 		if (!this.helperService.doesUserHaveSectorPermission(user, action.sector)) {
@@ -350,6 +352,7 @@ export class ActionService {
 
 	async updateAction(actionUpdateDto: ActionUpdateDto, user: User) {
 		const actionUpdate: ActionEntity = plainToClass(ActionEntity, actionUpdateDto);
+		applyOtherText(actionUpdate, "natAnchor", "natAnchorOther");
 		const eventLog = [];
 
 		this.addEventLogEntry(eventLog, LogEventType.ACTION_UPDATED, EntityType.ACTION, actionUpdate.actionId, user.id, actionUpdateDto);

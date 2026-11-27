@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectEntityManager, InjectRepository } from "@nestjs/typeorm";
 import { plainToClass } from "class-transformer";
+import { applyOtherText } from "../util/otherSpecify";
+import { isYearNotAvailable } from "../util/informationNotAvailable";
 import { ActionService } from "../action/action.service";
 import { ActivityDto } from "../dtos/activity.dto";
 import { DataResponseMessageDto } from "../dtos/data.response.message";
@@ -59,6 +61,8 @@ export class ActivityService {
 	//MARK: Activity Create
 	async createActivity(activityDto: ActivityDto, user: User) {
 		const activity: ActivityEntity = plainToClass(ActivityEntity, activityDto);
+		applyOtherText(activity, "nationalImplementingEntity", "nationalImplementingEntityOther", "create");
+		applyOtherText(activity, "internationalImplementingEntity", "internationalImplementingEntityOther", "create");
 
 		const eventLog = [];
 
@@ -146,6 +150,13 @@ export class ActivityService {
 
 			if (!activityDto.mitigationTimeline.startYear) {
 				throw new HttpException('Mitigation timeline Start Year is missing', HttpStatus.BAD_REQUEST);
+			}
+
+			if (isYearNotAvailable(activityDto.startYear) || isYearNotAvailable(activityDto.endYear)) {
+				throw new HttpException(
+					"Mitigation timeline needs the activity Start Year and End Year, which are Information not available",
+					HttpStatus.BAD_REQUEST
+				);
 			}
 
 			if (activityDto.startYear !== activityDto.mitigationTimeline.startYear) {
@@ -298,6 +309,8 @@ export class ActivityService {
 	//MARK: Activity Update
 	async updateActivity(activityUpdateDto: ActivityUpdateDto, user: User) {
 		const activityUpdate: ActivityEntity = plainToClass(ActivityEntity, activityUpdateDto);
+		applyOtherText(activityUpdate, "nationalImplementingEntity", "nationalImplementingEntityOther");
+		applyOtherText(activityUpdate, "internationalImplementingEntity", "internationalImplementingEntityOther");
 		const eventLog = [];
 
 		this.addEventLogEntry(eventLog, LogEventType.ACTIVITY_UPDATED, EntityType.ACTIVITY, activityUpdate.activityId, user.id, activityUpdateDto);

@@ -18,5 +18,8 @@
   "systemError": "Something went wrong. Please try again.",
   "maxSizeVal": "Maximum upload file size is 5MB",
   "approve": "APPROVE",
-  "reject": "REJECT"
+  "reject": "REJECT",
+  "otherSpecify": "Other – please specify",
+  "otherSpecifyRequired": "Please specify the value for Other",
+  "informationNotAvailable": "Information not available"
 }

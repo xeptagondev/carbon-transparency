@@ -22,7 +22,9 @@ import { useUserContext } from '../../../Context/UserInformationContext/userInfo
 import ConfirmPopup from '../../../Components/Popups/Confirmation/confirmPopup';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
+import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ReferenceDataList } from '../../../Enums/referenceData.enum';
+import { INFORMATION_NOT_AVAILABLE } from '../../../Utils/informationNotAvailable';
 import UploadFileGrid from '../../../Components/Upload/uploadFiles';
 import { StoredData, UploadData } from '../../../Definitions/uploadDefinitions';
 
@@ -200,6 +202,7 @@ const SupportForm: React.FC<Props> = ({ method }) => {
             nationalFinancialInstrument: entityData.nationalFinancialInstrument ?? undefined,
             financingStatus: entityData.financingStatus ?? undefined,
             pipelineStatus: entityData.pipelineStatus ?? undefined,
+            pipelineStatusOther: entityData.pipelineStatusOther ?? undefined,
             internationalSource: entityData.internationalSource ?? undefined,
             nationallyBudgetSupported: entityData.nationallyBudgetSupported ?? undefined,
             requiredAmount: entityData.requiredAmount,
@@ -264,6 +267,7 @@ const SupportForm: React.FC<Props> = ({ method }) => {
 
     if (values.direction === SupportDirection.NEEDED) {
       payload.pipelineStatus = values.pipelineStatus;
+      payload.pipelineStatusOther = values.pipelineStatusOther;
       payload.requiredAmount = parseFloat(values.requiredAmount);
     } else {
       payload.financingStatus = values.financingStatus;
@@ -519,14 +523,20 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                       showSearch
                       optionFilterProp="children"
                       onChange={(id) => {
-                        // Planned activities need support; ongoing or completed ones have received it
+                        // Planned activities need support; ongoing or completed ones have received it;
+                        // when the status is "Information not available" the user picks the direction
                         const activity = parentList.find((parent) => parent.id === id);
                         if (activity?.status) {
+                          let nextDirection;
+                          if (activity.status === INFORMATION_NOT_AVAILABLE) {
+                            nextDirection = undefined;
+                          } else if (activity.status === 'Planned') {
+                            nextDirection = SupportDirection.NEEDED;
+                          } else {
+                            nextDirection = SupportDirection.RECEIVED;
+                          }
                           form.setFieldsValue({
-                            direction:
-                              activity.status === 'Planned'
-                                ? SupportDirection.NEEDED
-                                : SupportDirection.RECEIVED,
+                            direction: nextDirection,
                             financingStatus: undefined,
                             pipelineStatus: undefined,
                           });
@@ -746,6 +756,11 @@ const SupportForm: React.FC<Props> = ({ method }) => {
                         ))}
                       </Select>
                     </Form.Item>
+                    <OtherSpecify
+                      valueName="pipelineStatus"
+                      textName="pipelineStatusOther"
+                      isView={isView}
+                    />
                   </Col>
                 )}
                 {isReceived && (

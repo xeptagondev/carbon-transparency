@@ -26,7 +26,8 @@ export class ActionEntity {
   @Column({ type: "enum", enum: ActionStatus })
   status: string;
 
-  @Column()
+  /** Empty (null) means "Information not available". */
+  @Column({ type: "int", nullable: true })
   startYear: number;
 
   @Column({ nullable: true })
@@ -52,6 +53,10 @@ export class ActionEntity {
 
   @Column("varchar", { array: true, nullable: false })
   natAnchor: string[];
+
+  /** What "Other" means when it is one of the selected national strategies. */
+  @Column({ type: "varchar", nullable: true })
+  natAnchorOther: string;
 
   @Column({ type: 'jsonb', nullable: true })
   documents: any;

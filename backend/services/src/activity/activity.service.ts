@@ -39,6 +39,11 @@ import { AchievementEntity } from "../entities/achievement.entity";
 import { SupportEntity } from "../entities/support.entity";
 import { ConfigurationSettingsType } from "../enums/configuration.settings.type.enum";
 import { ConfigurationSettingsEntity } from "../entities/configuration.settings.entity";
+import {
+	ACTIVITY_GIP_PLACEHOLDER,
+	isAdaptationFlowType,
+	isGgaArrayMissing,
+} from "../util/actionFlow.util";
 
 @Injectable()
 export class ActivityService {
@@ -117,6 +122,12 @@ export class ActivityService {
 				}
 			}
 		}
+
+		activity.comment = activityDto.comments;
+		this.applyActivityGipDefaults(activity);
+		const parentActionType = this.resolveParentActionTypeFromEntities(action, programme, project);
+		this.assertGgaFieldsWhenRequired(activity, parentActionType);
+		this.clearGgaWhenNotAdaptationFlow(activity, parentActionType);
 
 		if (activityDto.documents) {
 			activity.documents = await this.uploadDocuments(activityDto.documents);
@@ -309,6 +320,7 @@ export class ActivityService {
 	//MARK: Activity Update
 	async updateActivity(activityUpdateDto: ActivityUpdateDto, user: User) {
 		const activityUpdate: ActivityEntity = plainToClass(ActivityEntity, activityUpdateDto);
+		activityUpdate.comment = activityUpdateDto.comments;
 		applyOtherText(activityUpdate, "nationalImplementingEntity", "nationalImplementingEntityOther");
 		applyOtherText(activityUpdate, "internationalImplementingEntity", "internationalImplementingEntityOther");
 		const eventLog = [];
@@ -361,12 +373,15 @@ export class ActivityService {
 		const updatedProgrammeIds = [];
 		const updatedProjectIds = [];
 
+		let flowParentActionType: string | undefined;
+
 		if (isActivityLinked) {
 			
 			// update validation status of previously linked parents
 			switch (currentActivity.parentType) {
 				case EntityType.ACTION: {
 					const action = await this.isActionValid(currentActivity.parentId, user);
+					flowParentActionType = action.type;
 					if (action.validated) {
 						action.validated = false;
 						this.addEventLogEntry(
@@ -384,6 +399,7 @@ export class ActivityService {
 				case EntityType.PROGRAMME: {
 					const programme = await this.isProgrammeValid(currentActivity.parentId, user);
 					const action = programme.action;
+					flowParentActionType = this.resolveParentActionTypeFromEntities(undefined, programme, undefined);
 
 					if (programme.validated) {
 						programme.validated = false;
@@ -418,6 +434,7 @@ export class ActivityService {
 					const project = await this.isProjectValid(currentActivity.parentId, user);
 					const programme = project.programme;
 					const action = programme?.action;
+					flowParentActionType = this.resolveParentActionTypeFromEntities(undefined, undefined, project);
 
 					if (project.validated) {
 						project.validated = false;
@@ -470,6 +487,7 @@ export class ActivityService {
 			activityUpdate.sector = null;
 			// activityUpdate.type = null;
 			activityUpdate.path = '_._._';
+			flowParentActionType = undefined;
 		}
 	}
 
@@ -493,6 +511,7 @@ export class ActivityService {
 			switch (activityUpdateDto.parentType) {
 				case EntityType.ACTION: {
 					const action = await this.isActionValid(activityUpdateDto.parentId, user);
+					flowParentActionType = action.type;
 
 					// update validation status of linking action
 					if (action && action.validated) {
@@ -518,6 +537,7 @@ export class ActivityService {
 				case EntityType.PROGRAMME: {
 					const programme = await this.isProgrammeValid(activityUpdateDto.parentId, user);
 					const action = programme.action;
+					flowParentActionType = this.resolveParentActionTypeFromEntities(undefined, programme, undefined);
 
 					// update validation status of linking parents
 					if (programme.validated) {
@@ -558,6 +578,7 @@ export class ActivityService {
 					const project = await this.isProjectValid(activityUpdateDto.parentId, user);
 					const programme = project.programme;
 					const action = programme?.action;
+					flowParentActionType = this.resolveParentActionTypeFromEntities(undefined, undefined, project);
 
 					if (project.validated) {
 						project.validated = false;
@@ -666,6 +687,9 @@ export class ActivityService {
 					currentActivity?.mitigationInfo?.resultDocuments
 				)
 		}
+
+		this.assertGgaFieldsWhenRequired(activityUpdate, flowParentActionType);
+		this.clearGgaWhenNotAdaptationFlow(activityUpdate, flowParentActionType);
 
 		const acti = await this.entityManager
 			.transaction(async (em) => {
@@ -1649,5 +1673,64 @@ export class ActivityService {
 		}
 
 		return gwpSetting;
+	}
+
+	private applyActivityGipDefaults(activity: ActivityEntity) {
+		const gipFields: (keyof ActivityEntity)[] = [
+			"gipActivityCode",
+			"gipProjectCode",
+			"gipNppCode",
+			"additionalFundingProposalNo",
+		];
+		for (const field of gipFields) {
+			const value = activity[field];
+			if (typeof value !== "string" || value.trim() === "") {
+				(activity as any)[field] = ACTIVITY_GIP_PLACEHOLDER;
+			}
+		}
+	}
+
+	private resolveParentActionTypeFromEntities(
+		action?: ActionEntity,
+		programme?: ProgrammeEntity,
+		project?: ProjectEntity
+	): string | undefined {
+		if (action?.type) {
+			return action.type;
+		}
+		if (programme?.action?.type) {
+			return programme.action.type;
+		}
+		if (project?.programme?.action?.type) {
+			return project.programme.action.type;
+		}
+		return undefined;
+	}
+
+	private clearGgaWhenNotAdaptationFlow(activity: ActivityEntity, parentActionType: string | undefined) {
+		if (isAdaptationFlowType(parentActionType)) {
+			return;
+		}
+		activity.ggaThematicTargets = null;
+		activity.ggaDimensionalTargets = null;
+		activity.ggaDomains = null;
+		activity.ggaPrioritySystems = null;
+	}
+
+	private assertGgaFieldsWhenRequired(activity: ActivityEntity, parentActionType: string | undefined) {
+		if (!isAdaptationFlowType(parentActionType)) {
+			return;
+		}
+		if (
+			isGgaArrayMissing(activity.ggaThematicTargets) ||
+			isGgaArrayMissing(activity.ggaDimensionalTargets) ||
+			isGgaArrayMissing(activity.ggaDomains) ||
+			isGgaArrayMissing(activity.ggaPrioritySystems)
+		) {
+			throw new HttpException(
+				this.helperService.formatReqMessagesString("activity.ggaRequiredForAdaptationParent", []),
+				HttpStatus.BAD_REQUEST
+			);
+		}
 	}
 }

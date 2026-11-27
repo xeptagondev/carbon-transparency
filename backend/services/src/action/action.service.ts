@@ -1,4 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { PG_UNIQUE_VIOLATION } from "@drdgvhbh/postgres-error-codes";
+import { QueryFailedError } from "typeorm";
 import { InjectEntityManager, InjectRepository } from "@nestjs/typeorm";
 import { plainToClass } from "class-transformer";
 import { ActionDto } from "../dtos/action.dto";
@@ -61,6 +63,8 @@ export class ActionService {
 				HttpStatus.FORBIDDEN
 			);
 		}
+
+		await this.validateActionVanuatuFields(actionDto);
 
 		action.actionId = 'A' + await this.counterService.incrementCount(CounterType.ACTION, 3);
 
@@ -130,6 +134,7 @@ export class ActionService {
 			})
 			.catch((err: any) => {
 				console.log(err);
+				this.throwIfNdcUniqueViolation(err);
 				throw new HttpException(
 					this.helperService.formatReqMessagesString(
 						"action.actionCreationFailed",
@@ -380,6 +385,8 @@ export class ActionService {
 			);
 		}
 
+		await this.validateActionVanuatuFields(actionUpdateDto, actionUpdateDto.actionId);
+
 		// setting action to pending (Non-Validated) state
 		if (currentAction.validated) {
 			actionUpdate.validated = false;
@@ -522,6 +529,7 @@ export class ActionService {
 			})
 			.catch((err: any) => {
 				console.log(err);
+				this.throwIfNdcUniqueViolation(err);
 				throw new HttpException(
 					this.helperService.formatReqMessagesString(
 						"action.actionUpdateFailed",
@@ -538,6 +546,45 @@ export class ActionService {
 			this.helperService.formatReqMessagesString("action.updateActionSuccess", []),
 			act
 		);
+	}
+
+	private async validateActionVanuatuFields(
+		dto: ActionDto | ActionUpdateDto,
+		excludeActionId?: string
+	): Promise<void> {
+		if (dto.targetYear < dto.startYear) {
+			throw new HttpException(
+				this.helperService.formatReqMessagesString("action.targetYearBeforeStartYear", []),
+				HttpStatus.BAD_REQUEST
+			);
+		}
+
+		const duplicateQuery = this.actionRepo
+			.createQueryBuilder("action")
+			.where("action.ndcReference = :ndcReference", { ndcReference: dto.ndcReference });
+		if (excludeActionId) {
+			duplicateQuery.andWhere("action.actionId != :excludeActionId", { excludeActionId });
+		}
+		const duplicate = await duplicateQuery.getOne();
+
+		if (duplicate) {
+			throw new HttpException(
+				this.helperService.formatReqMessagesString("action.ndcReferenceAlreadyUsed", []),
+				HttpStatus.BAD_REQUEST
+			);
+		}
+	}
+
+	private throwIfNdcUniqueViolation(err: unknown): void {
+		if (err instanceof QueryFailedError && (err as QueryFailedError & { driverError?: { code?: string } }).driverError?.code === PG_UNIQUE_VIOLATION) {
+			const detail = String((err as QueryFailedError & { driverError?: { detail?: string } }).driverError?.detail ?? "");
+			if (detail.includes("ndcReference")) {
+				throw new HttpException(
+					this.helperService.formatReqMessagesString("action.ndcReferenceAlreadyUsed", []),
+					HttpStatus.BAD_REQUEST
+				);
+			}
+		}
 	}
 
 	//MARK: Delete Action

@@ -6,7 +6,7 @@ import { HelperService } from "../util/helpers.service";
 import { EntityManager, Repository, SelectQueryBuilder } from "typeorm";
 import { ActionService } from "./action.service";
 import { ActionDto } from "../dtos/action.dto";
-import { ActionStatus, ActionType, InstrumentType, NatAnchor } from "../enums/action.enum";
+import { ActionStatus, ActionType, ConSDGs, InstrumentType, NatAnchor } from "../enums/action.enum";
 import { User } from "../entities/user.entity";
 import { DataResponseMessageDto } from "../dtos/data.response.message";
 import { KpiDto } from "../dtos/kpi.dto";
@@ -49,6 +49,21 @@ describe('ActionService', () => {
 
 	const documentData = "data:text/csv;base64,IlJlcXVlc3QgSWQiLCJQcm="
 
+	const vanuatuActionFields = {
+		sector: Sector.Energy,
+		ndcReference: "M1",
+		targetYear: 2030,
+		institutionResponsible:
+			"Department of Energy (DoE) – Ministry of Climate Change Adaptation, Meteorology, Geo-Hazards, Environment, Energy and Disaster Management (MoCCA)",
+		policyReference: ["National Environment Policy"],
+		nsdpReference: "NSDP policy objectives aligned with this action",
+		contributionToSdgs: [ConSDGs.SDG13],
+	};
+
+	function applyVanuatuActionFields(dto: ActionDto | ActionUpdateDto) {
+		Object.assign(dto, vanuatuActionFields);
+	}
+
 	beforeEach(async () => {
 		entityManagerMock = {
 			transaction: jest.fn(),
@@ -61,12 +76,18 @@ describe('ActionService', () => {
 			save: jest.fn(),
 			createQueryBuilder: jest.fn(() => ({
 				where: jest.fn().mockReturnThis(),
+				andWhere: jest.fn().mockReturnThis(),
+				getOne: jest.fn().mockResolvedValue(null),
 				leftJoinAndSelect: jest.fn().mockReturnThis(),
 				leftJoinAndMapMany: jest.fn().mockReturnThis(),
+				leftJoinAndMapOne: jest.fn().mockReturnThis(),
+				select: jest.fn().mockReturnThis(),
 				orderBy: jest.fn().mockReturnThis(),
 				offset: jest.fn().mockReturnThis(),
 				limit: jest.fn().mockReturnThis(),
 				getManyAndCount: jest.fn(),
+				getCount: jest.fn(),
+				getQuery: jest.fn(),
 			})) as unknown as () => SelectQueryBuilder<ActionEntity>,
 		};
 		programmeRepositoryMock = {
@@ -205,6 +226,7 @@ describe('ActionService', () => {
 		actionDto.type = ActionType.MITIGATION;
 		actionDto.startYear = 2024;
 		actionDto.natAnchor = [NatAnchor.NDC];
+		applyVanuatuActionFields(actionDto);
 
 		const actionEntity = new ActionEntity();
 		actionEntity.title = "test";
@@ -297,6 +319,7 @@ describe('ActionService', () => {
 		actionDto.kpis = [kpiDto1, kpiDto2];
 		actionDto.documents = [documentDto];
 		actionDto.linkedProgrammes = ['1', '2', '3'];
+		applyVanuatuActionFields(actionDto);
 
 		const expectedResult = {
 			"title": "test",
@@ -380,7 +403,9 @@ describe('ActionService', () => {
 		actionDto.status = ActionStatus.PLANNED;
 		actionDto.startYear = 2024;
 		actionDto.natAnchor = [NatAnchor.NDC];
-		actionDto.kpis = [kpiDto1]
+		actionDto.kpis = [kpiDto1];
+		actionDto.type = ActionType.MITIGATION;
+		applyVanuatuActionFields(actionDto);
 
 		const expectedResult = {
 			"title": "test",
@@ -452,6 +477,15 @@ describe('ActionService', () => {
 
 		const actionDto = new ActionDto();
 		actionDto.linkedProgrammes = ['P001'];
+		actionDto.title = "test";
+		actionDto.description = "test description";
+		actionDto.objective = "test objective";
+		actionDto.instrumentType = [InstrumentType.POLICY];
+		actionDto.status = ActionStatus.PLANNED;
+		actionDto.type = ActionType.MITIGATION;
+		actionDto.startYear = 2024;
+		actionDto.natAnchor = [NatAnchor.NDC];
+		applyVanuatuActionFields(actionDto);
 
 		const programme = new ProgrammeEntity();
 		programme.programmeId = 'P001';
@@ -473,6 +507,15 @@ describe('ActionService', () => {
 		user.id = 2;
 
 		const actionDto = new ActionDto();
+		actionDto.title = "test";
+		actionDto.description = "test description";
+		actionDto.objective = "test objective";
+		actionDto.instrumentType = [InstrumentType.POLICY];
+		actionDto.status = ActionStatus.PLANNED;
+		actionDto.type = ActionType.MITIGATION;
+		actionDto.startYear = 2024;
+		actionDto.natAnchor = [NatAnchor.NDC];
+		applyVanuatuActionFields(actionDto);
 		const actionEntity = new ActionEntity();
 		actionEntity.actionId = 'A001';
 
@@ -599,6 +642,8 @@ describe('ActionService', () => {
 		actionUpdateDto.type = ActionType.MITIGATION;
 		actionUpdateDto.startYear = 2025;
 		actionUpdateDto.natAnchor = [NatAnchor.OTHER];
+		actionUpdateDto.actionId = "A001";
+		applyVanuatuActionFields(actionUpdateDto);
 
 		const actionDto = new ActionDto();
 		actionDto.title = "test";
@@ -680,6 +725,9 @@ describe('ActionService', () => {
 		actionUpdateDto.startYear = 2025;
 		actionUpdateDto.natAnchor = [NatAnchor.OTHER];
 		actionUpdateDto.removedDocuments = ["www.test.com/doc1"];
+		actionUpdateDto.type = ActionType.MITIGATION;
+		actionUpdateDto.actionId = "A001";
+		applyVanuatuActionFields(actionUpdateDto);
 
 		const actionUpdateEntity = new ActionEntity();
 		actionUpdateEntity.title = "test Updated";
@@ -785,7 +833,10 @@ describe('ActionService', () => {
 		actionUpdateDto.status = ActionStatus.IMPLEMENTED;
 		actionUpdateDto.startYear = 2025;
 		actionUpdateDto.natAnchor = [NatAnchor.OTHER];
-		actionUpdateDto.newDocuments = [addedDocumentDto]
+		actionUpdateDto.newDocuments = [addedDocumentDto];
+		actionUpdateDto.type = ActionType.MITIGATION;
+		actionUpdateDto.actionId = "A001";
+		applyVanuatuActionFields(actionUpdateDto);
 
 		const actionUpdateEntity = new ActionEntity();
 		actionUpdateEntity.title = "test Updated";
@@ -913,7 +964,10 @@ describe('ActionService', () => {
 		actionUpdateDto.status = ActionStatus.IMPLEMENTED;
 		actionUpdateDto.startYear = 2025;
 		actionUpdateDto.natAnchor = [NatAnchor.OTHER];
-		actionUpdateDto.kpis = [kpiDto1, kpiAdded]
+		actionUpdateDto.kpis = [kpiDto1, kpiAdded];
+		actionUpdateDto.type = ActionType.MITIGATION;
+		actionUpdateDto.actionId = "A001";
+		applyVanuatuActionFields(actionUpdateDto);
 
 		const actionUpdateEntity = new ActionEntity();
 		actionUpdateEntity.title = "test Updated";
@@ -994,6 +1048,52 @@ describe('ActionService', () => {
 		expect(helperServiceMock.refreshMaterializedViews).toBeCalledTimes(1);
 
 	})
+
+	it('should throw when target year is before start year on create', async () => {
+		const user = new User();
+		user.id = 2;
+		const actionDto = new ActionDto();
+		actionDto.title = "test";
+		actionDto.description = "test description";
+		actionDto.objective = "test objective";
+		actionDto.instrumentType = [InstrumentType.POLICY];
+		actionDto.status = ActionStatus.PLANNED;
+		actionDto.type = ActionType.MITIGATION;
+		actionDto.startYear = 2030;
+		actionDto.natAnchor = [NatAnchor.NDC];
+		applyVanuatuActionFields(actionDto);
+		actionDto.targetYear = 2025;
+
+		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);
+		jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("action.targetYearBeforeStartYear");
+
+		await expect(service.createAction(actionDto, user)).rejects.toThrow(HttpException);
+	});
+
+	it('should throw when NDC reference is already used on create', async () => {
+		const user = new User();
+		user.id = 2;
+		const actionDto = new ActionDto();
+		actionDto.title = "test";
+		actionDto.description = "test description";
+		actionDto.objective = "test objective";
+		actionDto.instrumentType = [InstrumentType.POLICY];
+		actionDto.status = ActionStatus.PLANNED;
+		actionDto.type = ActionType.MITIGATION;
+		actionDto.startYear = 2024;
+		actionDto.natAnchor = [NatAnchor.NDC];
+		applyVanuatuActionFields(actionDto);
+
+		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);
+		jest.spyOn(actionRepositoryMock, 'createQueryBuilder').mockReturnValue({
+			where: jest.fn().mockReturnThis(),
+			andWhere: jest.fn().mockReturnThis(),
+			getOne: jest.fn().mockResolvedValue({ actionId: "A999" }),
+		} as unknown as SelectQueryBuilder<ActionEntity>);
+		jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("action.ndcReferenceAlreadyUsed");
+
+		await expect(service.createAction(actionDto, user)).rejects.toThrow(HttpException);
+	});
 
 	it('should throw an exception if action is not found when user update action', async () => {
 		const user = new User();

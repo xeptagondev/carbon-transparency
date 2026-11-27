@@ -4,7 +4,13 @@ import { Row, Col, Input, Button, Form, Select, message, Spin, Tooltip } from 'a
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import LayoutTable from '../../../Components/common/Table/layout.table';
-import { InstrumentType, ActionStatus, Action, ActionType } from '../../../Enums/action.enum';
+import {
+  InstrumentType,
+  ActionStatus,
+  Action,
+  ActionType,
+  ConSDGs,
+} from '../../../Enums/action.enum';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useConnection } from '../../../Context/ConnectionContext/connectionContext';
 import UploadFileGrid from '../../../Components/Upload/uploadFiles';
@@ -69,6 +75,16 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
   const navigate = useNavigate();
   const { get, post, put, delete: del } = useConnection();
   const natAnchorOptions = useReferenceOptions(ReferenceDataList.NATIONAL_STRATEGY_ANCHOR);
+  const ndcReferenceOptions = useReferenceOptions(ReferenceDataList.NDC_REFERENCE);
+  const institutionResponsibleOptions = useReferenceOptions(
+    ReferenceDataList.INSTITUTION_RESPONSIBLE
+  );
+  const subSectorOptions = useReferenceOptions(ReferenceDataList.SUB_SECTOR);
+  const policyReferenceOptions = useReferenceOptions(ReferenceDataList.POLICY_REFERENCE);
+  const natImplementorOptions = useReferenceOptions(ReferenceDataList.NATIONAL_IMPLEMENTING_ENTITY);
+  const intImplementorOptions = useReferenceOptions(
+    ReferenceDataList.INTERNATIONAL_IMPLEMENTING_ENTITY
+  );
   const ability = useAbilityContext();
   const { userInfoState, isValidationAllowed, setIsValidationAllowed } = useUserContext();
   const { entId } = useParams();
@@ -76,6 +92,20 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
   // Form Validation Rules
 
   const validation = getValidationRules(method);
+
+  const targetYearAfterStartYear = ({
+    getFieldValue,
+  }: {
+    getFieldValue: (name: string) => number | undefined;
+  }) => ({
+    validator(_: unknown, value: number | undefined) {
+      const startYear = getFieldValue('startYear');
+      if (!value || !startYear || value >= startYear) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error(String(t('formHeader:targetYearBeforeStartYear'))));
+    },
+  });
 
   // Entity Validation Status
 
@@ -465,6 +495,13 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
             status: entityData.status,
             startYear: entityData.startYear,
             natAnchor: entityData.natAnchor,
+            ndcReference: entityData.ndcReference,
+            institutionResponsible: entityData.institutionResponsible,
+            subSector: entityData.subSector ?? undefined,
+            targetYear: entityData.targetYear,
+            policyReference: entityData.policyReference,
+            nsdpReference: entityData.nsdpReference,
+            contributionToSdgs: entityData.contributionToSdgs,
           });
 
           setIsValidated(entityData.validated ?? false);
@@ -492,6 +529,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
           form.setFieldsValue({
             ghgsAffected: entityData.migratedData?.ghgsAffected ?? [],
             natImplementor: entityData.migratedData?.natImplementors ?? [],
+            intImplementor: entityData.migratedData?.intImplementors ?? [],
             estimatedInvestment: entityData.migratedData?.financeNeeded ?? 0,
             achievedReduct: entityData.migratedData?.achievedGHGReduction,
             expectedReduct: entityData.migratedData?.expectedGHGReduction,
@@ -758,6 +796,34 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                 </Col>
                 <Col {...halfColumnBps}>
                   <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('formHeader:ndcReferenceTitle')}
+                      </label>
+                    }
+                    name="ndcReference"
+                    rules={[validation.required]}
+                  >
+                    <Select
+                      size="large"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                      optionFilterProp="label"
+                    >
+                      {ndcReferenceOptions.map((option) => (
+                        <Option key={option.value} value={option.value} label={option.label}>
+                          {option.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
                     label={<label className="form-item-header">{t('actionTitle')}</label>}
                     name="title"
                     rules={[validation.required]}
@@ -840,6 +906,34 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                   <Form.Item
                     label={
                       <label className="form-item-header">
+                        {t('formHeader:institutionResponsibleTitle')}
+                      </label>
+                    }
+                    name="institutionResponsible"
+                    rules={[validation.required]}
+                  >
+                    <Select
+                      size="large"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                      optionFilterProp="label"
+                    >
+                      {institutionResponsibleOptions.map((option) => (
+                        <Option key={option.value} value={option.value} label={option.label}>
+                          {option.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
                         {t('formHeader:natImplementerHeader')}
                       </label>
                     }
@@ -850,9 +944,42 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                       style={{ fontSize: inputFontSize }}
                       mode="multiple"
                       disabled={true}
-                    ></Select>
+                      optionFilterProp="label"
+                    >
+                      {natImplementorOptions.map((option) => (
+                        <Option key={option.value} value={option.value} label={option.label}>
+                          {option.label}
+                        </Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                 </Col>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('formHeader:intImplementerHeader')}
+                      </label>
+                    }
+                    name="intImplementor"
+                  >
+                    <Select
+                      size="large"
+                      style={{ fontSize: inputFontSize }}
+                      mode="multiple"
+                      disabled={true}
+                      optionFilterProp="label"
+                    >
+                      {intImplementorOptions.map((option) => (
+                        <Option key={option.value} value={option.value} label={option.label}>
+                          {option.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
                 <Col {...quarterColumnBps}>
                   <Form.Item
                     label={
@@ -881,10 +1008,57 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                 <Col {...quarterColumnBps}>
                   <Form.Item
                     label={
+                      <label className="form-item-header">{t('formHeader:subSectorTitle')}</label>
+                    }
+                    name="subSector"
+                  >
+                    <Select
+                      size="large"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                      optionFilterProp="label"
+                    >
+                      {subSectorOptions.map((option) => (
+                        <Option key={option.value} value={option.value} label={option.label}>
+                          {option.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col {...quarterColumnBps}>
+                  <Form.Item
+                    label={
                       <label className="form-item-header">{t('formHeader:startYearTitle')}</label>
                     }
                     name="startYear"
                     rules={[validation.required]}
+                  >
+                    <Select
+                      size="large"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                    >
+                      {yearsList.map((year) => (
+                        <Option key={year} value={year}>
+                          {year}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col {...quarterColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">{t('formHeader:targetYearTitle')}</label>
+                    }
+                    name="targetYear"
+                    dependencies={['startYear']}
+                    rules={[validation.required, targetYearAfterStartYear]}
                   >
                     <Select
                       size="large"
@@ -938,6 +1112,77 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                         </Option>
                       ))}
                     </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('formHeader:policyReferenceTitle')}
+                      </label>
+                    }
+                    name="policyReference"
+                    rules={[validation.required]}
+                  >
+                    <Select
+                      optionFilterProp="label"
+                      size="large"
+                      mode="multiple"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                    >
+                      {policyReferenceOptions.map((option) => (
+                        <Option key={option.value} value={option.value} label={option.label}>
+                          {option.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('formHeader:contributionToSdgsTitle')}
+                      </label>
+                    }
+                    name="contributionToSdgs"
+                    rules={[validation.required]}
+                  >
+                    <Select
+                      size="large"
+                      mode="multiple"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                      optionFilterProp="children"
+                    >
+                      {Object.values(ConSDGs).map((sdg) => (
+                        <Option key={sdg} value={sdg}>
+                          {sdg}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('formHeader:nsdpReferenceTitle')}
+                      </label>
+                    }
+                    name="nsdpReference"
+                    rules={[validation.required]}
+                  >
+                    <TextArea rows={3} disabled={isView} />
                   </Form.Item>
                 </Col>
               </Row>

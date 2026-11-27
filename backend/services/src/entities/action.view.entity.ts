@@ -32,7 +32,6 @@ WITH fullp AS (
 act AS (
 	SELECT 
 			a."parentId" AS "actionId",
-			CUSTOM_ARRAY_AGG(DISTINCT a."nationalImplementingEntity") FILTER (WHERE a."nationalImplementingEntity" IS NOT NULL) AS nat_impl,
 			COALESCE(SUM(a."achievedGHGReduction"), 0) AS "achievedGHGReduction",
 			COALESCE(SUM(a."expectedGHGReduction"), 0) AS "expectedGHGReduction",
 			ARRAY_AGG(a."ghgsAffected") FILTER (WHERE a."ghgsAffected" IS NOT NULL)::character varying[] AS "ghgsAffected"
@@ -43,6 +42,18 @@ act AS (
 			AND a."parentId" IS NOT NULL
 	GROUP BY 
 			a."parentId"
+),
+descendant_impl AS (
+	SELECT 
+			subltree(a.path, 0, 1)::character varying AS "actionId",
+			CUSTOM_ARRAY_AGG(a."nationalImplementingEntity") FILTER (WHERE a."nationalImplementingEntity" IS NOT NULL) AS nat_impl,
+			CUSTOM_ARRAY_AGG(a."internationalImplementingEntity") FILTER (WHERE a."internationalImplementingEntity" IS NOT NULL) AS int_impl
+	FROM 
+			activity a
+	WHERE 
+			a.path IS NOT NULL
+	GROUP BY 
+			subltree(a.path, 0, 1)
 ),
 finance AS (
 	SELECT 
@@ -56,7 +67,8 @@ finance AS (
 )
 SELECT 
 	a."actionId" AS id,
-	CUSTOM_ARRAY_AGG(DISTINCT fullp.nat_impl) FILTER (WHERE fullp.nat_impl IS NOT NULL) || CUSTOM_ARRAY_AGG(DISTINCT act.nat_impl) FILTER (WHERE act.nat_impl IS NOT NULL) AS "natImplementors",
+	CUSTOM_ARRAY_AGG(DISTINCT fullp.nat_impl) FILTER (WHERE fullp.nat_impl IS NOT NULL) || COALESCE(MAX(descendant_impl.nat_impl), '{}'::character varying[]) AS "natImplementors",
+	COALESCE(MAX(descendant_impl.int_impl), '{}'::character varying[]) AS "intImplementors",
 	COALESCE(SUM(fullp."achievedGHGReduction"), 0) + COALESCE(act."achievedGHGReduction", 0) AS "achievedGHGReduction",
 	COALESCE(SUM(fullp."expectedGHGReduction"), 0) + COALESCE(act."expectedGHGReduction", 0) AS "expectedGHGReduction",
 	MAX(finance."totalRequired") AS "financeNeeded",
@@ -66,6 +78,7 @@ FROM
 	action a
 LEFT JOIN fullp ON a."actionId" = fullp."actionId"
 LEFT JOIN act ON a."actionId" = act."actionId"
+LEFT JOIN descendant_impl ON a."actionId" = descendant_impl."actionId"
 LEFT JOIN finance ON a."actionId" = finance.action
 GROUP BY 
 	a."actionId", act."achievedGHGReduction", act."expectedGHGReduction";`
@@ -83,6 +96,9 @@ export class ActionViewEntity {
 
 	@ViewColumn()
 	natImplementors: string[];
+
+	@ViewColumn()
+	intImplementors: string[];
 
 	// @ViewColumn()
 	// totalInvestment: number

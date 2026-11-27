@@ -29,6 +29,27 @@ export class ActionEntity {
   @Column()
   startYear: number;
 
+  @Column({ nullable: true })
+  targetYear: number;
+
+  @Column({ type: "varchar", nullable: true, unique: true })
+  ndcReference: string;
+
+  @Column({ type: "varchar", nullable: true })
+  institutionResponsible: string;
+
+  @Column({ type: "varchar", nullable: true })
+  subSector: string;
+
+  @Column("varchar", { array: true, nullable: true })
+  policyReference: string[];
+
+  @Column({ type: "text", nullable: true })
+  nsdpReference: string;
+
+  @Column("varchar", { array: true, nullable: true })
+  contributionToSdgs: string[];
+
   @Column("varchar", { array: true, nullable: false })
   natAnchor: string[];
 

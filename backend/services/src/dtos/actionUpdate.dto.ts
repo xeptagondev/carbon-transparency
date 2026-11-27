@@ -1,6 +1,18 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsString, IsOptional, ValidateNested, IsNumber, Min, Max, ArrayMinSize, MaxLength, IsArray } from "class-validator";
-import { ActionStatus, ActionType, InstrumentType } from "../enums/action.enum";
+import {
+	IsEnum,
+	IsNotEmpty,
+	IsString,
+	IsOptional,
+	ValidateNested,
+	IsNumber,
+	Min,
+	Max,
+	ArrayMinSize,
+	MaxLength,
+	IsArray,
+} from "class-validator";
+import { ActionStatus, ActionType, ConSDGs, InstrumentType } from "../enums/action.enum";
 import { DocumentDto } from "./document.dto";
 import { KpiUpdateDto } from "./kpi.update.dto";
 import { Sector } from "../enums/sector.enum";
@@ -78,7 +90,62 @@ export class ActionUpdateDto {
 	@Max(2049)
 	@ApiProperty()
 	startYear: number;
-	
+
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(2013)
+	@Max(2049)
+	@ApiProperty()
+	targetYear: number;
+
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(20)
+	@IsReferenceValue(ReferenceDataList.NDC_REFERENCE)
+	@ApiProperty()
+	ndcReference: string;
+
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(500)
+	@IsReferenceValue(ReferenceDataList.INSTITUTION_RESPONSIBLE)
+	@ApiProperty()
+	institutionResponsible: string;
+
+	@IsOptional()
+	@IsString()
+	@MaxLength(500)
+	@IsReferenceValue(ReferenceDataList.SUB_SECTOR)
+	@ApiPropertyOptional()
+	subSector?: string;
+
+	@IsArray()
+	@ArrayMinSize(1)
+	@MaxLength(500, { each: true })
+	@IsNotEmpty({ each: true })
+	@IsReferenceValue(ReferenceDataList.POLICY_REFERENCE, { each: true })
+	@ApiProperty({
+		type: [String],
+	})
+	policyReference: string[];
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty()
+	nsdpReference: string;
+
+	@IsArray()
+	@ArrayMinSize(1)
+	@IsEnum(ConSDGs, {
+		each: true,
+		message: "Invalid contribution to SDGs:" + Object.values(ConSDGs),
+	})
+	@ApiProperty({
+		type: [String],
+		enum: Object.values(ConSDGs),
+	})
+	contributionToSdgs: string[];
+
 	@IsArray()
 	@ArrayMinSize(1)
 	@MaxLength(500, { each: true })

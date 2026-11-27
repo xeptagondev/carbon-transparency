@@ -26,7 +26,7 @@ import { ProjectEntity } from "../entities/project.entity";
 import { ActivityEntity } from "../entities/activity.entity";
 import { ProjectionEntity } from "../entities/projection.entity";
 import { ReferenceDataEntity } from "../entities/reference.data.entity";
-import { IsReferenceValueConstraint } from "./referenceValue.decorator";
+import { IsReferenceValueConstraint, IsReferenceValueWhenConstraint } from "./referenceValue.decorator";
 
 @Module({
   imports: [
@@ -76,6 +76,7 @@ import { IsReferenceValueConstraint } from "./referenceValue.decorator";
 		LinkUnlinkService,
 		IsTwoDecimalPointsConstraint,
 		IsReferenceValueConstraint,
+		IsReferenceValueWhenConstraint,
 		DataExportService,
   ],
   exports: [

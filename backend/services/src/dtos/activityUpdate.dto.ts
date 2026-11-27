@@ -1,11 +1,18 @@
 import { ApiProperty, ApiPropertyOptional, getSchemaPath } from "@nestjs/swagger";
-import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, ValidateIf } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min, Max, ValidateIf } from "class-validator";
 import { ActivityStatus, ImpleMeans, Measure } from "../enums/activity.enum";
 import { EntityType, GHGS, IpccSubSector } from "../enums/shared.enum";
 import { DocumentDto } from "./document.dto";
 import { IsReferenceValue } from "../util/referenceValue.decorator";
 import { OtherSpecify } from "../util/otherSpecify";
 import { ReferenceDataList } from "../enums/reference.data.enum";
+import { ProjectLocation } from "../enums/projectLocation.enum";
+import {
+	GgaDimensionalTarget,
+	GgaDomain,
+	GgaPrioritySystem,
+	GgaThematicTarget,
+} from "../enums/gga.enum";
 
 export class ActivityUpdateDto {
 
@@ -165,10 +172,92 @@ export class ActivityUpdateDto {
 	@ApiProperty()
 	expectedGHGReduction: number;
 
+	@ValidateIf((o) => o.startYear !== null)
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(2013)
+	@Max(2049)
+	@ApiProperty({ nullable: true, description: "null means Information not available" })
+	startYear: number | null;
+
+	@ValidateIf((o) => o.endYear !== null)
+	@IsNotEmpty()
+	@IsNumber()
+	@Min(2014)
+	@Max(2050)
+	@ApiProperty({ nullable: true, description: "null means Information not available" })
+	endYear: number | null;
+
+	@IsOptional()
+	@IsNumber()
+	@ApiPropertyOptional()
+	expectedTimeFrame: number | null;
+
 	@IsOptional()
 	@ApiPropertyOptional()
 	@IsString()
 	comments: string;
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty()
+	gipActivityCode: string;
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty()
+	gipProjectCode: string;
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty()
+	gipNppCode: string;
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty()
+	additionalFundingProposalNo: string;
+
+	@IsNotEmpty()
+	@IsEnum(ProjectLocation, {
+		message:
+			"Invalid project location. Supported values: " + Object.values(ProjectLocation),
+	})
+	@ApiProperty({ enum: ProjectLocation })
+	projectLocation: ProjectLocation;
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty()
+	expectedUseImpactsResults: string;
+
+	@IsOptional()
+	@IsArray()
+	@ArrayMinSize(1)
+	@IsEnum(GgaThematicTarget, { each: true })
+	@ApiPropertyOptional({ type: [String], enum: GgaThematicTarget })
+	ggaThematicTargets?: GgaThematicTarget[];
+
+	@IsOptional()
+	@IsArray()
+	@ArrayMinSize(1)
+	@IsEnum(GgaDimensionalTarget, { each: true })
+	@ApiPropertyOptional({ type: [String], enum: GgaDimensionalTarget })
+	ggaDimensionalTargets?: GgaDimensionalTarget[];
+
+	@IsOptional()
+	@IsArray()
+	@ArrayMinSize(1)
+	@IsEnum(GgaDomain, { each: true })
+	@ApiPropertyOptional({ type: [String], enum: GgaDomain })
+	ggaDomains?: GgaDomain[];
+
+	@IsOptional()
+	@IsArray()
+	@ArrayMinSize(1)
+	@IsEnum(GgaPrioritySystem, { each: true })
+	@ApiPropertyOptional({ type: [String], enum: GgaPrioritySystem })
+	ggaPrioritySystems?: GgaPrioritySystem[];
 
 	@IsOptional()
 	@ApiPropertyOptional({

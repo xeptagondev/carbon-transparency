@@ -33,9 +33,17 @@ import {
   doesUserHaveValidatePermission,
   getFormTitle,
   getRounded,
+  isAdaptationFlowCheck,
   isGasFlowCheck,
   subtractTwoArrays,
 } from '../../../Utils/utilServices';
+import { ProjectLocation } from '../../../Enums/projectLocation.enum';
+import {
+  GgaDimensionalTarget,
+  GgaDomain,
+  GgaPrioritySystem,
+  GgaThematicTarget,
+} from '../../../Enums/gga.enum';
 import { Action } from '../../../Enums/action.enum';
 import { ActivityEntity } from '../../../Entities/activity';
 import { useAbilityContext } from '../../../Casl/Can';
@@ -69,6 +77,14 @@ const { TextArea } = Input;
 const gutterSize = 30;
 const inputFontSize = '13px';
 const currentYear = new Date().getFullYear();
+const ACTIVITY_GIP_PLACEHOLDER = 'TBD000';
+
+const clearGgaFormValues = {
+  ggaThematicTargets: undefined,
+  ggaDimensionalTargets: undefined,
+  ggaDomains: undefined,
+  ggaPrioritySystems: undefined,
+};
 
 const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
   const [form] = Form.useForm();
@@ -126,6 +142,7 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   const [isGasFlow, setIsGasFlow] = useState<boolean>(false);
+  const [isAdaptationFlow, setIsAdaptationFlow] = useState<boolean>(false);
 
   // First Render Check
 
@@ -701,6 +718,8 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
           ? null
           : parseInt(payload.expectedTimeFrame);
 
+      payload.comments = payload.comment;
+
       payload.achievedGHGReduction = parseFloat(payload.achievedGHGReduction);
       payload.expectedGHGReduction = parseFloat(payload.expectedGHGReduction);
 
@@ -879,9 +898,16 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
         displayErrorMessage(error);
       } finally {
         setIsGasFlow(isGasFlowCheck(tempMigratedData.type));
+        const adaptationFlow = isAdaptationFlowCheck(tempMigratedData.type);
+        setIsAdaptationFlow(adaptationFlow);
+        if (!adaptationFlow) {
+          form.setFieldsValue(clearGgaFormValues);
+        }
       }
     } else {
       setIsGasFlow(false);
+      setIsAdaptationFlow(false);
+      form.setFieldsValue(clearGgaFormValues);
     }
     setActivityMigratedData(tempMigratedData);
   };
@@ -999,6 +1025,16 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                 ? t('common:informationNotAvailable')
                 : undefined),
             ipccSubSector: entityData.ipccSubSector ?? undefined,
+            gipActivityCode: entityData.gipActivityCode ?? undefined,
+            gipProjectCode: entityData.gipProjectCode ?? undefined,
+            gipNppCode: entityData.gipNppCode ?? undefined,
+            additionalFundingProposalNo: entityData.additionalFundingProposalNo ?? undefined,
+            projectLocation: entityData.projectLocation ?? undefined,
+            expectedUseImpactsResults: entityData.expectedUseImpactsResults ?? undefined,
+            ggaThematicTargets: entityData.ggaThematicTargets ?? undefined,
+            ggaDimensionalTargets: entityData.ggaDimensionalTargets ?? undefined,
+            ggaDomains: entityData.ggaDomains ?? undefined,
+            ggaPrioritySystems: entityData.ggaPrioritySystems ?? undefined,
           });
 
           // ML - Just to be safe - set the original startYear and endYear with the values from activity entity
@@ -1189,6 +1225,17 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
   };
 
   // Initializing mtg timeline data
+
+  useEffect(() => {
+    if (method === 'create') {
+      form.setFieldsValue({
+        gipActivityCode: ACTIVITY_GIP_PLACEHOLDER,
+        gipProjectCode: ACTIVITY_GIP_PLACEHOLDER,
+        gipNppCode: ACTIVITY_GIP_PLACEHOLDER,
+        additionalFundingProposalNo: ACTIVITY_GIP_PLACEHOLDER,
+      });
+    }
+  }, [method, form]);
 
   useEffect(() => {
     if (method === 'create') {
@@ -1413,6 +1460,73 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                   </Form.Item>
                 </Col>
               </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={<label className="form-item-header">{t('gipActivityCodeTitle')}</label>}
+                    name="gipActivityCode"
+                    rules={[validation.required]}
+                  >
+                    <Input className="form-input-box" disabled={isView} />
+                  </Form.Item>
+                </Col>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={<label className="form-item-header">{t('gipProjectCodeTitle')}</label>}
+                    name="gipProjectCode"
+                    rules={[validation.required]}
+                  >
+                    <Input className="form-input-box" disabled={isView} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={<label className="form-item-header">{t('gipNppCodeTitle')}</label>}
+                    name="gipNppCode"
+                    rules={[validation.required]}
+                  >
+                    <Input className="form-input-box" disabled={isView} />
+                  </Form.Item>
+                </Col>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('additionalFundingProposalNoTitle')}
+                      </label>
+                    }
+                    name="additionalFundingProposalNo"
+                    rules={[validation.required]}
+                  >
+                    <Input className="form-input-box" disabled={isView} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={gutterSize}>
+                <Col {...halfColumnBps}>
+                  <Form.Item
+                    label={<label className="form-item-header">{t('projectLocationTitle')}</label>}
+                    name="projectLocation"
+                    rules={[validation.required]}
+                  >
+                    <Select
+                      size="large"
+                      style={{ fontSize: inputFontSize }}
+                      allowClear
+                      disabled={isView}
+                      showSearch
+                    >
+                      {Object.values(ProjectLocation).map((location) => (
+                        <Option key={location} value={location}>
+                          {location}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
               {parentType ? (
                 <Row gutter={gutterSize}>
                   <Col {...halfColumnBps}>
@@ -1473,7 +1587,7 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                   <Form.Item
                     label={
                       <label className="form-item-header">
-                        {t('formHeader:natImplementerHeader')}
+                        {t('natImplementerActivityHeader')}
                       </label>
                     }
                     name="nationalImplementingEntity"
@@ -1499,7 +1613,7 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                   <Form.Item
                     label={
                       <label className="form-item-header">
-                        {t('formHeader:intImplementerHeader')}
+                        {t('intImplementerActivityHeader')}
                       </label>
                     }
                     name="internationalImplementingEntity"
@@ -1874,6 +1988,126 @@ const ActivityForm: React.FC<FormLoadProps> = ({ method }) => {
                   </Form.Item>
                 </Col>
               </Row>
+              <Row gutter={gutterSize}>
+                <Col span={24}>
+                  <Form.Item
+                    label={
+                      <label className="form-item-header">
+                        {t('expectedUseImpactsResultsTitle')}
+                      </label>
+                    }
+                    name="expectedUseImpactsResults"
+                    rules={[validation.required]}
+                  >
+                    <TextArea rows={4} disabled={isView} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              {isAdaptationFlow && (
+                <>
+                  <div className="form-section-sub-header">{t('adaptationBenefitsTitle')}</div>
+                  <Row gutter={gutterSize}>
+                    <Col {...halfColumnBps}>
+                      <Form.Item
+                        label={
+                          <label className="form-item-header">{t('ggaThematicTargetsTitle')}</label>
+                        }
+                        name="ggaThematicTargets"
+                        rules={isAdaptationFlow ? [validation.required] : []}
+                        preserve={false}
+                      >
+                        <Select
+                          mode="multiple"
+                          size="large"
+                          style={{ fontSize: inputFontSize }}
+                          disabled={isView}
+                          showSearch
+                        >
+                          {Object.values(GgaThematicTarget).map((value) => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col {...halfColumnBps}>
+                      <Form.Item
+                        label={
+                          <label className="form-item-header">
+                            {t('ggaDimensionalTargetsTitle')}
+                          </label>
+                        }
+                        name="ggaDimensionalTargets"
+                        rules={isAdaptationFlow ? [validation.required] : []}
+                        preserve={false}
+                      >
+                        <Select
+                          mode="multiple"
+                          size="large"
+                          style={{ fontSize: inputFontSize }}
+                          disabled={isView}
+                          showSearch
+                        >
+                          {Object.values(GgaDimensionalTarget).map((value) => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={gutterSize}>
+                    <Col {...halfColumnBps}>
+                      <Form.Item
+                        label={<label className="form-item-header">{t('ggaDomainsTitle')}</label>}
+                        name="ggaDomains"
+                        rules={isAdaptationFlow ? [validation.required] : []}
+                        preserve={false}
+                      >
+                        <Select
+                          mode="multiple"
+                          size="large"
+                          style={{ fontSize: inputFontSize }}
+                          disabled={isView}
+                          showSearch
+                        >
+                          {Object.values(GgaDomain).map((value) => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col {...halfColumnBps}>
+                      <Form.Item
+                        label={
+                          <label className="form-item-header">{t('ggaPrioritySystemsTitle')}</label>
+                        }
+                        name="ggaPrioritySystems"
+                        rules={isAdaptationFlow ? [validation.required] : []}
+                        preserve={false}
+                      >
+                        <Select
+                          mode="multiple"
+                          size="large"
+                          style={{ fontSize: inputFontSize }}
+                          disabled={isView}
+                          showSearch
+                        >
+                          {Object.values(GgaPrioritySystem).map((value) => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </>
+              )}
               <div className="form-section-sub-header">{t('formHeader:documentsHeader')}</div>
               <UploadFileGrid
                 isSingleColumn={false}

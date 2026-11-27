@@ -2,7 +2,12 @@ import { validate } from "class-validator";
 import { Repository } from "typeorm";
 import { ReferenceDataEntity } from "../entities/reference.data.entity";
 import { ReferenceDataList } from "../enums/reference.data.enum";
-import { IsReferenceValue, IsReferenceValueConstraint } from "./referenceValue.decorator";
+import {
+  IsReferenceValue,
+  IsReferenceValueConstraint,
+  IsReferenceValueWhenConstraint,
+} from "./referenceValue.decorator";
+import { KPIAction } from "../enums/shared.enum";
 
 describe("IsReferenceValue", () => {
   let constraint: IsReferenceValueConstraint;
@@ -44,6 +49,26 @@ describe("IsReferenceValue", () => {
     expect(constraint.defaultMessage(args(ReferenceDataList.POLICY_REFERENCE, "Bad"))).toBe(
       'Invalid field: "Bad" is not a value of the POLICY_REFERENCE list'
     );
+  });
+
+  describe("IsReferenceValueWhenConstraint", () => {
+    let whenConstraint: IsReferenceValueWhenConstraint;
+
+    beforeEach(() => {
+      whenConstraint = new IsReferenceValueWhenConstraint({ count } as unknown as Repository<ReferenceDataEntity>);
+    });
+
+    it("skips list check when predicate is false", async () => {
+      const predicate = (object: Record<string, unknown>) => object.kpiAction === KPIAction.CREATED;
+      const validationArgs = {
+        constraints: [predicate, ReferenceDataList.KPI_NAME],
+        object: { kpiAction: KPIAction.UPDATED },
+        property: "name",
+        value: "Legacy name",
+      } as any;
+      await expect(whenConstraint.validate("Legacy name", validationArgs)).resolves.toBe(true);
+      expect(count).not.toHaveBeenCalled();
+    });
   });
 
   describe("as a decorator on a class", () => {

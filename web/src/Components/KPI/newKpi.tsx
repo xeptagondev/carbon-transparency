@@ -1,6 +1,11 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { Form, Input, Row, Col, Card } from 'antd';
+import { Form, Input, Row, Col, Card, Select } from 'antd';
+import { useMemo } from 'react';
 import './kpiStyles.scss';
+import { useReferenceOptions } from '../../Utils/useReferenceOptions';
+import { ReferenceDataList } from '../../Enums/referenceData.enum';
+
+const { Option } = Select;
 
 interface Props {
   form: any;
@@ -12,6 +17,13 @@ interface Props {
 }
 
 export const NewKpi: React.FC<Props> = ({ rules, index, headerNames, updateKPI, removeKPI }) => {
+  const kpiNameOptions = useReferenceOptions(ReferenceDataList.KPI_NAME);
+
+  const nameSelectOptions = useMemo(
+    () => kpiNameOptions.map((option) => ({ value: option.value, label: option.label })),
+    [kpiNameOptions]
+  );
+
   return (
     <Row key={index} gutter={30} className="kpi-grid">
       <Col span={12}>
@@ -22,14 +34,23 @@ export const NewKpi: React.FC<Props> = ({ rules, index, headerNames, updateKPI, 
               name={`kpi_name_${index}`}
               rules={rules}
             >
-              <Input
-                className="form-input-box"
-                onChange={(e) => {
+              <Select
+                showSearch
+                optionFilterProp="children"
+                size="large"
+                allowClear
+                onChange={(value: string) => {
                   if (updateKPI) {
-                    updateKPI(index, 'name', e.target.value, 'new');
+                    updateKPI(index, 'name', value, 'new');
                   }
                 }}
-              />
+              >
+                {nameSelectOptions.map((option) => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col span={12}>

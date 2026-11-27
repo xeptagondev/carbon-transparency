@@ -273,3 +273,15 @@ export const isGasFlowCheck = (type: ActionType | undefined): boolean => {
 
   return false;
 };
+
+export const isAdaptationFlowCheck = (type: ActionType | undefined): boolean => {
+  if (!type) {
+    return false;
+  }
+
+  if ([ActionType.ADAPTION, ActionType.CROSSCUT].includes(type)) {
+    return true;
+  }
+
+  return false;
+};

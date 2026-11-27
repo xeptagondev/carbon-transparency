@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import {
   ValidationArguments,
   ValidationOptions,
+  Validate,
   ValidatorConstraint,
   ValidatorConstraintInterface,
   registerDecorator,
@@ -51,4 +52,44 @@ export function IsReferenceValue(listKey: ReferenceDataList, validationOptions?:
       validator: IsReferenceValueConstraint,
     });
   };
+}
+
+type ReferenceValueWhenPredicate = (object: Record<string, unknown>) => boolean;
+
+/**
+ * Same as {@link IsReferenceValue}, but only when `predicate(object)` is true. Other validators on
+ * the property (e.g. `@IsNotEmpty`) are unaffected — unlike `@ValidateIf` on the whole field.
+ */
+@ValidatorConstraint({ name: "isReferenceValueWhen", async: true })
+@Injectable()
+export class IsReferenceValueWhenConstraint implements ValidatorConstraintInterface {
+  constructor(
+    @InjectRepository(ReferenceDataEntity)
+    private referenceDataRepo: Repository<ReferenceDataEntity>
+  ) {}
+
+  async validate(value: any, args: ValidationArguments): Promise<boolean> {
+    const [predicate, listKey] = args.constraints as [ReferenceValueWhenPredicate, ReferenceDataList];
+    if (!predicate(args.object as Record<string, unknown>)) {
+      return true;
+    }
+    if (typeof value !== "string" || value.length === 0) {
+      return false;
+    }
+    const found = await this.referenceDataRepo.count({ where: { listKey, code: value } });
+    return found > 0;
+  }
+
+  defaultMessage(args: ValidationArguments): string {
+    const [, listKey] = args.constraints as [ReferenceValueWhenPredicate, ReferenceDataList];
+    return `Invalid ${args.property}: "${args.value}" is not a value of the ${listKey} list`;
+  }
+}
+
+export function IsReferenceValueWhen(
+  predicate: ReferenceValueWhenPredicate,
+  listKey: ReferenceDataList,
+  validationOptions?: ValidationOptions
+) {
+  return Validate(IsReferenceValueWhenConstraint, [predicate, listKey], validationOptions);
 }

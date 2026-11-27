@@ -24,7 +24,7 @@ export enum GgaDomain {
   VulnerabilityAndImpact = "Vulnerability and impact",
   AdaptiveCapacity = "Adaptive capacity",
   AdaptationActionsAndOutputs = "Adaptation actions and outputs",
-  AdaptationOutcome = "Adaptation outcome",
+  AdaptationOutcome = "Adaptation outcomes and resilience",
   NotApplicable = "Not applicable",
 }
 

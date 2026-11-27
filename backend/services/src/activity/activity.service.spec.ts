@@ -31,6 +31,31 @@ import { Role } from "../casl/role.enum";
 import { SupportEntity } from "../entities/support.entity";
 import { ValidateDto } from "../dtos/validate.dto";
 import { ConfigurationSettingsEntity } from "../entities/configuration.settings.entity";
+import { ActionType } from "../enums/action.enum";
+import { ProjectLocation } from "../enums/projectLocation.enum";
+import {
+	GgaDimensionalTarget,
+	GgaDomain,
+	GgaPrioritySystem,
+	GgaThematicTarget,
+} from "../enums/gga.enum";
+import { ACTIVITY_GIP_PLACEHOLDER } from "../util/actionFlow.util";
+
+function fillActivityFormRequiredFields(dto: ActivityDto | ActivityUpdateDto) {
+	dto.gipActivityCode = dto.gipActivityCode ?? ACTIVITY_GIP_PLACEHOLDER;
+	dto.gipProjectCode = dto.gipProjectCode ?? ACTIVITY_GIP_PLACEHOLDER;
+	dto.gipNppCode = dto.gipNppCode ?? ACTIVITY_GIP_PLACEHOLDER;
+	dto.additionalFundingProposalNo = dto.additionalFundingProposalNo ?? ACTIVITY_GIP_PLACEHOLDER;
+	dto.projectLocation = dto.projectLocation ?? ProjectLocation.National;
+	dto.expectedUseImpactsResults = dto.expectedUseImpactsResults ?? "Expected use placeholder";
+}
+
+function fillActivityGgaFields(dto: ActivityDto | ActivityUpdateDto) {
+	dto.ggaThematicTargets = [GgaThematicTarget.Water];
+	dto.ggaDimensionalTargets = [GgaDimensionalTarget.Planning];
+	dto.ggaDomains = [GgaDomain.AdaptiveCapacity];
+	dto.ggaPrioritySystems = [GgaPrioritySystem.WaterSystems];
+}
 
 describe('ActivityService', () => {
 	let service: ActivityService;
@@ -168,6 +193,7 @@ describe('ActivityService', () => {
 			activityDto.description = "test description";
 			activityDto.status = ActivityStatus.PLANNED;
 			activityDto.measure = Measure.WITHOUT_MEASURES;
+			fillActivityFormRequiredFields(activityDto);
 
 			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
 			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("action.createActionSuccess");
@@ -316,6 +342,7 @@ describe('ActivityService', () => {
 			activityDto.description = "test description";
 			activityDto.status = ActivityStatus.PLANNED;
 			activityDto.measure = Measure.WITHOUT_MEASURES;
+			fillActivityFormRequiredFields(activityDto);
 			activityDto.documents = [documentDto];
 			activityDto.mitigationInfo = {
 				mitigationCalcEntity: "ABB",
@@ -341,6 +368,240 @@ describe('ActivityService', () => {
 			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(1);
 			expect(fileUploadServiceMock.uploadDocument).toHaveBeenCalledTimes(1);
 			expect(helperServiceMock.refreshMaterializedViews).toBeCalledTimes(1);
+		});
+
+		it('should default empty GIP codes to TBD000 on create', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.gipActivityCode = "";
+			activityDto.gipProjectCode = "";
+			activityDto.gipNppCode = "";
+			activityDto.additionalFundingProposalNo = "";
+			activityDto.projectLocation = ProjectLocation.National;
+			activityDto.expectedUseImpactsResults = "Results";
+
+			let savedActivity: ActivityEntity;
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("activity.createActivitySuccess");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const emMock = {
+					save: jest.fn().mockImplementation(async (entity: ActivityEntity) => {
+						if (entity?.title === "test") {
+							savedActivity = entity;
+						}
+						return entity;
+					}),
+				};
+				return callback(emMock);
+			});
+
+			await service.createActivity(activityDto, user);
+
+			expect(savedActivity!.gipActivityCode).toBe(ACTIVITY_GIP_PLACEHOLDER);
+			expect(savedActivity!.gipProjectCode).toBe(ACTIVITY_GIP_PLACEHOLDER);
+		});
+
+		it('should require GGA fields when parent action is Adaptation', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.ADAPTION;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.parentType = EntityType.ACTION;
+			activityDto.parentId = "A001";
+			fillActivityFormRequiredFields(activityDto);
+
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(service, 'isActionValid').mockResolvedValue(action);
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockReturnValue("activity.ggaRequiredForAdaptationParent");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			await expect(service.createActivity(activityDto, user)).rejects.toBeInstanceOf(HttpException);
+			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(0);
+		});
+
+		it('should allow create when parent is Adaptation and GGA fields are set', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.ADAPTION;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.parentType = EntityType.ACTION;
+			activityDto.parentId = "A001";
+			fillActivityFormRequiredFields(activityDto);
+			fillActivityGgaFields(activityDto);
+
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(service, 'isActionValid').mockResolvedValue(action);
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("activity.createActivitySuccess");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const emMock = {
+					save: jest.fn().mockResolvedValueOnce(new ActivityEntity()),
+				};
+				return callback(emMock);
+			});
+
+			await service.createActivity(activityDto, user);
+			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(1);
+		});
+
+		it('should not require GGA when parent action is Mitigation', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.MITIGATION;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.parentType = EntityType.ACTION;
+			activityDto.parentId = "A001";
+			fillActivityFormRequiredFields(activityDto);
+
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(service, 'isActionValid').mockResolvedValue(action);
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("activity.createActivitySuccess");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const emMock = {
+					save: jest.fn().mockResolvedValueOnce(new ActivityEntity()),
+				};
+				return callback(emMock);
+			});
+
+			await service.createActivity(activityDto, user);
+			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(1);
+		});
+
+		it('should require GGA when parent action is Cross-cutting', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.CROSSCUT;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.parentType = EntityType.ACTION;
+			activityDto.parentId = "A001";
+			fillActivityFormRequiredFields(activityDto);
+
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(service, 'isActionValid').mockResolvedValue(action);
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockReturnValue("activity.ggaRequiredForAdaptationParent");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			await expect(service.createActivity(activityDto, user)).rejects.toBeInstanceOf(HttpException);
+		});
+
+		it('should require GGA when parent is programme under Adaptation action', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.type = ActionType.ADAPTION;
+
+			const programme = new ProgrammeEntity();
+			programme.programmeId = "P001";
+			programme.sector = Sector.Energy;
+			programme.path = "A001";
+			programme.action = action;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.parentType = EntityType.PROGRAMME;
+			activityDto.parentId = "P001";
+			fillActivityFormRequiredFields(activityDto);
+
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(service, 'isProgrammeValid').mockResolvedValue(programme);
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockReturnValue("activity.ggaRequiredForAdaptationParent");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			await expect(service.createActivity(activityDto, user)).rejects.toBeInstanceOf(HttpException);
+		});
+
+		it('should clear GGA fields on create when parent is Mitigation', async () => {
+			const user = new User();
+			user.id = 2;
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.MITIGATION;
+
+			const activityDto = new ActivityDto();
+			activityDto.title = "test";
+			activityDto.description = "test description";
+			activityDto.status = ActivityStatus.PLANNED;
+			activityDto.measure = Measure.WITHOUT_MEASURES;
+			activityDto.parentType = EntityType.ACTION;
+			activityDto.parentId = "A001";
+			fillActivityFormRequiredFields(activityDto);
+			fillActivityGgaFields(activityDto);
+
+			let savedActivity: ActivityEntity;
+			jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+			jest.spyOn(service, 'isActionValid').mockResolvedValue(action);
+			jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockResolvedValueOnce("activity.createActivitySuccess");
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+
+			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const emMock = {
+					save: jest.fn().mockImplementation(async (entity: ActivityEntity) => {
+						if (entity?.title === "test") {
+							savedActivity = entity;
+						}
+						return entity;
+					}),
+				};
+				return callback(emMock);
+			});
+
+			await service.createActivity(activityDto, user);
+			expect(savedActivity!.ggaThematicTargets).toBeNull();
+			expect(savedActivity!.ggaDomains).toBeNull();
 		});
 
 	});
@@ -395,6 +656,7 @@ describe('ActivityService', () => {
 			activityUpdateDto.parentType = EntityType.PROGRAMME;
 			activityUpdateDto.parentId = "P001"
 			activityUpdateDto.status = ActivityStatus.ONGOING;
+			fillActivityFormRequiredFields(activityUpdateDto);
 			activityUpdateDto.measure = Measure.WITH_MEASURE;
 			activityUpdateDto.nationalImplementingEntity = [NatImplementor.AGRI_DEPT, NatImplementor.CLIMATE_DEPT]
 			activityUpdateDto.internationalImplementingEntity = [IntImplementor.AFC, IntImplementor.EBRD];
@@ -489,11 +751,22 @@ describe('ActivityService', () => {
 				]
 				},
 				path: "A001.P001._",
-				sector: Sector.Forestry
+				sector: Sector.Forestry,
+				gipActivityCode: ACTIVITY_GIP_PLACEHOLDER,
+				gipProjectCode: ACTIVITY_GIP_PLACEHOLDER,
+				gipNppCode: ACTIVITY_GIP_PLACEHOLDER,
+				additionalFundingProposalNo: ACTIVITY_GIP_PLACEHOLDER,
+				projectLocation: ProjectLocation.National,
+				expectedUseImpactsResults: "Expected use placeholder",
+				ggaThematicTargets: null,
+				ggaDimensionalTargets: null,
+				ggaDomains: null,
+				ggaPrioritySystems: null,
 			};
 
 			jest.spyOn(linkUnlinkServiceMock, "findActivityByIdWithSupports").mockResolvedValueOnce(activity);
 			jest.spyOn(service, "findActivityById").mockResolvedValueOnce(activity);
+			jest.spyOn(service, "isProgrammeValid").mockResolvedValue(programme);
 			jest.spyOn(programmeServiceMock, "findProgrammeById").mockResolvedValueOnce(programme);
 			jest.spyOn(projectServiceMock, "findProjectById").mockResolvedValueOnce(project);
 			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
@@ -803,6 +1076,153 @@ describe('ActivityService', () => {
 			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(0);
 			expect(fileUploadServiceMock.uploadDocument).toHaveBeenCalledTimes(0);
 			expect(helperServiceMock.refreshMaterializedViews).toBeCalledTimes(0);
+		});
+
+		it('should detach from Adaptation parent without requiring GGA', async () => {
+			const user = new User();
+			user.id = 2;
+			user.sector = [Sector.Energy];
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.ADAPTION;
+			action.validated = false;
+
+			const activity = new ActivityEntity();
+			activity.activityId = "T0001";
+			activity.title = "test";
+			activity.description = "test description";
+			activity.parentType = EntityType.ACTION;
+			activity.parentId = "A001";
+			activity.sector = Sector.Energy;
+			activity.path = "A001._._";
+			activity.status = ActivityStatus.PLANNED;
+
+			const activityUpdateDto = new ActivityUpdateDto();
+			activityUpdateDto.activityId = "T0001";
+			activityUpdateDto.title = "test";
+			activityUpdateDto.description = "test description";
+			activityUpdateDto.parentType = EntityType.ACTION;
+			activityUpdateDto.parentId = "";
+			activityUpdateDto.status = ActivityStatus.PLANNED;
+			activityUpdateDto.recipientEntities = ["Ministry of Climate Change"];
+			fillActivityFormRequiredFields(activityUpdateDto);
+
+			const isActionValidSpy = jest.spyOn(service, "isActionValid").mockResolvedValue(action);
+			jest.spyOn(linkUnlinkServiceMock, "findActivityByIdWithSupports").mockResolvedValue(activity);
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+			jest.spyOn(linkUnlinkServiceMock, "getParentIdFromPath").mockReturnValue({
+				parentId: "A001",
+				rootEntityType: EntityType.ACTION,
+			});
+
+			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const emMock = { save: jest.fn().mockResolvedValue(activity) };
+				return callback(emMock);
+			});
+
+			await service.updateActivity(activityUpdateDto, user);
+			expect(isActionValidSpy).toHaveBeenCalledTimes(1);
+			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(1);
+		});
+
+		it('should require GGA on update when parent stays Adaptation', async () => {
+			const user = new User();
+			user.id = 2;
+			user.sector = [Sector.Energy];
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.ADAPTION;
+			action.validated = false;
+
+			const activity = new ActivityEntity();
+			activity.activityId = "T0001";
+			activity.title = "test";
+			activity.description = "test description";
+			activity.parentType = EntityType.ACTION;
+			activity.parentId = "A001";
+			activity.sector = Sector.Energy;
+			activity.path = "A001._._";
+			activity.status = ActivityStatus.PLANNED;
+
+			const activityUpdateDto = new ActivityUpdateDto();
+			activityUpdateDto.activityId = "T0001";
+			activityUpdateDto.title = "test";
+			activityUpdateDto.description = "test description";
+			activityUpdateDto.parentType = EntityType.ACTION;
+			activityUpdateDto.parentId = "A001";
+			activityUpdateDto.status = ActivityStatus.PLANNED;
+			activityUpdateDto.recipientEntities = ["Ministry of Climate Change"];
+			fillActivityFormRequiredFields(activityUpdateDto);
+
+			jest.spyOn(service, "isActionValid").mockResolvedValue(action);
+			jest.spyOn(linkUnlinkServiceMock, "findActivityByIdWithSupports").mockResolvedValue(activity);
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+			jest.spyOn(helperServiceMock, "formatReqMessagesString").mockReturnValue("activity.ggaRequiredForAdaptationParent");
+
+			await expect(service.updateActivity(activityUpdateDto, user)).rejects.toBeInstanceOf(HttpException);
+			expect(entityManagerMock.transaction).toHaveBeenCalledTimes(0);
+		});
+
+		it('should clear GGA on update when parent stays Mitigation', async () => {
+			const user = new User();
+			user.id = 2;
+			user.sector = [Sector.Energy];
+
+			const action = new ActionEntity();
+			action.actionId = "A001";
+			action.sector = Sector.Energy;
+			action.type = ActionType.MITIGATION;
+			action.validated = false;
+
+			const activity = new ActivityEntity();
+			activity.activityId = "T0001";
+			activity.title = "test";
+			activity.description = "test description";
+			activity.parentType = EntityType.ACTION;
+			activity.parentId = "A001";
+			activity.sector = Sector.Energy;
+			activity.path = "A001._._";
+			activity.status = ActivityStatus.PLANNED;
+
+			const activityUpdateDto = new ActivityUpdateDto();
+			activityUpdateDto.activityId = "T0001";
+			activityUpdateDto.title = "test";
+			activityUpdateDto.description = "test description";
+			activityUpdateDto.parentType = EntityType.ACTION;
+			activityUpdateDto.parentId = "A001";
+			activityUpdateDto.status = ActivityStatus.PLANNED;
+			activityUpdateDto.recipientEntities = ["Ministry of Climate Change"];
+			fillActivityFormRequiredFields(activityUpdateDto);
+			fillActivityGgaFields(activityUpdateDto);
+
+			let savedActivity: ActivityEntity;
+			jest.spyOn(service, "isActionValid").mockResolvedValue(action);
+			jest.spyOn(linkUnlinkServiceMock, "findActivityByIdWithSupports").mockResolvedValue(activity);
+			jest.spyOn(helperServiceMock, "doesUserHaveSectorPermission").mockReturnValue(true);
+			jest.spyOn(linkUnlinkServiceMock, "getParentIdFromPath").mockReturnValue({
+				parentId: "A001",
+				rootEntityType: EntityType.ACTION,
+			});
+
+			entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+				const emMock = {
+					save: jest.fn().mockImplementation(async (entity: ActivityEntity) => {
+						if (entity?.activityId === "T0001") {
+							savedActivity = entity;
+						}
+						return entity;
+					}),
+				};
+				return callback(emMock);
+			});
+
+			await service.updateActivity(activityUpdateDto, user);
+			expect(savedActivity!.ggaThematicTargets).toBeNull();
+			expect(savedActivity!.ggaPrioritySystems).toBeNull();
 		});
 
 	});

@@ -2,10 +2,13 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EntityType } from "../enums/shared.enum";
 import { IsTwoDecimalPoints } from "../util/twoDecimalPointNumber.decorator";
+import { IsReferenceValue } from "../util/referenceValue.decorator";
+import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class KpiDto {
     @IsNotEmpty()
     @IsString()
+    @IsReferenceValue(ReferenceDataList.KPI_NAME)
     @ApiProperty()
     name: string;
 

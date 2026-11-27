@@ -97,6 +97,36 @@ export class ActivityEntity implements EntitySubject {
   @Column({ nullable: true })
   expectedTimeFrame: number; // ML: added - capture the activity startYear to endYear timeframe
 
+  @Column({ type: "varchar", nullable: true })
+  gipActivityCode: string;
+
+  @Column({ type: "varchar", nullable: true })
+  gipProjectCode: string;
+
+  @Column({ type: "varchar", nullable: true })
+  gipNppCode: string;
+
+  @Column({ type: "varchar", nullable: true })
+  additionalFundingProposalNo: string;
+
+  @Column({ type: "varchar", nullable: true })
+  projectLocation: string;
+
+  @Column({ type: "text", nullable: true })
+  expectedUseImpactsResults: string;
+
+  @Column("varchar", { array: true, nullable: true })
+  ggaThematicTargets: string[];
+
+  @Column("varchar", { array: true, nullable: true })
+  ggaDimensionalTargets: string[];
+
+  @Column("varchar", { array: true, nullable: true })
+  ggaDomains: string[];
+
+  @Column("varchar", { array: true, nullable: true })
+  ggaPrioritySystems: string[];
+
   @Column({ type: "jsonb", nullable: true })
   mitigationTimeline: {
     expected: {

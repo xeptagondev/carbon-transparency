@@ -42,7 +42,35 @@ export class ActivityResponseDto {
 
 	expectedGHGReduction: number;
 
+	comment: string;
+
 	comments: string;
+
+	startYear: number;
+
+	endYear: number;
+
+	expectedTimeFrame: number;
+
+	gipActivityCode: string;
+
+	gipProjectCode: string;
+
+	gipNppCode: string;
+
+	additionalFundingProposalNo: string;
+
+	projectLocation: string;
+
+	expectedUseImpactsResults: string;
+
+	ggaThematicTargets: string[];
+
+	ggaDimensionalTargets: string[];
+
+	ggaDomains: string[];
+
+	ggaPrioritySystems: string[];
 
 	mitigationInfo: any;
 

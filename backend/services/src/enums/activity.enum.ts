@@ -39,4 +39,8 @@ export enum TechnologyType {
   COASTAL_MGT = "Coastal Management",
   CIVIL = "Civil",
   OTHER = "Other",
+  CLEAN_TRANSPORT = "Clean Transport",
+  SUSTAINABLE_FUELS = "Sustainable Fuels",
+  WATER_MANAGEMENT = "Water Management",
+  CLIMATE_SMART_AGRICULTURE = "Climate-Smart Agriculture",
 }

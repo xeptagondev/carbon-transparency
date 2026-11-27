@@ -43,5 +43,13 @@
     "actionResultsInfoTitle": "Résumé des résultats de l'action",
     "programmeResultsInfoTitle": "Résumé des résultats du programme",
     "projectResultsInfoTitle": "Résumé des résultats du projet",
-    "activityResultsInfoTitle": "Résumé des résultats de l'activité"
+    "activityResultsInfoTitle": "Résumé des résultats de l'activité",
+    "ndcReferenceTitle": "NDC reference",
+    "institutionResponsibleTitle": "Institution responsible",
+    "subSectorTitle": "Sub-sector",
+    "targetYearTitle": "Target year",
+    "policyReferenceTitle": "Policy reference",
+    "nsdpReferenceTitle": "NSDP reference",
+    "contributionToSdgsTitle": "Contribution to SDGs",
+    "targetYearBeforeStartYear": "Target year cannot be earlier than start year"
 }

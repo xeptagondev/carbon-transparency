@@ -159,19 +159,23 @@ export class ActivityDto {
 
 	// ML - apply validation to startYear and endYear
 
+	// null means "Information not available"
+	@ValidateIf((o) => o.startYear !== null)
 	@IsNotEmpty()
 	@IsNumber()
 	@Min(2013)
 	@Max(2049)
-	@ApiProperty()
-	startYear: number;
+	@ApiProperty({ nullable: true, description: "null means Information not available" })
+	startYear: number | null;
 
+	// null means "Information not available"
+	@ValidateIf((o) => o.endYear !== null)
 	@IsNotEmpty()
 	@IsNumber()
 	@Min(2014)
 	@Max(2050)
-	@ApiProperty()
-	endYear: number;
+	@ApiProperty({ nullable: true, description: "null means Information not available" })
+	endYear: number | null;
 
 	// ML - commented this orignial one out
 	//@IsNumber()

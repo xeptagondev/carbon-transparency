@@ -47,6 +47,12 @@ import InfoKpi from '../../../Components/KPI/InfoKpi';
 import { useReferenceOptions } from '../../../Utils/useReferenceOptions';
 import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ReferenceDataList } from '../../../Enums/referenceData.enum';
+import {
+  INFORMATION_NOT_AVAILABLE,
+  keepInformationNotAvailableExclusive,
+  yearToFormValue,
+  yearToPayload,
+} from '../../../Utils/informationNotAvailable';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -62,6 +68,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
     'entityAction',
     'formHeader',
     'error',
+    'common',
   ]);
 
   const isView: boolean = method === 'view' ? true : false;
@@ -170,6 +177,10 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
         if (key.startsWith('kpi_')) {
           delete payload[key];
         }
+      }
+
+      if ('startYear' in payload) {
+        payload.startYear = yearToPayload(payload.startYear);
       }
 
       if (uploadedFiles.length > 0) {
@@ -464,7 +475,7 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
             sector: entityData.sector,
             instrumentType: entityData.instrumentType,
             status: entityData.status,
-            startYear: entityData.startYear,
+            startYear: yearToFormValue(entityData.startYear),
             natAnchor: entityData.natAnchor,
             natAnchorOther: entityData.natAnchorOther ?? undefined,
           });
@@ -798,6 +809,12 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                     }
                     name="instrumentType"
                     rules={[validation.required]}
+                    getValueFromEvent={(values) =>
+                      keepInformationNotAvailableExclusive(
+                        values,
+                        form.getFieldValue('instrumentType')
+                      )
+                    }
                   >
                     <Select
                       size="large"
@@ -895,6 +912,9 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                       disabled={isView}
                       showSearch
                     >
+                      <Option key={INFORMATION_NOT_AVAILABLE} value={INFORMATION_NOT_AVAILABLE}>
+                        {t('common:informationNotAvailable')}
+                      </Option>
                       {yearsList.map((year) => (
                         <Option key={year} value={year}>
                           {year}
@@ -924,6 +944,9 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
                     }
                     name="natAnchor"
                     rules={[validation.required]}
+                    getValueFromEvent={(values) =>
+                      keepInformationNotAvailableExclusive(values, form.getFieldValue('natAnchor'))
+                    }
                   >
                     <Select
                       optionFilterProp="children"

@@ -26,7 +26,8 @@ export class ActionEntity {
   @Column({ type: "enum", enum: ActionStatus })
   status: string;
 
-  @Column()
+  /** Empty (null) means "Information not available". */
+  @Column({ type: "int", nullable: true })
   startYear: number;
 
   @Column("varchar", { array: true, nullable: false })

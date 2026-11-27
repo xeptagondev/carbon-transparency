@@ -15,6 +15,8 @@ export enum ActivityStatus {
   PLANNED = "Planned",
   ONGOING = "Ongoing",
   COMPLETED = "Completed",
+  // Must stay last: the value is appended to the Postgres enum by the migration.
+  INFORMATION_NOT_AVAILABLE = "Information not available",
 }
 
 export enum ImpleMeans {

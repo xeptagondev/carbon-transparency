@@ -22,10 +22,12 @@ export enum InstrumentType {
   REGULATORY = 'Regulatory',
   ECONOMIC = 'Economic',
   OTHER = 'Other',
+  INFORMATION_NOT_AVAILABLE = 'Information not available',
 }
 
 export enum ActionStatus {
   PLANNED = 'Planned',
   ADOPTED = 'Adopted',
   IMPLEMENTED = 'Implemented',
+  INFORMATION_NOT_AVAILABLE = 'Information not available',
 }

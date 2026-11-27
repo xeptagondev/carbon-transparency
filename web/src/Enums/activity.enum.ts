@@ -15,6 +15,7 @@ export enum ActivityStatus {
   PLANNED = 'Planned',
   ONGOING = 'Ongoing',
   COMPLETED = 'Completed',
+  INFORMATION_NOT_AVAILABLE = 'Information not available',
 }
 
 export enum ImplMeans {
@@ -23,4 +24,22 @@ export enum ImplMeans {
   CAPACITY_BUILD = 'Capacity Building',
   TRANSP = 'Transparency',
   NONE = 'None',
+}
+
+export enum TechnologyType {
+  ENERGY_EFI = 'Energy Efficiency',
+  REN_ENERGY = 'Renewable Energy',
+  EMISSION_ABT = 'Emissions Abatement',
+  NATURE_BASED = 'Nature Based Solution',
+  CARBON_STORAGE = 'Carbon Storage',
+  IT_SOLUTION = 'IT Solutions',
+  SYSTEM_MGT = 'Systems Management',
+  RESILIENCE = 'Resilience',
+  COASTAL_MGT = 'Coastal Management',
+  CIVIL = 'Civil',
+  OTHER = 'Other',
+  CLEAN_TRANSPORT = 'Clean Transport',
+  SUSTAINABLE_FUELS = 'Sustainable Fuels',
+  WATER_MANAGEMENT = 'Water Management',
+  CLIMATE_SMART_AGRICULTURE = 'Climate-Smart Agriculture',
 }

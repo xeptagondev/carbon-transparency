@@ -12,5 +12,7 @@
     "cannotEditValidated": "The action with id {} is validated and cannot be edited",
     "permissionDeniedForSector": "User does not have the permission for the sector",
     "deleteActionSuccess": "Action deleted successfully",
-    "actionDeletionFailed": "Action deletion failed due to {}"
+    "actionDeletionFailed": "Action deletion failed due to {}",
+    "ndcReferenceAlreadyUsed": "This NDC reference is already used by another action",
+    "targetYearBeforeStartYear": "Target year cannot be earlier than start year"
 }

@@ -43,5 +43,13 @@
     "actionResultsInfoTitle": "ක්‍රියා මූලස්ථාන ප්‍රතිඵල සාරාංශය",
     "programmeResultsInfoTitle": "වැඩසටහන් ප්‍රතිඵල සාරාංශය",
     "projectResultsInfoTitle": "ප්‍රෝජේක්ට් ප්‍රතිඵල සාරාංශය",
-    "activityResultsInfoTitle": "ක්‍රියාකාරකම් ප්‍රතිඵල සාරාංශය"
+    "activityResultsInfoTitle": "ක්‍රියාකාරකම් ප්‍රතිඵල සාරාංශය",
+    "ndcReferenceTitle": "NDC reference",
+    "institutionResponsibleTitle": "Institution responsible",
+    "subSectorTitle": "Sub-sector",
+    "targetYearTitle": "Target year",
+    "policyReferenceTitle": "Policy reference",
+    "nsdpReferenceTitle": "NSDP reference",
+    "contributionToSdgsTitle": "Contribution to SDGs",
+    "targetYearBeforeStartYear": "Target year cannot be earlier than start year"
 }

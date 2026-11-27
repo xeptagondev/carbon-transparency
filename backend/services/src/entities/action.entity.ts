@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn, Index } from "typeorm";
 import { ActionType, InstrumentType } from "../enums/action.enum";
 import { ActionStatus } from "../enums/action.enum";
 import { ProgrammeEntity } from "./programme.entity";
@@ -7,6 +7,7 @@ import { ActivityEntity } from "./activity.entity";
 import { KpiEntity } from "./kpi.entity";
 
 @Entity("action")
+@Index("UQ_action_ndcReference", ["ndcReference"], { unique: true })
 export class ActionEntity {
   @PrimaryColumn()
   actionId: string;
@@ -26,8 +27,30 @@ export class ActionEntity {
   @Column({ type: "enum", enum: ActionStatus })
   status: string;
 
-  @Column()
+  /** Empty (null) means "Information not available". */
+  @Column({ type: "int", nullable: true })
   startYear: number;
+
+  @Column({ nullable: true })
+  targetYear: number;
+
+  @Column({ type: "varchar", nullable: true })
+  ndcReference: string;
+
+  @Column({ type: "varchar", nullable: true })
+  institutionResponsible: string;
+
+  @Column({ type: "varchar", nullable: true })
+  subSector: string;
+
+  @Column("varchar", { array: true, nullable: true })
+  policyReference: string[];
+
+  @Column({ type: "text", nullable: true })
+  nsdpReference: string;
+
+  @Column("varchar", { array: true, nullable: true })
+  contributionToSdgs: string[];
 
   @Column("varchar", { array: true, nullable: false })
   natAnchor: string[];

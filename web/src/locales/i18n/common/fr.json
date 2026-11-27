@@ -19,5 +19,6 @@
   "approve": "APPROUVER",
   "reject": "REJETER",
   "otherSpecify": "Autre – veuillez préciser",
-  "otherSpecifyRequired": "Veuillez préciser la valeur pour « Autre »"
+  "otherSpecifyRequired": "Veuillez préciser la valeur pour « Autre »",
+  "informationNotAvailable": "Information non disponible"
 }

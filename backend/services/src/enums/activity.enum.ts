@@ -15,6 +15,8 @@ export enum ActivityStatus {
   PLANNED = "Planned",
   ONGOING = "Ongoing",
   COMPLETED = "Completed",
+  // Must stay last: the value is appended to the Postgres enum by the migration.
+  INFORMATION_NOT_AVAILABLE = "Information not available",
 }
 
 export enum ImpleMeans {
@@ -37,4 +39,8 @@ export enum TechnologyType {
   COASTAL_MGT = "Coastal Management",
   CIVIL = "Civil",
   OTHER = "Other",
+  CLEAN_TRANSPORT = "Clean Transport",
+  SUSTAINABLE_FUELS = "Sustainable Fuels",
+  WATER_MANAGEMENT = "Water Management",
+  CLIMATE_SMART_AGRICULTURE = "Climate-Smart Agriculture",
 }

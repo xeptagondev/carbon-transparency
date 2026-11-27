@@ -28,7 +28,6 @@ export class ActionFormUpdates1795800000000 implements MigrationInterface {
     await queryRunner.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS "UQ_action_ndcReference"
       ON "action" ("ndcReference")
-      WHERE "ndcReference" IS NOT NULL
     `);
 
     await queryRunner.query(`DROP VIEW IF EXISTS annex_three_view`);

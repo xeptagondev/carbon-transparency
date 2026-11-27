@@ -1070,6 +1070,38 @@ describe('ActionService', () => {
 		await expect(service.createAction(actionDto, user)).rejects.toThrow(HttpException);
 	});
 
+	it('should allow a target year when start year is information not available', async () => {
+		const user = new User();
+		user.id = 2;
+		const actionDto = new ActionDto();
+		actionDto.title = "test";
+		actionDto.description = "test description";
+		actionDto.objective = "test objective";
+		actionDto.instrumentType = [InstrumentType.POLICY];
+		actionDto.status = ActionStatus.PLANNED;
+		actionDto.type = ActionType.MITIGATION;
+		actionDto.startYear = null;
+		actionDto.natAnchor = [NatAnchor.NDC];
+		applyVanuatuActionFields(actionDto);
+
+		const actionEntity = new ActionEntity();
+		actionEntity.actionId = "A001";
+
+		jest.spyOn(helperServiceMock, 'doesUserHaveSectorPermission').mockReturnValueOnce(true);
+		jest.spyOn(counterServiceMock, 'incrementCount').mockResolvedValueOnce('001');
+		jest.spyOn(helperServiceMock, 'formatReqMessagesString').mockReturnValue("action.createActionSuccess");
+
+		entityManagerMock.transaction = jest.fn().mockImplementation(async (callback: any) => {
+			const emMock = {
+				save: jest.fn().mockResolvedValueOnce(actionEntity),
+			};
+			return callback(emMock);
+		});
+
+		const result = await service.createAction(actionDto, user);
+		expect(result.statusCode).toEqual(HttpStatus.CREATED);
+	});
+
 	it('should throw when NDC reference is already used on create', async () => {
 		const user = new User();
 		user.id = 2;

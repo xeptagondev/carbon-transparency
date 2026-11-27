@@ -555,7 +555,7 @@ export class ActionService {
 		dto: ActionDto | ActionUpdateDto,
 		excludeActionId?: string
 	): Promise<void> {
-		if (dto.targetYear < dto.startYear) {
+		if (dto.startYear != null && dto.targetYear < dto.startYear) {
 			throw new HttpException(
 				this.helperService.formatReqMessagesString("action.targetYearBeforeStartYear", []),
 				HttpStatus.BAD_REQUEST

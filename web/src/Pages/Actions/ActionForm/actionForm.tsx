@@ -55,6 +55,7 @@ import OtherSpecify from '../../../Components/OtherSpecify/otherSpecify';
 import { ReferenceDataList } from '../../../Enums/referenceData.enum';
 import {
   INFORMATION_NOT_AVAILABLE,
+  isYearNotAvailable,
   keepInformationNotAvailableExclusive,
   yearToFormValue,
   yearToPayload,
@@ -104,11 +105,11 @@ const actionForm: React.FC<FormLoadProps> = ({ method }) => {
   const targetYearAfterStartYear = ({
     getFieldValue,
   }: {
-    getFieldValue: (name: string) => number | undefined;
+    getFieldValue: (name: string) => unknown;
   }) => ({
     validator(_: unknown, value: number | undefined) {
       const startYear = getFieldValue('startYear');
-      if (!value || !startYear || value >= startYear) {
+      if (!value || isYearNotAvailable(startYear) || value >= Number(startYear)) {
         return Promise.resolve();
       }
       return Promise.reject(new Error(String(t('formHeader:targetYearBeforeStartYear'))));

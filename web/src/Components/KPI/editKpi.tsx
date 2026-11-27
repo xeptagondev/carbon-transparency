@@ -1,7 +1,12 @@
-import { Form, Input, Row, Col, Card } from 'antd';
+import { Form, Input, Row, Col, Card, Select } from 'antd';
+import { useMemo } from 'react';
 import './kpiStyles.scss';
 import { CreatedKpiData } from '../../Definitions/kpiDefinitions';
 import { DeleteOutlined } from '@ant-design/icons';
+import { useReferenceOptions } from '../../Utils/useReferenceOptions';
+import { ReferenceDataList } from '../../Enums/referenceData.enum';
+
+const { Option } = Select;
 
 interface Props {
   index: number;
@@ -23,6 +28,19 @@ export const EditKpi: React.FC<Props> = ({
   removeKPI,
   isFromActivity,
 }) => {
+  const kpiNameOptions = useReferenceOptions(isFromActivity ? '' : ReferenceDataList.KPI_NAME);
+
+  const nameSelectOptions = useMemo(() => {
+    const options = kpiNameOptions.map((option) => ({
+      value: option.value,
+      label: option.label,
+    }));
+    if (kpi?.name && !options.some((option) => option.value === kpi.name)) {
+      options.push({ value: kpi.name, label: kpi.name });
+    }
+    return options;
+  }, [kpiNameOptions, kpi?.name]);
+
   return (
     <Row key={index} gutter={30} className="kpi-grid">
       <Col span={12}>
@@ -34,15 +52,27 @@ export const EditKpi: React.FC<Props> = ({
               rules={isFromActivity ? [] : rules}
               initialValue={kpi?.name}
             >
-              <Input
-                className="form-input-box"
-                onChange={(e) => {
-                  if (updateKPI) {
-                    updateKPI(index, 'name', e.target.value, 'created');
-                  }
-                }}
-                disabled={isFromActivity}
-              />
+              {isFromActivity ? (
+                <Input className="form-input-box" disabled={true} />
+              ) : (
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  size="large"
+                  allowClear
+                  onChange={(value: string) => {
+                    if (updateKPI) {
+                      updateKPI(index, 'name', value, 'created');
+                    }
+                  }}
+                >
+                  {nameSelectOptions.map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Option>
+                  ))}
+                </Select>
+              )}
             </Form.Item>
           </Col>
           <Col span={12}>

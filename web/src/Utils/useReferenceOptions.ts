@@ -8,6 +8,41 @@ export interface ReferenceOption {
   label: string;
 }
 
+const optionsCache = new Map<string, ReferenceOption[]>();
+const inflightRequests = new Map<string, Promise<ReferenceOption[]>>();
+
+async function loadReferenceOptions(
+  listKey: string,
+  get: (path: string) => Promise<unknown>
+): Promise<ReferenceOption[]> {
+  const cached = optionsCache.get(listKey);
+  if (cached) {
+    return cached;
+  }
+
+  const inflight = inflightRequests.get(listKey);
+  if (inflight) {
+    return inflight;
+  }
+
+  const request = get(`national/reference-data/${listKey}`)
+    .then((response: any) => {
+      const options: ReferenceOption[] = response.data.map((v: any) => ({
+        value: v.code,
+        label: v.label,
+      }));
+      optionsCache.set(listKey, options);
+      return options;
+    })
+    .catch(() => [] as ReferenceOption[])
+    .finally(() => {
+      inflightRequests.delete(listKey);
+    });
+
+  inflightRequests.set(listKey, request);
+  return request;
+}
+
 /**
  * The values of one admin-managed list (National configurations), ready to use as dropdown options.
  *
@@ -17,29 +52,34 @@ export interface ReferenceOption {
  */
 export const useReferenceOptions = (listKey: string): ReferenceOption[] => {
   const { get } = useConnection();
-  const [options, setOptions] = useState<ReferenceOption[]>([]);
+  const [options, setOptions] = useState<ReferenceOption[]>(() =>
+    listKey ? optionsCache.get(listKey) ?? [] : []
+  );
 
   useEffect(() => {
+    if (!listKey) {
+      setOptions([]);
+      return;
+    }
+
+    const cached = optionsCache.get(listKey);
+    if (cached) {
+      setOptions(cached);
+      return;
+    }
+
     let cancelled = false;
 
-    const load = async () => {
-      try {
-        const response: any = await get(`national/reference-data/${listKey}`);
-        if (!cancelled) {
-          setOptions(response.data.map((v: any) => ({ value: v.code, label: v.label })));
-        }
-      } catch (error: any) {
-        if (!cancelled) {
-          setOptions([]);
-        }
+    loadReferenceOptions(listKey, get).then((loaded) => {
+      if (!cancelled) {
+        setOptions(loaded);
       }
-    };
-    load();
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [listKey]);
+  }, [listKey, get]);
 
   return options;
 };

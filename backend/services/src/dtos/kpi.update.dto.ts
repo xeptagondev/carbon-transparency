@@ -2,6 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EntityType } from "../enums/shared.enum";
 import { KPIAction } from "../enums/shared.enum";
+import { IsReferenceValueWhen } from "../util/referenceValue.decorator";
+import { ReferenceDataList } from "../enums/reference.data.enum";
 
 export class KpiUpdateDto {
 
@@ -12,6 +14,7 @@ export class KpiUpdateDto {
 
     @IsNotEmpty()
     @IsString()
+    @IsReferenceValueWhen((dto) => dto.kpiAction === KPIAction.CREATED, ReferenceDataList.KPI_NAME)
     @ApiProperty()
     name: string;
 

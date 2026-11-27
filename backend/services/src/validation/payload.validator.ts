@@ -17,7 +17,7 @@ export class PayloadValidator {
 		let msg;
 		if (!kpi.creatorType) msg = "kpi.creatorTypeCannotBeNull";
 		else if (!kpi.kpiUnit) msg = "kpi.kpiUnitCannotBeNull";
-		else if (!kpi.expected) msg = "kpi.expectedCannotBeNull";
+		else if (this.isKpiExpectedMissing(kpi.expected)) msg = "kpi.expectedCannotBeNull";
 		else if (!kpi.name) msg = "kpi.kpiNameCannotBeNull";
 		else if (kpi.creatorType != parentType) msg = "kpi.kpiCreatorTypeMismatch";
 		else if (!this.validateKpiValues(kpi.expected)) msg = "kpi.expectCanHaveOnlyTwoDecimals"
@@ -126,6 +126,10 @@ export class PayloadValidator {
 				throw new HttpException(`Element ${index + 1} in the ${name} array is incorrect according to the GWP value.`, HttpStatus.BAD_REQUEST);
 			}
 		}
+	}
+
+	private isKpiExpectedMissing(expected: number | null | undefined): boolean {
+		return expected === null || expected === undefined || Number.isNaN(expected);
 	}
 
 	public validateKpiValues(value: any) {
